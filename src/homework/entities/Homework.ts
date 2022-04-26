@@ -56,7 +56,7 @@ export class HomeWork {
   })
   updated_at: Date;
 
-  @ManyToOne((_type) => User, (user) => user.homeworks, { eager: false })
+  @ManyToOne((_type) => User, (user) => user.homeworks, { eager: true })
   @Exclude({ toPlainOnly: true })
   user: User;
 }

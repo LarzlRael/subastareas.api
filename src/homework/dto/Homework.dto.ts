@@ -18,4 +18,6 @@ export class HomeworkDto {
   fileUrl?: string;
   resolutionTime?: Date;
   category?: string;
+
+  
 }

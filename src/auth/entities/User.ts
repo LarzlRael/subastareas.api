@@ -57,6 +57,6 @@ export class User {
   })
   public updated_at: Date;
 
-  @OneToMany((_type) => HomeWork, (homeWork) => homeWork.user, { eager: true })
+  @OneToMany((_type) => HomeWork, (homeWork) => homeWork.user, { eager: false })
   homeworks: HomeWork[];
 }
