@@ -3,8 +3,27 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { HomeworkModule } from './homework/homework.module';
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mariadb',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'subastareas',
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
+    AuthModule,
+    HomeworkModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
