@@ -1,17 +1,19 @@
 import { Exclude } from 'class-transformer';
 import { User } from 'src/auth/entities/User';
 import { UsersRepository } from 'src/auth/user.repository';
+import { Comment } from 'src/comments/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class HomeWork {
+export class Homework {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -59,4 +61,9 @@ export class HomeWork {
   @ManyToOne((_type) => User, (user) => user.homeworks, { eager: true })
   @Exclude({ toPlainOnly: true })
   user: User;
+
+  @OneToMany((_type) => Comment, (comment) => comment.homework, {
+    eager: false,
+  })
+  comments: Comment[];
 }

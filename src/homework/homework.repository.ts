@@ -5,18 +5,18 @@ import {
 
 import { EntityRepository, Repository } from 'typeorm';
 import { HomeworkDto } from './dto/homework.dto';
-import { HomeWork } from './entities/Homework';
+import { Homework } from './entities/Homework';
 import { User } from '../auth/entities/User';
 import { UploadApiResponse, v2 } from 'cloudinary';
 import { UploadedFile } from '@nestjs/common';
 import toStream = require('buffer-to-stream');
-@EntityRepository(HomeWork)
-export class HomeworkRepository extends Repository<HomeWork> {
+@EntityRepository(Homework)
+export class HomeworkRepository extends Repository<Homework> {
   async createHomework(
     homeWorkDto: HomeworkDto,
     @UploadedFile() file: Express.Multer.File,
     user: User,
-  ): Promise<HomeWork> {
+  ): Promise<Homework> {
     let createdHomework;
     try {
       let uploadApiResponse: UploadApiResponse;
@@ -50,9 +50,7 @@ export class HomeworkRepository extends Repository<HomeWork> {
       console.log('hay un error')
       console.log(error)
       throw new InternalServerErrorException('Error to upload file o is emppy');
-
     }
-
   }
 
   async deleteHomework(user: User, id: number): Promise<void> {
@@ -70,11 +68,11 @@ export class HomeworkRepository extends Repository<HomeWork> {
     }
   }
 
-  async getHomeworksById(user: User): Promise<HomeWork[]> {
+  async getHomeworksById(user: User): Promise<Homework[]> {
     const homework = await this.find({ where: { user } });
     return homework;
   }
-  async getOneHomework(id: number): Promise<HomeWork> {
+  async getOneHomework(id: number): Promise<Homework> {
     const homework = await this.findOne(id);
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
@@ -86,7 +84,7 @@ export class HomeworkRepository extends Repository<HomeWork> {
     file: Express.Multer.File,
     user: User,
     id: number,
-  ): Promise<HomeWork> {
+  ): Promise<Homework> {
     const homework = await this.findOne(id);
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');

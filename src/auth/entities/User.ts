@@ -1,4 +1,5 @@
-import { HomeWork } from 'src/homework/entities/Homework';
+import { Homework } from 'src/homework/entities/Homework';
+import { Comment } from '../../comments/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
@@ -57,6 +58,9 @@ export class User {
   })
   public updated_at: Date;
 
-  @OneToMany((_type) => HomeWork, (homeWork) => homeWork.user, { eager: false })
-  homeworks: HomeWork[];
+  @OneToMany((_type) => Homework, (homeWork) => homeWork.user, { eager: false })
+  homeworks: Homework[];
+
+  @OneToMany((_type) => Comment, (comment) => comment.user, { eager: false })
+  comments: Comment[];
 }
