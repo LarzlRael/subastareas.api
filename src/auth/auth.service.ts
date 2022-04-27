@@ -12,7 +12,7 @@ export class AuthService {
   constructor(
     @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async singUp(authCredentialDTO: AuthCredentialDTO): Promise<User> {
     return this.usersRepository.createUser(authCredentialDTO);
   }
@@ -30,5 +30,10 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Please check your login credential');
     }
+  }
+  async renewToken(user: User): Promise<{ accessToken: string }> {
+    const payload: JWtPayload = { username: user.username };
+    const accessToken = await this.jwtService.sign(payload);
+    return { ...user, accessToken };
   }
 }

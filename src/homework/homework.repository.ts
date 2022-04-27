@@ -1,5 +1,5 @@
+/* eslint-disable prettier/prettier */
 import {
-  ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
 
@@ -14,14 +14,45 @@ import toStream = require('buffer-to-stream');
 export class HomeworkRepository extends Repository<HomeWork> {
   async createHomework(
     homeWorkDto: HomeworkDto,
+    @UploadedFile() file: Express.Multer.File,
     user: User,
-  ): Promise<HomeworkDto> {
-    const createHomework = this.create({
-      user,
-      ...homeWorkDto,
-    });
-    const homeworkCreated = await this.save(createHomework);
-    return homeworkCreated;
+  ): Promise<HomeWork> {
+    let createdHomework;
+    try {
+      let uploadApiResponse: UploadApiResponse;
+      const upload = v2.uploader.upload_stream(
+        { folder: 'homeworks' },
+        async (error, result) => {
+          if (error) {
+            console.log(error);
+            throw new InternalServerErrorException();
+          }
+          uploadApiResponse = result;
+          homeWorkDto.fileUrl = uploadApiResponse.url;
+          createdHomework = this.create({
+            user,
+            ...homeWorkDto,
+          });
+          await this.save(createdHomework);
+        },
+      );
+      toStream(file.buffer).pipe(upload);
+      /* return this.find({ order: { id: 'DESC' } }, take: 1); */
+      const lastRecord = await this.find({
+        order: { id: "DESC" },
+        where: { user },
+        // order results
+        take: 1 // limit 1
+      })
+      return lastRecord[0];
+
+    } catch (error) {
+      console.log('hay un error')
+      console.log(error)
+      throw new InternalServerErrorException('Error to upload file o is emppy');
+
+    }
+
   }
 
   async deleteHomework(user: User, id: number): Promise<void> {
@@ -52,12 +83,11 @@ export class HomeworkRepository extends Repository<HomeWork> {
   }
   async updateHomework(
     homeWorkDto: HomeworkDto,
-    @UploadedFile() file: Express.Multer.File,
+    file: Express.Multer.File,
     user: User,
     id: number,
   ): Promise<HomeWork> {
     const homework = await this.findOne(id);
-
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
     } else {

@@ -12,10 +12,11 @@ export class HomeworkService {
   ) { }
 
   async createHomework(
-    homeWorkDto: HomeworkDto,
+    homeworkDto: HomeworkDto,
+    file: Express.Multer.File,
     user: User,
   ): Promise<HomeworkDto> {
-    return this.homeworkRepository.createHomework(homeWorkDto, user);
+    return this.homeworkRepository.createHomework(homeworkDto, file, user);
   }
   async getHomeworkByUser(user: User) {
     return this.homeworkRepository.getHomeworksById(user);
@@ -28,7 +29,7 @@ export class HomeworkService {
   }
   async updateHomework(
     homeWorkDto: HomeworkDto,
-    @UploadedFile() file: Express.Multer.File,
+    file: Express.Multer.File,
     user: User,
     id: number,
   ) {

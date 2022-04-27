@@ -15,15 +15,13 @@ import { HomeworkDto } from './dto/Homework.dto';
 import { GetUser } from '../auth/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
-import { HomeWork } from './entities/Homework';
-import { Public } from '../../test/decorators/public.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from 'src/utils/utils';
 
 @Controller('homework')
 @UseGuards(AuthGuard('jwt'))
 export class HomeworkController {
-  constructor(private homeworkService: HomeworkService) {}
+  constructor(private homeworkService: HomeworkService) { }
 
   @Get('/homeworks')
   getHomeWorks(@GetUser() user: User): Promise<HomeworkDto[]> {
@@ -33,16 +31,23 @@ export class HomeworkController {
   getOneHomeWork(@Param('id') id: number): Promise<HomeworkDto> {
     return this.homeworkService.getOneHomework(id);
   }
+
+  @UseInterceptors(
+    FileInterceptor('homeworkfile', {
+      fileFilter: imageFileFilter,
+    }),
+  )
   @Post('/create')
   postHomeWork(
-    @Body() homeworkDto: HomeworkDto,
     @GetUser() user: User,
+    @Body() homeworkDto: HomeworkDto,
+    @UploadedFile() homeworkfile: Express.Multer.File,
   ): Promise<HomeworkDto> {
-    return this.homeworkService.createHomework(homeworkDto, user);
+    return this.homeworkService.createHomework(homeworkDto, homeworkfile, user);
   }
 
   @UseInterceptors(
-    FileInterceptor('homeWorkFile', {
+    FileInterceptor('homeworkfile', {
       fileFilter: imageFileFilter,
     }),
   )
