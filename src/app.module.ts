@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeworkModule } from './homework/homework.module';
 import { CommentsModule } from './comments/comments.module';
+import { AppGateway } from './app.gateway';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,6 +28,6 @@ import { CommentsModule } from './comments/comments.module';
     CommentsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule { }
