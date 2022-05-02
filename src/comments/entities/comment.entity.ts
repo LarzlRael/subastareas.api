@@ -1,5 +1,5 @@
-import { User } from 'src/auth/entities/User';
-import { Homework } from 'src/homework/entities/Homework';
+import { User } from 'src/auth/entities/user.entity';
+import { Homework } from 'src/homework/entities/Homework.entity';
 import {
   Entity,
   Column,
@@ -32,12 +32,9 @@ export class Comment {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.comments, { eager: true })
+  @ManyToOne(() => User, (user) => user.comments, { eager: true })sdf
   user: User;
 
   @ManyToOne(() => Homework, (homeWork) => homeWork.comments)
   homework: Homework;
-
-  /* @ManyToOne(() => Category, (category) => category.postToCategories)
-    public category!: Category; */
 }

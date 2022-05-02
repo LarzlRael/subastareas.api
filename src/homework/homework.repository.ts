@@ -5,51 +5,41 @@ import {
 
 import { EntityRepository, Repository } from 'typeorm';
 import { HomeworkDto } from './dto/homework.dto';
-import { Homework } from './entities/Homework';
-import { User } from '../auth/entities/User';
+import { Homework } from './entities/Homework.entity';
+import { User } from '../auth/entities/user.entity';
 import { UploadApiResponse, v2 } from 'cloudinary';
 import { UploadedFile } from '@nestjs/common';
+import { uploadFile2, uploadFile } from '../utils/utils';
+import { FoldersNameEnum } from '../enums/rol.enum';
 import toStream = require('buffer-to-stream');
 @EntityRepository(Homework)
 export class HomeworkRepository extends Repository<Homework> {
+  
   async createHomework(
     homeWorkDto: HomeworkDto,
     @UploadedFile() file: Express.Multer.File,
     user: User,
   ): Promise<Homework> {
-    let createdHomework;
+    delete homeWorkDto.status;
     try {
-      let uploadApiResponse: UploadApiResponse;
-      const upload = v2.uploader.upload_stream(
-        { folder: 'homeworks' },
-        async (error, result) => {
-          if (error) {
-            console.log(error);
-            throw new InternalServerErrorException();
-          }
-          uploadApiResponse = result;
-          homeWorkDto.fileUrl = uploadApiResponse.url;
-          createdHomework = this.create({
-            user,
-            ...homeWorkDto,
-          });
-          await this.save(createdHomework);
-        },
-      );
-      toStream(file.buffer).pipe(upload);
-      /* return this.find({ order: { id: 'DESC' } }, take: 1); */
-      const lastRecord = await this.find({
-        order: { id: "DESC" },
-        where: { user },
-        // order results
-        take: 1 // limit 1
-      })
-      return lastRecord[0];
-
+      if (file) {
+        uploadFile(file, FoldersNameEnum.HOMEWORK).then(async (url) => {
+          homeWorkDto.fileUrl = url;
+          const homework = this.create({ ...homeWorkDto, user });
+          await this.save(homework);
+          return homework;
+        });
+      } else {
+        const createdHomework = this.create({
+          user,
+          ...homeWorkDto,
+        });
+        return await this.save(createdHomework);
+      }
     } catch (error) {
-      console.log('hay un error')
+      console.log('Este es el error')
       console.log(error)
-      throw new InternalServerErrorException('Error to upload file o is emppy');
+      throw new InternalServerErrorException('Error to upload file o is empty');
     }
   }
 
@@ -86,6 +76,7 @@ export class HomeworkRepository extends Repository<Homework> {
     id: number,
   ): Promise<Homework> {
     const homework = await this.findOne(id);
+
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
     } else {
@@ -94,33 +85,36 @@ export class HomeworkRepository extends Repository<Homework> {
           'No permission to update this homework',
         );
       } else {
-        let edited;
-        let uploadApiResponse: UploadApiResponse;
-        const upload = v2.uploader.upload_stream(
-          { folder: 'homeworks' },
-          async (error, result) => {
-            if (error) {
-              console.log(error);
-              throw new InternalServerErrorException();
-            }
-            console.log(result);
-            uploadApiResponse = result;
-            try {
-              homeWorkDto.fileUrl = uploadApiResponse.url;
-              edited = await this.update(id, {
-                ...homeWorkDto,
-                fileUrl: uploadApiResponse.url,
-              });
-              console.log(edited);
-              return edited;
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        );
-        /* console.log(upload); */
-        toStream(file.buffer).pipe(upload);
-        return edited;
+        if (file) {
+          let edited;
+          let uploadApiResponse: UploadApiResponse;
+          const upload = v2.uploader.upload_stream(
+            { folder: 'homeworks' },
+            async (error, result) => {
+              if (error) {
+                console.log(error);
+                throw new InternalServerErrorException();
+              }
+              uploadApiResponse = result;
+              try {
+                homeWorkDto.fileUrl = uploadApiResponse.url;
+                edited = await this.update(id, {
+                  ...homeWorkDto,
+                  fileUrl: uploadApiResponse.url,
+                });
+                return await this.findOne(id);
+              } catch (error) {
+                console.log(error);
+              }
+            },
+          );
+          /* console.log(upload); */
+          toStream(file.buffer).pipe(upload);
+          return edited;
+        } else {
+          await this.update(id, { ...homeWorkDto });
+          return this.findOne(id);
+        }
       }
     }
   }

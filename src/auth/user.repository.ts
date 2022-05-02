@@ -6,9 +6,12 @@ import {
 import { EntityRepository, Repository } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/User';
+import { User } from './entities/user.entity';
 
 import { AuthCredentialDTO } from './dto/AuthCredentialDTO ';
+import { uploadFile } from '../utils/utils';
+import { FoldersNameEnum } from '../enums/rol.enum';
+import { ProfileEditDto } from './dto/ProfileEdit.dto';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -29,6 +32,45 @@ export class UsersRepository extends Repository<User> {
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+  async updateUserProfile(
+    updateUser: ProfileEditDto,
+    profileImageUrl: Express.Multer.File,
+    user: User,
+  ): Promise<User> {
+    console.log(user);
+    try {
+      if (profileImageUrl) {
+        console.log('hay imagen para subir');
+        uploadFile(profileImageUrl, FoldersNameEnum.PROFILE_IMAGES).then(
+          async (url) => {
+            updateUser.profileImageUrl = url;
+            const updatedProfile = await this.save({
+              ...user,
+              name: updateUser.name,
+              lastName: updateUser.lastName,
+              nickName: updateUser.nickName,
+              phone: updateUser.phone,
+              profileImageUrl: updateUser.profileImageUrl,
+            });
+            console.log(updatedProfile)
+            return updatedProfile;
+          },
+        );
+      } else {
+        return await this.save({
+          ...user,
+          name: updateUser.name,
+          lastName: updateUser.lastName,
+          nickName: updateUser.nickName,
+          phone: updateUser.phone,
+        });
+      }
+    } catch (error) {
+      console.log('Este es el error');
+      console.log(error);
+      throw new InternalServerErrorException();
     }
   }
 }

@@ -2,8 +2,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 import { CommentDto } from './dto/comment.dto';
-import { User } from '../auth/entities/User';
-import { Homework } from 'src/homework/entities/Homework';
+import { User } from '../auth/entities/user.entity';
+import { Homework } from 'src/homework/entities/Homework.entity';
 
 @EntityRepository(Comment)
 export class CommentRepository extends Repository<Comment> {
@@ -21,7 +21,6 @@ export class CommentRepository extends Repository<Comment> {
   async getCommentsByHomework(homeworkId: number): Promise<Comment[]> {
     try {
       const comments = await this.find({ where: { homework: homeworkId } });
-      console.log(comments);
       return comments;
     } catch (error) {
       throw new InternalServerErrorException();
@@ -33,6 +32,27 @@ export class CommentRepository extends Repository<Comment> {
         throw new InternalServerErrorException('You are not the owner');
       }
       await this.delete(comment.commentId);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+  async editComment(
+    user: User,
+    idComment: number,
+    comment: CommentDto,
+  ): Promise<CommentDto> {
+    try {
+      const getComment = await this.findOne(idComment);
+      if (!getComment) {
+        throw new InternalServerErrorException("comment doesn't exist");
+      }
+      const commentEdit = await this.save({
+        idcomment: idComment,
+        ...getComment,
+        ...comment,
+      });
+      return commentEdit;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

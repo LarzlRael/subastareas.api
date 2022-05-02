@@ -10,25 +10,40 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { HomeworkService } from './homework.service';
-import { User } from '../auth/entities/User';
+import { User } from '../auth/entities/user.entity';
 import { HomeworkDto } from './dto/Homework.dto';
-import { GetUser } from '../auth/get-user..decorator';
+import { GetUser } from '../auth/decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from 'src/utils/utils';
+import { Roles } from '../auth/decorators/get.rols.decorator';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { HomeWorkStatusEnum } from '../enums/rol.enum';
+import { Homework } from './entities/Homework.entity';
 
 @Controller('homework')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class HomeworkController {
-  constructor(private homeworkService: HomeworkService) { }
+  constructor(private homeworkService: HomeworkService) {}
 
+  @Get()
+  getAprovedHomeWorks(): Promise<Homework[]> {
+    return this.homeworkService.getAprovedHomeWorks();
+  }
   @Get('/homeworks')
-  getHomeWorks(@GetUser() user: User): Promise<HomeworkDto[]> {
+  getHomeWorks(@GetUser() user: User): Promise<Homework[]> {
     return this.homeworkService.getHomeworkByUser(user);
   }
+
+  @Get('/homeworkstatus/:status')
+  getHomeworkspending(
+    @Param('status') status: HomeWorkStatusEnum,
+  ): Promise<Homework[]> {
+    return this.homeworkService.getPendingHomework(status);
+  }
   @Get('/:id')
-  getOneHomeWork(@Param('id') id: number): Promise<HomeworkDto> {
+  getOneHomeWork(@Param('id') id: number): Promise<Homework> {
     return this.homeworkService.getOneHomework(id);
   }
 
@@ -38,12 +53,16 @@ export class HomeworkController {
     }),
   )
   @Post('/create')
-  postHomeWork(
+  async postHomeWork(
     @GetUser() user: User,
     @Body() homeworkDto: HomeworkDto,
     @UploadedFile() homeworkfile: Express.Multer.File,
-  ): Promise<HomeworkDto> {
-    return this.homeworkService.createHomework(homeworkDto, homeworkfile, user);
+  ): Promise<Homework> {
+    return await this.homeworkService.createHomework(
+      homeworkDto,
+      homeworkfile,
+      user,
+    );
   }
 
   @UseInterceptors(

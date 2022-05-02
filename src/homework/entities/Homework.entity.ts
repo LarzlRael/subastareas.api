@@ -1,7 +1,8 @@
 import { Exclude } from 'class-transformer';
-import { User } from 'src/auth/entities/User';
+import { User } from 'src/auth/entities/user.entity';
 import { UsersRepository } from 'src/auth/user.repository';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { HomeWorkStatusEnum } from 'src/enums/rol.enum';
 import {
   Column,
   CreateDateColumn,
@@ -44,6 +45,13 @@ export class Homework {
     nullable: true,
   })
   category: string;
+
+  @Column({
+    type: 'enum',
+    enum: HomeWorkStatusEnum,
+    default: HomeWorkStatusEnum.PENDING,
+  })
+  status: HomeWorkStatusEnum;
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -1,6 +1,8 @@
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class AuthCredentialDTO {
+  id?: number;
+
   @IsString()
   @MinLength(6)
   username: string;
@@ -13,9 +15,12 @@ export class AuthCredentialDTO {
   }) */
   password: string;
 
-  /* name: string;
-  lastName: string;
-  email: string;
-  nickName: string;
-  phone: string; */
+  profileImageUrl?: string;
+  google?: boolean;
+  name?: string;
+  lastName?: string;
+  email?: string;
+  nickName?: string;
+  phone?: string;
+  verify?: boolean;
 }

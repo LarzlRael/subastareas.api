@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { CommentRepository } from './comment.repository';
-import { User } from '../auth/entities/User';
+import { User } from '../auth/entities/user.entity';
 import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 
@@ -31,10 +31,16 @@ export class CommentsService {
   async deleteComment(user: User, commentId: number): Promise<void> {
     const findComment = await this.commentRepository.findOne(commentId);
 
-    /* this.commentRepository.deleteComment(user, commentId); */
     if (!findComment) {
       throw new InternalServerErrorException('Homework Not Found');
     }
     return this.commentRepository.deleteComment(user, findComment);
+  }
+  async editComment(
+    user: User,
+    idComment: number,
+    comment: CommentDto,
+  ): Promise<CommentDto> {
+    return this.commentRepository.editComment(user, idComment, comment);
   }
 }

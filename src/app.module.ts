@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeworkModule } from './homework/homework.module';
 import { CommentsModule } from './comments/comments.module';
 import { AppGateway } from './app.gateway';
+import { RolsModule } from './auth/rols/rols.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,19 +16,20 @@ import { AppGateway } from './app.gateway';
     }),
     TypeOrmModule.forRoot({
       type: 'mariadb',
-      host: 'localhost',
+      host: process.env.DATABASE_HOST,
       port: 3306,
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
-      database: 'subastareas',
+      database: process.env.DATABASE_NAME,
       synchronize: true,
       autoLoadEntities: true,
     }),
     AuthModule,
     HomeworkModule,
     CommentsModule,
+    RolsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway],
+  providers: [AppService],
 })
 export class AppModule { }

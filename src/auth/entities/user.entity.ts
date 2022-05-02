@@ -1,22 +1,28 @@
-import { Homework } from 'src/homework/entities/Homework';
+import { Homework } from 'src/homework/entities/Homework.entity';
 import { Comment } from '../../comments/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Rol } from '../rols/entities/rol.entity';
+import { Supervisor } from 'src/homework/supervisor/entities/Supervisor.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ unique: true })
   username: string;
 
+  @Exclude()
   @Column()
   password: string;
 
@@ -45,6 +51,25 @@ export class User {
   })
   phone: string;
 
+  @Column({
+    nullable: true,
+  })
+  profileImageUrl: string;
+
+  @Column({
+    default: false,
+  })
+  google: boolean;
+
+  @Column({
+    nullable: true,
+  })
+
+  @Column({
+    default: false,
+  })
+  verify: boolean;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
@@ -63,4 +88,11 @@ export class User {
 
   @OneToMany((_type) => Comment, (comment) => comment.user, { eager: false })
   comments: Comment[];
+
+  @OneToMany((_type) => Rol, (rol) => rol.user, { eager: true })
+  rols: Rol[];
+
+  @OneToOne(() => Supervisor)
+  @JoinColumn({ name: 'id_supervisor' })
+  supervisor: Supervisor;
 }

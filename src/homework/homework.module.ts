@@ -5,9 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { AuthModule } from '../auth/auth.module';
 import { CloudinaryProvider } from './cloudinary.provider';
+import { SupervisorModule } from './supervisor/supervisor.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([HomeworkRepository]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([HomeworkRepository]),
+    AuthModule,
+    SupervisorModule,
+  ],
   controllers: [HomeworkController],
   providers: [HomeworkService, CloudinaryProvider],
   exports: [CloudinaryProvider, HomeworkService],
