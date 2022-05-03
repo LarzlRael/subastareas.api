@@ -42,7 +42,6 @@ export class UsersRepository extends Repository<User> {
     console.log(user);
     try {
       if (profileImageUrl) {
-        console.log('hay imagen para subir');
         uploadFile(profileImageUrl, FoldersNameEnum.PROFILE_IMAGES).then(
           async (url) => {
             updateUser.profileImageUrl = url;
@@ -54,7 +53,6 @@ export class UsersRepository extends Repository<User> {
               phone: updateUser.phone,
               profileImageUrl: updateUser.profileImageUrl,
             });
-            console.log(updatedProfile)
             return updatedProfile;
           },
         );

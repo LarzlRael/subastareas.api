@@ -5,10 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SupervisorRepository } from './supervisor.repository';
 import { RolsModule } from '../../auth/rols/rols.module';
 import { RolRepository } from '../../auth/rols/entities/rol.repository';
+import { HomeworkRepository } from '../homework.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SupervisorRepository, RolRepository]),
+    TypeOrmModule.forFeature([
+      SupervisorRepository,
+      RolRepository,
+      HomeworkRepository,
+    ]),
     RolsModule,
     SupervisorModule,
   ],

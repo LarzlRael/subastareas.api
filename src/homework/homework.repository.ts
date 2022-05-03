@@ -7,43 +7,36 @@ import { EntityRepository, Repository } from 'typeorm';
 import { HomeworkDto } from './dto/homework.dto';
 import { Homework } from './entities/Homework.entity';
 import { User } from '../auth/entities/user.entity';
-import { UploadApiResponse, v2 } from 'cloudinary';
-import { UploadedFile } from '@nestjs/common';
-import { uploadFile2, uploadFile } from '../utils/utils';
+import { uploadFile } from '../utils/utils';
 import { FoldersNameEnum } from '../enums/rol.enum';
-import toStream = require('buffer-to-stream');
 @EntityRepository(Homework)
 export class HomeworkRepository extends Repository<Homework> {
-  
+
   async createHomework(
     homeWorkDto: HomeworkDto,
-    @UploadedFile() file: Express.Multer.File,
+    file: Express.Multer.File,
     user: User,
   ): Promise<Homework> {
     delete homeWorkDto.status;
-    try {
-      if (file) {
-        uploadFile(file, FoldersNameEnum.HOMEWORK).then(async (url) => {
-          homeWorkDto.fileUrl = url;
-          const homework = this.create({ ...homeWorkDto, user });
-          await this.save(homework);
-          return homework;
-        });
-      } else {
-        const createdHomework = this.create({
-          user,
-          ...homeWorkDto,
-        });
-        return await this.save(createdHomework);
-      }
-    } catch (error) {
-      console.log('Este es el error')
-      console.log(error)
-      throw new InternalServerErrorException('Error to upload file o is empty');
+
+    if (file) {
+      uploadFile(file, FoldersNameEnum.HOMEWORK).then(async (url) => {
+        homeWorkDto.fileUrl = url;
+        const homework = this.create({ ...homeWorkDto, user });
+        await this.save(homework);
+        return homework;
+      });
+    } else {
+      const createdHomework = this.create({
+        user,
+        ...homeWorkDto,
+      });
+      return await this.save(createdHomework);
     }
   }
 
   async deleteHomework(user: User, id: number): Promise<void> {
+
     const homework = await this.findOne(id);
 
     if (homework.user.id !== user.id) {
@@ -75,6 +68,7 @@ export class HomeworkRepository extends Repository<Homework> {
     user: User,
     id: number,
   ): Promise<Homework> {
+    delete homeWorkDto.status;
     const homework = await this.findOne(id);
 
     if (!homework) {
@@ -86,33 +80,13 @@ export class HomeworkRepository extends Repository<Homework> {
         );
       } else {
         if (file) {
-          let edited;
-          let uploadApiResponse: UploadApiResponse;
-          const upload = v2.uploader.upload_stream(
-            { folder: 'homeworks' },
-            async (error, result) => {
-              if (error) {
-                console.log(error);
-                throw new InternalServerErrorException();
-              }
-              uploadApiResponse = result;
-              try {
-                homeWorkDto.fileUrl = uploadApiResponse.url;
-                edited = await this.update(id, {
-                  ...homeWorkDto,
-                  fileUrl: uploadApiResponse.url,
-                });
-                return await this.findOne(id);
-              } catch (error) {
-                console.log(error);
-              }
-            },
-          );
-          /* console.log(upload); */
-          toStream(file.buffer).pipe(upload);
-          return edited;
+          uploadFile(file, FoldersNameEnum.HOMEWORK).then(async (url) => {
+            homeWorkDto.fileUrl = url;
+            await this.update(id, { ...homework, ...homeWorkDto });
+            return homework;
+          });
         } else {
-          await this.update(id, { ...homeWorkDto });
+          await this.update(id, { ...homework, ...homeWorkDto });
           return this.findOne(id);
         }
       }

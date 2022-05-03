@@ -39,18 +39,3 @@ export const uploadFile = (
     throw new InternalServerErrorException('Error to upload file o is empty');
   }
 };
-export const uploadFile2 = async (
-  file: Express.Multer.File,
-  folder: FoldersNameEnum,
-) => {
-  uploadFile(file, folder)
-    .then((url) => {
-      console.log(url);
-      return url;
-    })
-    .catch((error) => {
-      console.log('Este es el error');
-      console.log(error);
-      throw new InternalServerErrorException('Error to upload file o is empty');
-    });
-};

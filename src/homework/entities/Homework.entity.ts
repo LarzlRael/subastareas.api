@@ -47,6 +47,11 @@ export class Homework {
   category: string;
 
   @Column({
+    nullable: true,
+  })
+  observation: string;
+
+  @Column({
     type: 'enum',
     enum: HomeWorkStatusEnum,
     default: HomeWorkStatusEnum.PENDING,

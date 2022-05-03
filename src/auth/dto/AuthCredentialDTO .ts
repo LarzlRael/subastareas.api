@@ -15,12 +15,12 @@ export class AuthCredentialDTO {
   }) */
   password: string;
 
-  profileImageUrl?: string;
+/*   profileImageUrl?: string;
   google?: boolean;
   name?: string;
   lastName?: string;
   email?: string;
   nickName?: string;
   phone?: string;
-  verify?: boolean;
+  verify?: boolean; */
 }
