@@ -8,6 +8,8 @@ import { HomeworkModule } from './homework/homework.module';
 import { CommentsModule } from './comments/comments.module';
 import { AppGateway } from './app.gateway';
 import { RolsModule } from './auth/rols/rols.module';
+import { OfferController } from './offer/offer.controller';
+import { OfferModule } from './offer/offer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +30,7 @@ import { RolsModule } from './auth/rols/rols.module';
     HomeworkModule,
     CommentsModule,
     RolsModule,
+    OfferModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,4 @@
-import { Injectable, UploadedFile } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { HomeworkDto } from './dto/Homework.dto';
