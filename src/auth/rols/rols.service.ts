@@ -12,7 +12,7 @@ export class RolsService {
     @InjectRepository(RolRepository)
     private rolRepository: RolRepository,
     private userRepository: UsersRepository,
-  ) { }
+  ) {}
   createNewRol(user: User, rol: RolDto): Promise<Rol> {
     return this.rolRepository.createRol(user, rol);
   }
@@ -29,6 +29,9 @@ export class RolsService {
     }
 
     return this.rolRepository.assignRole(findUser, rol);
+  }
+  async assignStudenRole(user: User, rol: RolDto): Promise<Rol> {
+    return this.rolRepository.assignRole(user, rol);
   }
   /* async removeRole(id: number, rol: RolDto): Promise<Rol> {
     

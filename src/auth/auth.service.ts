@@ -8,14 +8,24 @@ import { JWtPayload } from './interfaces/jwtPayload';
 import { User } from './entities/user.entity';
 import { validateGoogleToken } from './google/googleVerifyToken';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
+import { MailService } from '../mail/mail.service';
+import { RolsService } from './rols/rols.service';
+import { RoleEnum } from 'src/enums/rol.enum';
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
+    private mailService: MailService,
     private jwtService: JwtService,
-  ) { }
+    private rolsService: RolsService,
+  ) {}
   async singUp(authCredentialDTO: AuthCredentialDTO): Promise<User> {
-    return this.usersRepository.createUser(authCredentialDTO);
+    const newUser = await this.usersRepository.createUser(authCredentialDTO);
+    this.rolsService.assignStudenRole(newUser, {
+      rolName: RoleEnum.STUDENT,
+      active: true,
+    });
+    return newUser;
   }
 
   async singIn(
@@ -75,6 +85,23 @@ export class AuthService {
       updateUser,
       profileImageUrl,
       user,
+    );
+  }
+  async verifyEmail(username: string): Promise<User> {
+    const getUser = await this.usersRepository.findOne({ username });
+    if (getUser.verify) {
+      return;
+    }
+    getUser.verify = true;
+    return await this.usersRepository.save(getUser);
+  }
+  async sendEmail() {
+    return this.mailService.sendUserConfirmation(
+      {
+        email: 'seug.ri.pe@gmail.com',
+        name: 'Rael',
+      },
+      '1231564545',
     );
   }
 }

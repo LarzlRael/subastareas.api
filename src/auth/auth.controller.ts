@@ -1,4 +1,15 @@
-import { Body, Controller, Post, Get, UseGuards, UseInterceptors, UploadedFile, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Put,
+  Param,
+  Render,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDTO } from './dto/AuthCredentialDTO ';
 import { User } from './entities/user.entity';
@@ -7,10 +18,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from '../utils/utils';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
+import { JwtService } from '@nestjs/jwt';
+import { JWtPayload } from '../auth/interfaces/jwtPayload';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
   @Post('/signup')
   signup(@Body() authCredentialDTO: AuthCredentialDTO): Promise<User> {
     return this.authService.singUp(authCredentialDTO);
@@ -46,5 +62,19 @@ export class AuthController {
   ) {
     console.log(editProfile);
     return this.authService.updateUserProfile(editProfile, imageProfile, user);
+  }
+
+  @Post('email')
+  sendEmail() {
+    return this.authService.sendEmail();
+  }
+
+  @Get('/verify/:token')
+  @Render('index')
+  async verifyEmail(@Param('token') token: string) {
+    const { username } = this.jwtService.verify(token) as JWtPayload;
+    const xd = await this.authService.verifyEmail(username);
+    console.log(xd);
+    return xd;
   }
 }

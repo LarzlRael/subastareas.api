@@ -6,19 +6,29 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from './user.repository';
+import { MailModule } from '../mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
+import { RolsModule } from './rols/rols.module';
+import { RolsService } from './rols/rols.service';
+import { RolRepository } from './rols/entities/rol.repository';
 @Module({
   imports: [
+    MailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
     JwtModule.register({
-      secret: '123456789',
+      secret: process.env.JWT_SECRET,
       signOptions: {
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([UsersRepository]),
+    TypeOrmModule.forFeature([UsersRepository, RolRepository]),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, RolsService],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -1,15 +1,7 @@
 import { Homework } from 'src/homework/entities/Homework.entity';
 import { User } from '../../../auth/entities/user.entity';
 
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Supervisor {

@@ -1,6 +1,8 @@
 import { FoldersNameEnum } from 'src/enums/rol.enum';
-import { v2, UploadApiResponse } from 'cloudinary';
+import { v2 } from 'cloudinary';
 import { InternalServerErrorException } from '@nestjs/common';
+import jwt from 'jsonwebtoken';
+import { JWtPayload } from '../auth/interfaces/jwtPayload';
 
 import toStream = require('buffer-to-stream');
 
