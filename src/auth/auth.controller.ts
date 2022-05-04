@@ -80,7 +80,6 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Post('/signout/:idDevice')
   async logoutAndDeleteDevice(@Param('idDevice') idDevice: string) {
-    console.log(idDevice);
     this.authService.signOut(idDevice);
   }
 }

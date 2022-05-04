@@ -16,6 +16,7 @@ import { Exclude } from 'class-transformer';
 import { Professor } from 'src/homework/professor/entities/professor.entity';
 import { Offer } from '../../offer/entities/offer.entity';
 import { Device } from 'src/devices/entities/devices.entity';
+import { Wallet } from '../../wallet/entities/wallet.entity';
 
 @Entity()
 export class User {
@@ -94,6 +95,10 @@ export class User {
   @OneToOne(() => Supervisor, { eager: true })
   @JoinColumn({ name: 'id_supervisor' })
   supervisor: Supervisor;
+
+  @OneToOne(() => Wallet, { eager: true })
+  @JoinColumn({ name: 'id_wallet' })
+  wallet: Wallet;
 
   @OneToOne(() => Professor, { eager: true })
   @JoinColumn({ name: 'id_professor' })

@@ -12,6 +12,7 @@ import { MailService } from '../mail/mail.service';
 import { RolsService } from './rols/rols.service';
 import { RoleEnum } from 'src/enums/rol.enum';
 import { DevicesService } from '../devices/devices.service';
+import { WalletService } from '../wallet/wallet.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,6 +21,7 @@ export class AuthService {
     private jwtService: JwtService,
     private rolsService: RolsService,
     private devicesService: DevicesService,
+    private walletService: WalletService,
   ) {}
   async singUp(authCredentialDTO: AuthCredentialDTO): Promise<User> {
     const newUser = await this.usersRepository.createUser(authCredentialDTO);
@@ -27,6 +29,7 @@ export class AuthService {
       rolName: RoleEnum.STUDENT,
       active: true,
     });
+    await this.walletService.createWallet(newUser);
     return newUser;
   }
 

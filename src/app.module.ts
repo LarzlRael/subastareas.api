@@ -11,6 +11,7 @@ import { RolsModule } from './auth/rols/rols.module';
 import { OfferController } from './offer/offer.controller';
 import { OfferModule } from './offer/offer.module';
 import { DevicesModule } from './devices/devices.module';
+import { WalletModule } from './wallet/wallet.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,6 +34,7 @@ import { DevicesModule } from './devices/devices.module';
     RolsModule,
     OfferModule,
     DevicesModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],

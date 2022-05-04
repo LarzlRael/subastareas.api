@@ -41,7 +41,6 @@ export class UsersRepository extends Repository<User> {
     profileImageUrl: Express.Multer.File,
     user: User,
   ): Promise<User> {
-    console.log(user);
     try {
       if (profileImageUrl) {
         uploadFile(profileImageUrl, 'PROFILE_IMAGES').then(async (url) => {

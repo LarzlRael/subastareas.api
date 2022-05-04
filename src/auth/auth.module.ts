@@ -13,6 +13,8 @@ import { RolRepository } from './rols/entities/rol.repository';
 import { DevicesService } from '../devices/devices.service';
 import { DeviceRepository } from '../devices/device.repository';
 import { DevicesModule } from 'src/devices/devices.module';
+import { WalletRepository } from '../wallet/wallet.repository';
+import { WalletService } from '../wallet/wallet.service';
 
 @Module({
   imports: [
@@ -32,9 +34,16 @@ import { DevicesModule } from 'src/devices/devices.module';
       UsersRepository,
       RolRepository,
       DeviceRepository,
+      WalletRepository,
     ]),
   ],
-  providers: [AuthService, JwtStrategy, RolsService, DevicesService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    RolsService,
+    DevicesService,
+    WalletService,
+  ],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
