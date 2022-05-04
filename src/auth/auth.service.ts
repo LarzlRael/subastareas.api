@@ -11,6 +11,7 @@ import { ProfileEditDto } from './dto/ProfileEdit.dto';
 import { MailService } from '../mail/mail.service';
 import { RolsService } from './rols/rols.service';
 import { RoleEnum } from 'src/enums/rol.enum';
+import { DevicesService } from '../devices/devices.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,6 +19,7 @@ export class AuthService {
     private mailService: MailService,
     private jwtService: JwtService,
     private rolsService: RolsService,
+    private devicesService: DevicesService,
   ) {}
   async singUp(authCredentialDTO: AuthCredentialDTO): Promise<User> {
     const newUser = await this.usersRepository.createUser(authCredentialDTO);
@@ -31,12 +33,13 @@ export class AuthService {
   async singIn(
     authCredentialDTO: AuthCredentialDTO,
   ): Promise<{ accessToken: string }> {
-    const { username, password } = authCredentialDTO;
+    const { username, password, idDevice } = authCredentialDTO;
     const user = await this.usersRepository.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JWtPayload = { username };
       const accessToken = await this.jwtService.sign(payload);
+      await this.devicesService.createDevice(user, idDevice);
       return { ...user, accessToken };
     } else {
       throw new UnauthorizedException('Please check your login credential');
@@ -94,6 +97,9 @@ export class AuthService {
     }
     getUser.verify = true;
     return await this.usersRepository.save(getUser);
+  }
+  async signOut(idDevice: string) {
+    await this.devicesService.deleteDevice(idDevice);
   }
   async sendEmail() {
     return this.mailService.sendUserConfirmation(

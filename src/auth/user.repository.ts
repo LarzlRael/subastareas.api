@@ -21,7 +21,10 @@ export class UsersRepository extends Repository<User> {
 
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = this.create({ username, password: hashedPassword });
+    const user = this.create({
+      username,
+      password: hashedPassword,
+    });
     try {
       return await this.save(user);
     } catch (error) {
@@ -63,7 +66,6 @@ export class UsersRepository extends Repository<User> {
         });
       }
     } catch (error) {
-      console.log('Este es el error');
       console.log(error);
       throw new InternalServerErrorException();
     }

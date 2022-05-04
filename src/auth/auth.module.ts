@@ -8,9 +8,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from './user.repository';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
-import { RolsModule } from './rols/rols.module';
 import { RolsService } from './rols/rols.service';
 import { RolRepository } from './rols/entities/rol.repository';
+import { DevicesService } from '../devices/devices.service';
+import { DeviceRepository } from '../devices/device.repository';
+import { DevicesModule } from 'src/devices/devices.module';
+
 @Module({
   imports: [
     MailModule,
@@ -25,10 +28,14 @@ import { RolRepository } from './rols/entities/rol.repository';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([UsersRepository, RolRepository]),
+    TypeOrmModule.forFeature([
+      UsersRepository,
+      RolRepository,
+      DeviceRepository,
+    ]),
   ],
-  providers: [AuthService, JwtStrategy, RolsService],
+  providers: [AuthService, JwtStrategy, RolsService, DevicesService],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
-export class AuthModule { }
+export class AuthModule {}

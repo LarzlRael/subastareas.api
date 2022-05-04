@@ -10,6 +10,7 @@ import { AppGateway } from './app.gateway';
 import { RolsModule } from './auth/rols/rols.module';
 import { OfferController } from './offer/offer.controller';
 import { OfferModule } from './offer/offer.module';
+import { DevicesModule } from './devices/devices.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +32,7 @@ import { OfferModule } from './offer/offer.module';
     CommentsModule,
     RolsModule,
     OfferModule,
+    DevicesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

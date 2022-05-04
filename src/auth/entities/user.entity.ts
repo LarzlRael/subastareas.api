@@ -15,6 +15,7 @@ import { Supervisor } from 'src/homework/supervisor/entities/Supervisor.entity';
 import { Exclude } from 'class-transformer';
 import { Professor } from 'src/homework/professor/entities/professor.entity';
 import { Offer } from '../../offer/entities/offer.entity';
+import { Device } from 'src/devices/entities/devices.entity';
 
 @Entity()
 export class User {
@@ -64,9 +65,6 @@ export class User {
   google: boolean;
 
   @Column({
-    nullable: true,
-  })
-  @Column({
     default: false,
   })
   verify: boolean;
@@ -75,14 +73,14 @@ export class User {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  public created_at: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
-  public updated_at: Date;
+  updated_at: Date;
 
   @OneToMany(() => Homework, (homeWork) => homeWork.user, { eager: false })
   homeworks: Homework[];
@@ -103,4 +101,7 @@ export class User {
 
   @OneToMany(() => Offer, (offer) => offer.user, { eager: false })
   offers: Offer[];
+
+  @OneToMany(() => Device, (device) => device.user, { eager: true })
+  device: Device[];
 }

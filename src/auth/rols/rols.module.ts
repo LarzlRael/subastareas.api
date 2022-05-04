@@ -12,4 +12,4 @@ import { UsersRepository } from '../user.repository';
   providers: [RolsService],
   controllers: [RolsController],
 })
-export class RolsModule { }
+export class RolsModule {}
