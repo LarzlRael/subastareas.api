@@ -1,4 +1,5 @@
 import { Homework } from '../../homework/entities/Homework.entity';
+import { User } from '../../auth/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -35,10 +36,8 @@ export class Offer {
   updated_at: Date;
 
   @ManyToOne(() => Homework, (homework) => homework.offers)
-  public homeWork!: Homework;
+  homeWork!: Homework;
 
-  /* @OneToMany((_type) => Comment, (comment) => comment.homework, {
-    eager: false,
-  })
-  comments: Comment[]; */
+  @ManyToOne(() => User, (user) => user.offers, { eager: true })
+  user!: User;
 }

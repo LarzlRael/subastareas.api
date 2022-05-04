@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { OfferRepository } from './offer.repository';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferDto } from './dto/offer.dot';
@@ -10,7 +10,7 @@ export class OfferService {
   constructor(
     private offerRepository: OfferRepository,
     private HomeworkRepository: HomeworkRepository,
-  ) { }
+  ) {}
 
   async makeOffer(
     idHomework: string,
@@ -29,7 +29,15 @@ export class OfferService {
     const getHomeWork = await this.HomeworkRepository.findOne(idHomework);
     if (!getHomeWork) {
       throw new Error('Homework not found');
+      /* return InternalServerErrorException('Homework not found'); */
     }
     return this.offerRepository.getOffersByHomeworks(getHomeWork);
+  }
+  async deleteOffer(user: User, idOffer: string): Promise<Offer> {
+    const getOffer = await this.offerRepository.findOne(idOffer);
+    if (!getOffer) {
+      throw new Error('Homework not found');
+    }
+    return this.offerRepository.deleteOffer(user, idOffer);
   }
 }

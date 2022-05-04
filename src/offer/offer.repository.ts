@@ -12,6 +12,7 @@ export class OfferRepository extends Repository<Offer> {
     offetDto: OfferDto,
   ): Promise<Offer> {
     const offer = this.create({
+      user: user,
       homeWork: homework,
       priceOffer: offetDto.priceOffer,
     });
@@ -21,5 +22,14 @@ export class OfferRepository extends Repository<Offer> {
     return await this.find({
       where: { homeWork: homework },
     });
+  }
+  async deleteOffer(user: User, idOffer) {
+    const findOffer = await this.findOne(idOffer);
+    if (findOffer.user.id === user.id) {
+      await this.delete(idOffer);
+      return findOffer;
+    } else {
+      throw new Error('You are not the owner of this offer');
+    }
   }
 }

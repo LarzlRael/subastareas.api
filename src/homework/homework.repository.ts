@@ -8,7 +8,6 @@ import { HomeworkDto } from './dto/homework.dto';
 import { Homework } from './entities/Homework.entity';
 import { User } from '../auth/entities/user.entity';
 import { uploadFile } from '../utils/utils';
-import { FoldersNameEnum } from '../enums/rol.enum';
 @EntityRepository(Homework)
 export class HomeworkRepository extends Repository<Homework> {
 
@@ -20,7 +19,7 @@ export class HomeworkRepository extends Repository<Homework> {
     delete homeWorkDto.status;
 
     if (file) {
-      uploadFile(file, FoldersNameEnum.HOMEWORK).then(async (url) => {
+      uploadFile(file, 'HOMEWORK').then(async (url) => {
         homeWorkDto.fileUrl = url;
         const homework = this.create({ ...homeWorkDto, user });
         await this.save(homework);
@@ -80,7 +79,7 @@ export class HomeworkRepository extends Repository<Homework> {
         );
       } else {
         if (file) {
-          uploadFile(file, FoldersNameEnum.HOMEWORK).then(async (url) => {
+          uploadFile(file, 'HOMEWORK').then(async (url) => {
             homeWorkDto.fileUrl = url;
             await this.update(id, { ...homework, ...homeWorkDto });
             return homework;

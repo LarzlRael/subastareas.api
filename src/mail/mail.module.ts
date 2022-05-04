@@ -10,13 +10,13 @@ import { join } from 'path';
       // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
       // or
       transport: {
-        host: 'smtp.gmail.com',
+        host: process.env.MAIL_HOST,
         secure: false,
-        DisplayName: 'Reynaldo',
+        DisplayName: process.env.MAIL_DISPLAY_NAME,
         port: 587,
         auth: {
-          user: 'rael.thasss@gmail.com',
-          pass: 'ayvekbrlhvgnyyxp',
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD,
         },
       },
       defaults: {

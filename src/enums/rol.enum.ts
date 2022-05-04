@@ -3,6 +3,7 @@ export enum RoleEnum {
   STUDENT = 'student',
   ADMIN = 'admin',
   SUPERVISOR = 'supervisor',
+  PROFESSOR = 'professor',
 }
 export enum HomeWorkStatusEnum {
   PENDING = 'pending',

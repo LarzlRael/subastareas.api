@@ -1,8 +1,6 @@
 import { FoldersNameEnum } from 'src/enums/rol.enum';
 import { v2 } from 'cloudinary';
 import { InternalServerErrorException } from '@nestjs/common';
-import jwt from 'jsonwebtoken';
-import { JWtPayload } from '../auth/interfaces/jwtPayload';
 
 import toStream = require('buffer-to-stream');
 
@@ -15,7 +13,7 @@ export const imageFileFilter = (res, file, callback) => {
 
 export const uploadFile = (
   file: Express.Multer.File,
-  folder: FoldersNameEnum,
+  folder: keyof typeof FoldersNameEnum,
 ): Promise<string> => {
   console.log(file);
   try {

@@ -10,7 +10,6 @@ import { User } from './entities/user.entity';
 
 import { AuthCredentialDTO } from './dto/AuthCredentialDTO ';
 import { uploadFile } from '../utils/utils';
-import { FoldersNameEnum } from '../enums/rol.enum';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
 
 @EntityRepository(User)
@@ -42,20 +41,18 @@ export class UsersRepository extends Repository<User> {
     console.log(user);
     try {
       if (profileImageUrl) {
-        uploadFile(profileImageUrl, FoldersNameEnum.PROFILE_IMAGES).then(
-          async (url) => {
-            updateUser.profileImageUrl = url;
-            const updatedProfile = await this.save({
-              ...user,
-              name: updateUser.name,
-              lastName: updateUser.lastName,
-              nickName: updateUser.nickName,
-              phone: updateUser.phone,
-              profileImageUrl: updateUser.profileImageUrl,
-            });
-            return updatedProfile;
-          },
-        );
+        uploadFile(profileImageUrl, 'PROFILE_IMAGES').then(async (url) => {
+          updateUser.profileImageUrl = url;
+          const updatedProfile = await this.save({
+            ...user,
+            name: updateUser.name,
+            lastName: updateUser.lastName,
+            nickName: updateUser.nickName,
+            phone: updateUser.phone,
+            profileImageUrl: updateUser.profileImageUrl,
+          });
+          return updatedProfile;
+        });
       } else {
         return await this.save({
           ...user,

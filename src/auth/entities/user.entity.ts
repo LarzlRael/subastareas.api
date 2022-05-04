@@ -13,6 +13,8 @@ import {
 import { Rol } from '../rols/entities/rol.entity';
 import { Supervisor } from 'src/homework/supervisor/entities/Supervisor.entity';
 import { Exclude } from 'class-transformer';
+import { Professor } from 'src/homework/professor/entities/professor.entity';
+import { Offer } from '../../offer/entities/offer.entity';
 
 @Entity()
 export class User {
@@ -64,7 +66,6 @@ export class User {
   @Column({
     nullable: true,
   })
-
   @Column({
     default: false,
   })
@@ -83,16 +84,23 @@ export class User {
   })
   public updated_at: Date;
 
-  @OneToMany((_type) => Homework, (homeWork) => homeWork.user, { eager: false })
+  @OneToMany(() => Homework, (homeWork) => homeWork.user, { eager: false })
   homeworks: Homework[];
 
-  @OneToMany((_type) => Comment, (comment) => comment.user, { eager: false })
+  @OneToMany(() => Comment, (comment) => comment.user, { eager: false })
   comments: Comment[];
 
-  @OneToMany((_type) => Rol, (rol) => rol.user, { eager: true })
+  @OneToMany(() => Rol, (rol) => rol.user, { eager: true })
   rols: Rol[];
 
-  @OneToOne(() => Supervisor)
+  @OneToOne(() => Supervisor, { eager: true })
   @JoinColumn({ name: 'id_supervisor' })
   supervisor: Supervisor;
+
+  @OneToOne(() => Professor, { eager: true })
+  @JoinColumn({ name: 'id_professor' })
+  professor: Professor;
+
+  @OneToMany(() => Offer, (offer) => offer.user, { eager: false })
+  offers: Offer[];
 }

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from './entities/Supervisor.entity';
 import { RolRepository } from '../../auth/rols/entities/rol.repository';
-import { RoleEnum, HomeWorkStatusEnum } from '../../enums/rol.enum';
+import { RoleEnum } from '../../enums/rol.enum';
 import { HomeworkRepository } from '../homework.repository';
 import { Homework } from '../entities/Homework.entity';
 import { ActionSupervisorDTO } from './dto/action.dto';
@@ -20,6 +20,9 @@ export class SupervisorService {
     public homeworkRepository: HomeworkRepository,
   ) {}
   createSupervisor(user: User): Promise<Supervisor> {
+    if (user.supervisor) {
+      throw new InternalServerErrorException('You are already a supervisor');
+    }
     this.rolRepository.assignRole(user, {
       rolName: RoleEnum.SUPERVISOR,
       id: user.id,
