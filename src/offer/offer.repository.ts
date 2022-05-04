@@ -13,14 +13,14 @@ export class OfferRepository extends Repository<Offer> {
   ): Promise<Offer> {
     const offer = this.create({
       user: user,
-      homeWork: homework,
+      homework: homework,
       priceOffer: offetDto.priceOffer,
     });
     return await this.save(offer);
   }
   async getOffersByHomeworks(homework: Homework): Promise<Offer[]> {
     return await this.find({
-      where: { homeWork: homework },
+      where: { homework: homework },
     });
   }
   async deleteOffer(user: User, idOffer) {

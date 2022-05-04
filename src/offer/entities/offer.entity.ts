@@ -1,5 +1,6 @@
 import { Homework } from '../../homework/entities/Homework.entity';
 import { User } from '../../auth/entities/user.entity';
+import { OneToOne } from 'typeorm';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Trade } from 'src/trade/entities/trade.entity';
 
 @Entity()
 export class Offer {
@@ -35,9 +37,12 @@ export class Offer {
   })
   updated_at: Date;
 
-  @ManyToOne(() => Homework, (homework) => homework.offers)
-  homeWork!: Homework;
+  @ManyToOne(() => Homework, (homework) => homework.offers, { eager: true })
+  homework!: Homework;
 
   @ManyToOne(() => User, (user) => user.offers, { eager: true })
   user!: User;
+
+  @OneToOne(() => Trade, (trade) => trade.offer)
+  offer!: Offer;
 }

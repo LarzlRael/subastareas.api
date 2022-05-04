@@ -72,17 +72,17 @@ export class Homework {
   })
   updated_at: Date;
 
-  @ManyToOne((_type) => User, (user) => user.homeworks, { eager: true })
+  @ManyToOne(() => User, (user) => user.homeworks, { eager: true })
   @Exclude({ toPlainOnly: true })
   user: User;
 
-  @OneToMany((_type) => Comment, (comment) => comment.homework, {
+  @OneToMany(() => Comment, (comment) => comment.homework, {
     eager: false,
   })
   comments: Comment[];
 
-  @OneToMany(() => Offer, (offer) => offer.homeWork, {
-    eager: true,
+  @OneToMany(() => Offer, (offer) => offer.homework, {
+    /* eager: true, */
   })
   public offers: Offer[];
 }

@@ -9,6 +9,7 @@ export enum HomeWorkStatusEnum {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  TRADED = 'traded',
 }
 
 export enum HomeWorkTypeEnum {

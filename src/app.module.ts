@@ -12,6 +12,7 @@ import { OfferController } from './offer/offer.controller';
 import { OfferModule } from './offer/offer.module';
 import { DevicesModule } from './devices/devices.module';
 import { WalletModule } from './wallet/wallet.module';
+import { TradeModule } from './trade/trade.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +36,7 @@ import { WalletModule } from './wallet/wallet.module';
     OfferModule,
     DevicesModule,
     WalletModule,
+    TradeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
