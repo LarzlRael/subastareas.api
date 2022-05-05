@@ -27,4 +27,5 @@ export enum FoldersNameEnum {
   HOMEWORK = 'homework',
   HOMEWORK_IMAGES = 'homework_images',
   PROFILE_IMAGES = 'profile_images',
+  SOLVED_HOMEWORK_URL = 'solved_homework_url',
 }

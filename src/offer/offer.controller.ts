@@ -14,7 +14,7 @@ import { User } from '../auth/entities/user.entity';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/decorators/get.rols.decorator';
-import { RoleEnum } from '../enums/rol.enum';
+import { RoleEnum } from '../enums/enums';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('offer')

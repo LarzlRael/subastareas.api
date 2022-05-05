@@ -6,7 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
-import { HomeWorkStatusEnum } from '../../enums/rol.enum';
+import { HomeWorkStatusEnum } from '../../enums/enums';
 import { Homework } from '../../homework/entities/Homework.entity';
 
 @Entity()

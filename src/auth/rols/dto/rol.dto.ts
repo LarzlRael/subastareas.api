@@ -1,5 +1,5 @@
 import { IsEnum } from 'class-validator';
-import { RoleEnum } from '../../../enums/rol.enum';
+import { RoleEnum } from '../../../enums/enums';
 
 export class RolDto {
   id?: number;

@@ -1,4 +1,4 @@
-import { HomeWorkStatusEnum } from '../../../enums/rol.enum';
+import { HomeWorkStatusEnum } from '../../../enums/enums';
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 export class ActionSupervisorDTO {
   @IsNotEmpty()

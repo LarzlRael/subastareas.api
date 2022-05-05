@@ -10,7 +10,7 @@ import { validateGoogleToken } from './google/googleVerifyToken';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
 import { MailService } from '../mail/mail.service';
 import { RolsService } from './rols/rols.service';
-import { RoleEnum } from 'src/enums/rol.enum';
+import { RoleEnum } from 'src/enums/enums';
 import { DevicesService } from '../devices/devices.service';
 import { WalletService } from '../wallet/wallet.service';
 @Injectable()

@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -9,7 +10,8 @@ import {
 import { AuthCredentialDTO } from '../../auth/dto/AuthCredentialDTO ';
 
 import { IsEnum } from 'class-validator';
-import { HomeWorkTypeEnum, HomeWorkStatusEnum } from '../../enums/rol.enum';
+import { HomeWorkTypeEnum, HomeWorkStatusEnum } from '../../enums/enums';
+import { Type } from 'class-transformer';
 
 export class HomeworkDto {
   @IsNotEmpty()
@@ -20,7 +22,10 @@ export class HomeworkDto {
 
   offered_amount: number;
   fileUrl?: string;
-  resolutionTime?: Date;
+
+  @Type(() => Date)
+  @IsDate()
+  resolutionTime: Date;
 
   @IsEnum(HomeWorkTypeEnum)
   category?: HomeWorkTypeEnum;

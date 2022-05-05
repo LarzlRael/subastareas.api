@@ -8,7 +8,7 @@ import { RolDto } from './dto/rol.dto';
 import { Rol } from './entities/rol.entity';
 import { RolesGuard } from '../guard/roles.guard';
 import { Roles } from '../decorators/get.rols.decorator';
-import { RoleEnum } from 'src/enums/rol.enum';
+import { RoleEnum } from 'src/enums/enums';
 
 @Controller('rols')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

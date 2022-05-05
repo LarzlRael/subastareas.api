@@ -17,9 +17,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from 'src/utils/utils';
-import { Roles } from '../auth/decorators/get.rols.decorator';
 import { RolesGuard } from '../auth/guard/roles.guard';
-import { HomeWorkStatusEnum } from '../enums/rol.enum';
+import { HomeWorkStatusEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 
 @Controller('homework')

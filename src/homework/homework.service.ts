@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { HomeworkDto } from './dto/Homework.dto';
 import { User } from '../auth/entities/user.entity';
-import { HomeWorkStatusEnum } from '../enums/rol.enum';
+import { HomeWorkStatusEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class HomeworkService {
     });
   }
   async getHomeworkByUser(user: User) {
-    return this.homeworkRepository.getHomeworksById(user);
+    return this.homeworkRepository.getHomeworksByUser(user);
   }
   async getOneHomework(id: number) {
     return this.homeworkRepository.getOneHomework(id);

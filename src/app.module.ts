@@ -8,12 +8,10 @@ import { HomeworkModule } from './homework/homework.module';
 import { CommentsModule } from './comments/comments.module';
 import { AppGateway } from './app.gateway';
 import { RolsModule } from './auth/rols/rols.module';
-import { OfferController } from './offer/offer.controller';
 import { OfferModule } from './offer/offer.module';
 import { DevicesModule } from './devices/devices.module';
 import { WalletModule } from './wallet/wallet.module';
 import { TradeModule } from './trade/trade.module';
-import { SuperviseHomeworkModule } from './supervise-homework/supervise-homework.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +27,7 @@ import { SuperviseHomeworkModule } from './supervise-homework/supervise-homework
       database: process.env.DATABASE_NAME,
       synchronize: true,
       autoLoadEntities: true,
+      /* ssl: {}, */
     }),
     AuthModule,
     HomeworkModule,

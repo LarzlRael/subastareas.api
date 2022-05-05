@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from './entities/Supervisor.entity';
 import { RolRepository } from '../../auth/rols/entities/rol.repository';
-import { RoleEnum } from '../../enums/rol.enum';
+import { RoleEnum } from '../../enums/enums';
 import { HomeworkRepository } from '../homework.repository';
 import { Homework } from '../entities/Homework.entity';
 import { ActionSupervisorDTO } from './dto/action.dto';
@@ -62,6 +62,7 @@ export class SupervisorService {
     }
     homework.status = actionSupervisorDTO.status;
     homework.observation = actionSupervisorDTO.observation;
+    homework.userSupervisor = user;
     await this.homeworkRepository.save(homework);
     homework.userSupervisor = user;
     const getSuperisorid = await this.supervisorRepository.findOne(

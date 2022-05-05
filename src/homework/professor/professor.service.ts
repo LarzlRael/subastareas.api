@@ -3,7 +3,7 @@ import { ProfessorRepository } from './professor.repository';
 import { User } from '../../auth/entities/user.entity';
 import { RolRepository } from 'src/auth/rols/entities/rol.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoleEnum } from '../../enums/rol.enum';
+import { RoleEnum } from '../../enums/enums';
 
 @Injectable()
 export class ProfessorService {

@@ -6,7 +6,7 @@ import { GetUser } from '../../auth/decorators/get-user..decorator';
 import { RolesGuard } from '../../auth/guard/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../../auth/decorators/get.rols.decorator';
-import { RoleEnum } from '../../enums/rol.enum';
+import { RoleEnum } from '../../enums/enums';
 import { ActionSupervisorDTO } from './dto/action.dto';
 
 @Controller('supervisor')

@@ -1,7 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 
 import { EntityRepository, Repository } from 'typeorm';
 import { HomeworkDto } from './dto/homework.dto';
@@ -10,7 +8,6 @@ import { User } from '../auth/entities/user.entity';
 import { uploadFile } from '../utils/utils';
 @EntityRepository(Homework)
 export class HomeworkRepository extends Repository<Homework> {
-
   async createHomework(
     homeWorkDto: HomeworkDto,
     file: Express.Multer.File,
@@ -21,7 +18,12 @@ export class HomeworkRepository extends Repository<Homework> {
     if (file) {
       uploadFile(file, 'HOMEWORK').then(async (url) => {
         homeWorkDto.fileUrl = url;
-        const homework = this.create({ ...homeWorkDto, user });
+
+        const homework = this.create({
+          ...homeWorkDto,
+          user,
+          fileType: file.mimetype,
+        });
         await this.save(homework);
         return homework;
       });
@@ -35,7 +37,6 @@ export class HomeworkRepository extends Repository<Homework> {
   }
 
   async deleteHomework(user: User, id: number): Promise<void> {
-
     const homework = await this.findOne(id);
 
     if (homework.user.id !== user.id) {
@@ -50,8 +51,13 @@ export class HomeworkRepository extends Repository<Homework> {
     }
   }
 
-  async getHomeworksById(user: User): Promise<Homework[]> {
-    const homework = await this.find({ where: { user } });
+  async getHomeworksByUser(user: User): Promise<Homework[]> {
+    const homework = await this.find({
+      where: { user },
+      order: {
+        ['status']: 'DESC',
+      },
+    });
     return homework;
   }
   async getOneHomework(id: number): Promise<Homework> {

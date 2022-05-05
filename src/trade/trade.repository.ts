@@ -4,7 +4,7 @@ import { Offer } from '../offer/entities/offer.entity';
 
 @EntityRepository(Trade)
 export class TradeRepository extends Repository<Trade> {
-  async newTrade(offer: Offer, solvedHomeworkUrl: string): Promise<Trade> {
+  async accepTrade(offer: Offer, solvedHomeworkUrl: string): Promise<Trade> {
     const createTrade = this.create({
       offer,
       finalAmount: offer.priceOffer,

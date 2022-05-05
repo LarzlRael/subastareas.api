@@ -2,7 +2,7 @@ import { Exclude } from 'class-transformer';
 import { User } from 'src/auth/entities/user.entity';
 import { UsersRepository } from 'src/auth/user.repository';
 import { Comment } from 'src/comments/entities/comment.entity';
-import { HomeWorkStatusEnum } from 'src/enums/rol.enum';
+import { HomeWorkStatusEnum } from 'src/enums/enums';
 import { Offer } from '../../offer/entities/offer.entity';
 import {
   Column,
@@ -14,6 +14,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity';
+import { HomeWorkTypeEnum } from '../../enums/enums';
 
 @Entity()
 export class Homework {
@@ -37,16 +38,20 @@ export class Homework {
     nullable: true,
   })
   fileUrl: string;
-
   @Column({
     nullable: true,
   })
+  fileType: string;
+
+  @Column({ type: 'timestamp' })
   resolutionTime: Date;
 
   @Column({
-    nullable: true,
+    type: 'enum',
+    enum: HomeWorkTypeEnum,
+    default: HomeWorkTypeEnum.MATEMATICA,
   })
-  category: string;
+  category: HomeWorkTypeEnum;
 
   @Column({
     nullable: true,
