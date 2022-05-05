@@ -17,6 +17,7 @@ import { Professor } from 'src/homework/professor/entities/professor.entity';
 import { Offer } from '../../offer/entities/offer.entity';
 import { Device } from 'src/devices/entities/devices.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
+import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity';
 
 @Entity()
 export class User {
@@ -53,7 +54,7 @@ export class User {
   @Column({
     nullable: true,
   })
-  phone: string;
+  phone: number;
 
   @Column({
     nullable: true,
@@ -85,6 +86,11 @@ export class User {
 
   @OneToMany(() => Homework, (homeWork) => homeWork.user, { eager: false })
   homeworks: Homework[];
+
+  @OneToMany(() => Homework, (homeWork) => homeWork.userSupervisor, {
+    eager: false,
+  })
+  homeworkSupervisor: Homework[];
 
   @OneToMany(() => Comment, (comment) => comment.user, { eager: false })
   comments: Comment[];

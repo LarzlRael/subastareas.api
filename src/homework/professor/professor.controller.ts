@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ProfessorController {
   constructor(private professorService: ProfessorService) {}
-  
+
   @Post('/becomeProfessor')
   becomeProfessor(@GetUser() user: User) {
     return this.professorService.becomeProfessor(user);

@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, Param } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Param, Get } from '@nestjs/common';
 
 import { RolsService } from './rols.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -22,10 +22,16 @@ export class RolsController {
   @Roles(RoleEnum.ADMIN)
   @Post('/assingrole/:id')
   assingRole(
-    @GetUser() user: User,
+    /* @GetUser() user: User, */
     @Body() rol: RolDto,
-    @Param() id: number,
+    @Param('id') id: number,
   ): Promise<Rol> {
     return this.rolService.assignRole(id, rol);
+  }
+
+  @Roles(RoleEnum.ADMIN)
+  @Get('/listuserroles/:id')
+  getUserRoles(@Param('id') id: number): Promise<Rol[]> {
+    return this.rolService.listUserRoles(id);
   }
 }

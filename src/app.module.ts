@@ -13,6 +13,7 @@ import { OfferModule } from './offer/offer.module';
 import { DevicesModule } from './devices/devices.module';
 import { WalletModule } from './wallet/wallet.module';
 import { TradeModule } from './trade/trade.module';
+import { SuperviseHomeworkModule } from './supervise-homework/supervise-homework.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,8 +38,9 @@ import { TradeModule } from './trade/trade.module';
     DevicesModule,
     WalletModule,
     TradeModule,
+    /* SuperviseHomeworkModule, */
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

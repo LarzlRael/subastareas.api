@@ -60,7 +60,6 @@ export class AuthController {
     @GetUser() user: User,
     @UploadedFile() imageProfile: Express.Multer.File,
   ) {
-    console.log(editProfile);
     return this.authService.updateUserProfile(editProfile, imageProfile, user);
   }
 

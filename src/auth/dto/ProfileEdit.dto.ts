@@ -1,10 +1,15 @@
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNumber } from 'class-validator';
 
 export class ProfileEditDto {
   profileImageUrl?: string;
   name?: string;
   lastName?: string;
-  email?: string;
+
   nickName?: string;
-  phone?: string;
+
+  @IsEmail()
+  email?: string;
+
+  @IsNumber()
+  phone?: number;
 }

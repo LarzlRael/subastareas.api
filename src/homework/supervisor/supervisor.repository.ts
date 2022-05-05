@@ -11,4 +11,8 @@ export class SupervisorRepository extends Repository<Supervisor> {
     const createNewSupervisor = this.create({ user });
     return await this.save(createNewSupervisor);
   }
+  async superviseHomeWork(idHomework: number, user: User) {
+    const createNewSupervisor = this.create({ user });
+    return await this.save(createNewSupervisor);
+  }
 }

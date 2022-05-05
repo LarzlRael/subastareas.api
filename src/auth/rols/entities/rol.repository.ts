@@ -36,4 +36,20 @@ export class RolRepository extends Repository<Rol> {
       }
     }
   }
+  async listUserRoles(user: User): Promise<Rol[]> {
+    return await this.find({ user });
+  }
+  /*  async removeRole(user: User, rol: RolDto): Promise<Rol> {
+    try {
+      return await this.delete({ ...rol, user });
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        // duplicate user
+        throw new ConflictException('Rol already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
+  } */
 }

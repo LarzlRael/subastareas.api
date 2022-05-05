@@ -33,19 +33,19 @@ export class RolsService {
   async assignStudenRole(user: User, rol: RolDto): Promise<Rol> {
     return this.rolRepository.assignRole(user, rol);
   }
-  /* async removeRole(id: number, rol: RolDto): Promise<Rol> {
-    
-    const findUser = await this.userRepository.findOne(id);
+  async listUserRoles(idUser: number): Promise<Rol[]> {
+    const findUser = await this.userRepository.findOne(idUser);
     if (!findUser) {
       throw new InternalServerErrorException('User not found');
     }
-    const currentUserRol = findUser.rols.map((rol) => {
-      return rol.rolName;
-    });
-    if (currentUserRol.includes(rol.rolName)) {
-      throw new InternalServerErrorException('Rol already exists');
+    return this.rolRepository.listUserRoles(findUser);
+  }
+  async removeRole(idRole: number) {
+    const getRole = await this.rolRepository.findOne(idRole);
+    if (!getRole) {
+      throw new InternalServerErrorException('Rol not found not found');
     }
 
-    return this.rolRepository.assignRole(findUser, rol);
-  } */
+    return await this.rolRepository.delete(idRole);
+  }
 }

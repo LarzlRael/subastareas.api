@@ -13,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity';
 
 @Entity()
 export class Homework {
@@ -85,4 +86,8 @@ export class Homework {
     /* eager: true, */
   })
   public offers: Offer[];
+
+  @ManyToOne(() => User, (user) => user.homeworkSupervisor, { eager: true })
+  @Exclude({ toPlainOnly: true })
+  userSupervisor: User;
 }
