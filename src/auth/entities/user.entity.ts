@@ -18,7 +18,9 @@ import { Offer } from '../../offer/entities/offer.entity';
 import { Device } from 'src/devices/entities/devices.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
 import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity';
+import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -70,6 +72,8 @@ export class User {
     default: false,
   })
   verify: boolean;
+
+  userRols: string[];
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -16,9 +16,9 @@ import { ProfileEditDto } from './dto/ProfileEdit.dto';
 export class UsersRepository extends Repository<User> {
   async createUser(registerUserDTO: RegisterUserDTO): Promise<User> {
     // hash
-    const salt = await bcrypt.genSalt();
     const { username, password, email } = registerUserDTO;
 
+    const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = this.create({

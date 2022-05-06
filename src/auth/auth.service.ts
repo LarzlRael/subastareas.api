@@ -13,6 +13,8 @@ import { RolsService } from './rols/rols.service';
 import { RoleEnum } from 'src/enums/enums';
 import { DevicesService } from '../devices/devices.service';
 import { WalletService } from '../wallet/wallet.service';
+import { Request } from 'express';
+import { ChangePasswordDto } from './dto/ChangePassword.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -38,7 +40,8 @@ export class AuthService {
   ): Promise<{ accessToken: string } | { message: string }> {
     const { username, password, idDevice } = authCredentialDTO;
     const user = await this.usersRepository.findOne({ username });
-
+    user.userRols = user.rols.map((rol) => rol.rolName);
+    delete user.rols;
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.verify) {
         return {
@@ -48,6 +51,7 @@ export class AuthService {
         const payload: JWtPayload = { username };
         const accessToken = await this.jwtService.sign(payload);
         await this.devicesService.createDevice(user, idDevice);
+        delete user.password;
         return { ...user, accessToken };
       }
     } else {
@@ -99,9 +103,12 @@ export class AuthService {
       user,
     );
   }
-  async sendEmailTokenVerification(email: string) {
+  async sendEmailTokenVerification(email: string, req: Request) {
     const getUser = await this.usersRepository.findOne({ email });
+    const hostname = req.headers.host;
+    const protocol = req.protocol;
 
+    const hostName = `${protocol}://${hostname}`;
     if (getUser) {
       if (!getUser.verify) {
         const payload: JWtPayload = { username: getUser.username };
@@ -109,6 +116,7 @@ export class AuthService {
         const accessToken = await this.jwtService.sign(payload);
         //send email
         await this.mailService.sendEmailVerification(
+          hostName,
           { email: getUser.email, name: getUser.username },
           accessToken,
         );
@@ -138,5 +146,34 @@ export class AuthService {
       },
       '1231564545',
     );
+  }
+  async sendEmailRequestPasswordChange(email: string, req: Request) {
+    const getUser = await this.usersRepository.findOne({ email });
+    const hostname = req.headers.host;
+    const protocol = req.protocol;
+    const hostName = `${protocol}://${hostname}`;
+    if (getUser) {
+      const payload: JWtPayload = { username: getUser.username };
+      //generate token
+      const accessToken = await this.jwtService.sign(payload, {
+        expiresIn: '3600',
+      });
+      this.mailService.sendEmailRequestpasswordChange(
+        { email: getUser.email, name: getUser.username },
+        accessToken,
+        hostName,
+      );
+    } else {
+      throw new UnauthorizedException('User not found');
+    }
+  }
+
+  async changePasswordxd(changePasswordDto: ChangePasswordDto, user: User) {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(changePasswordDto.password, salt);
+    return await this.usersRepository.save({
+      ...user,
+      password: hashedPassword,
+    });
   }
 }

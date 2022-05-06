@@ -9,6 +9,7 @@ import {
   Put,
   Param,
   Render,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
@@ -20,6 +21,8 @@ import { imageFileFilter } from '../utils/utils';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JWtPayload } from '../auth/interfaces/jwtPayload';
+import { Request } from 'express';
+import { ChangePasswordDto } from './dto/ChangePassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -68,8 +71,11 @@ export class AuthController {
     return this.authService.sendEmail();
   }
   @Get('sendemailverification/:email')
-  sendEmailVerification(@Param('email') email: string) {
-    return this.authService.sendEmailTokenVerification(email);
+  sendEmailVerification(
+    @Req() request: Request,
+    @Param('email') email: string,
+  ) {
+    return this.authService.sendEmailTokenVerification(email, request);
   }
 
   @Get('/verifyemail/:token')
@@ -84,5 +90,28 @@ export class AuthController {
   @Post('/signout/:idDevice')
   async logoutAndDeleteDevice(@Param('idDevice') idDevice: string) {
     this.authService.signOut(idDevice);
+  }
+
+  //TODO render page password change
+
+  /* @Get('requestpasswordchange/:email')
+  sendEmailRequestPasswordChange(
+    @Req() req: Request,
+    @Param('email') email: string,
+  ) {
+    this.authService.sendEmailRequestPasswordChange(email, req);
+  }
+  @Get('changePassoword/:token')
+  changePassword(@Param('token') token: string) {
+    this.authService.sendEmailRequestPasswordChange(email, req);
+  } */
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/changepassword')
+  changePassword(
+    @GetUser() user: User,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
+    return this.authService.changePasswordxd(changePasswordDto, user);
   }
 }
