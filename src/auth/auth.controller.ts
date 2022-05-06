@@ -11,7 +11,7 @@ import {
   Render,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthCredentialDTO } from './dto/AuthCredentialDTO ';
+import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
 import { User } from './entities/user.entity';
 import { GetUser } from './decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -28,13 +28,13 @@ export class AuthController {
     private jwtService: JwtService,
   ) {}
   @Post('/signup')
-  signup(@Body() authCredentialDTO: AuthCredentialDTO): Promise<User> {
-    return this.authService.singUp(authCredentialDTO);
+  signup(@Body() registerUserDTO: RegisterUserDTO): Promise<User> {
+    return this.authService.singUp(registerUserDTO);
   }
   @Post('/signin')
   signin(
     @Body() authCredentialDTO: AuthCredentialDTO,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string } | { message: string }> {
     return this.authService.singIn(authCredentialDTO);
   }
   @UseGuards(AuthGuard('jwt'))
@@ -67,14 +67,18 @@ export class AuthController {
   sendEmail() {
     return this.authService.sendEmail();
   }
+  @Get('sendemailverification/:email')
+  sendEmailVerification(@Param('email') email: string) {
+    return this.authService.sendEmailTokenVerification(email);
+  }
 
-  @Get('/verify/:token')
-  @Render('index')
+  @Get('/verifyemail/:token')
   async verifyEmail(@Param('token') token: string) {
     const { username } = this.jwtService.verify(token) as JWtPayload;
     const xd = await this.authService.verifyEmail(username);
-    console.log(xd);
-    return xd;
+    return {
+      message: 'email verifified',
+    };
   }
   @UseGuards(AuthGuard('jwt'))
   @Post('/signout/:idDevice')

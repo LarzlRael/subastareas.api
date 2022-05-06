@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthCredentialDTO } from './dto/AuthCredentialDTO ';
+import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
 import { UsersRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { JWtPayload } from './interfaces/jwtPayload';
@@ -23,8 +23,8 @@ export class AuthService {
     private devicesService: DevicesService,
     private walletService: WalletService,
   ) {}
-  async singUp(authCredentialDTO: AuthCredentialDTO): Promise<User> {
-    const newUser = await this.usersRepository.createUser(authCredentialDTO);
+  async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
+    const newUser = await this.usersRepository.createUser(registerUserDTO);
     this.rolsService.assignStudenRole(newUser, {
       rolName: RoleEnum.STUDENT,
       active: true,
@@ -35,15 +35,21 @@ export class AuthService {
 
   async singIn(
     authCredentialDTO: AuthCredentialDTO,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string } | { message: string }> {
     const { username, password, idDevice } = authCredentialDTO;
     const user = await this.usersRepository.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      const payload: JWtPayload = { username };
-      const accessToken = await this.jwtService.sign(payload);
-      await this.devicesService.createDevice(user, idDevice);
-      return { ...user, accessToken };
+      if (!user.verify) {
+        return {
+          message: 'Please verify your email',
+        };
+      } else {
+        const payload: JWtPayload = { username };
+        const accessToken = await this.jwtService.sign(payload);
+        await this.devicesService.createDevice(user, idDevice);
+        return { ...user, accessToken };
+      }
     } else {
       throw new UnauthorizedException('Please check your login credential');
     }
@@ -92,6 +98,26 @@ export class AuthService {
       profileImageUrl,
       user,
     );
+  }
+  async sendEmailTokenVerification(email: string) {
+    const getUser = await this.usersRepository.findOne({ email });
+
+    if (getUser) {
+      if (!getUser.verify) {
+        const payload: JWtPayload = { username: getUser.username };
+        //generate token
+        const accessToken = await this.jwtService.sign(payload);
+        //send email
+        await this.mailService.sendEmailVerification(
+          { email: getUser.email, name: getUser.username },
+          accessToken,
+        );
+      } else {
+        throw new UnauthorizedException('User already verified');
+      }
+    } else {
+      throw new UnauthorizedException('User not found');
+    }
   }
   async verifyEmail(username: string): Promise<User> {
     const getUser = await this.usersRepository.findOne({ username });

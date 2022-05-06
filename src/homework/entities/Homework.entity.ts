@@ -1,6 +1,5 @@
 import { Exclude } from 'class-transformer';
 import { User } from 'src/auth/entities/user.entity';
-import { UsersRepository } from 'src/auth/user.repository';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { HomeWorkStatusEnum } from 'src/enums/enums';
 import { Offer } from '../../offer/entities/offer.entity';
@@ -13,7 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity';
 import { HomeWorkTypeEnum } from '../../enums/enums';
 
 @Entity()
