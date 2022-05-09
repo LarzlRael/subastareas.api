@@ -2,7 +2,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 
 import { EntityRepository, Repository } from 'typeorm';
 
-import { Supervisor } from './entities/Supervisor.entity';
+import { Supervisor } from '../entities/Supervisor.entity';
 import { User } from '../../auth/entities/user.entity';
 
 @EntityRepository(Supervisor)

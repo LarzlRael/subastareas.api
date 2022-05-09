@@ -1,5 +1,5 @@
 import { Controller, Post, UseGuards } from '@nestjs/common';
-import { ProfessorService } from './professor.service';
+import { ProfessorService } from '../services/professor.service';
 import { User } from '../../auth/entities/user.entity';
 import { GetUser } from '../../auth/decorators/get-user..decorator';
 import { RolesGuard } from '../../auth/guard/roles.guard';

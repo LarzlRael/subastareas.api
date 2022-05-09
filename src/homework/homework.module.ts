@@ -5,15 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { AuthModule } from '../auth/auth.module';
 import { CloudinaryProvider } from './cloudinary.provider';
-import { SupervisorModule } from './supervisor/supervisor.module';
-import { ProfessorModule } from './professor/professor.module';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([HomeworkRepository]),
     AuthModule,
-    SupervisorModule,
-    ProfessorModule,
+    RolesModule,
   ],
   controllers: [HomeworkController],
   providers: [HomeworkService, CloudinaryProvider],

@@ -11,14 +11,15 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Rol } from '../rols/entities/rol.entity';
-import { Supervisor } from 'src/homework/supervisor/entities/Supervisor.entity';
+import { Supervisor } from 'src/roles/entities/Supervisor.entity';
 import { Exclude } from 'class-transformer';
-import { Professor } from 'src/homework/professor/entities/professor.entity';
+import { Professor } from 'src/roles/entities/professor.entity';
 import { Offer } from '../../offer/entities/offer.entity';
 import { Device } from 'src/devices/entities/devices.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
-import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity';
+
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+/* import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity'; */
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()

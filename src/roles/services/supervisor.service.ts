@@ -1,13 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { SupervisorRepository } from './supervisor.repository';
+import { SupervisorRepository } from '../repositories/supervisor.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities/user.entity';
-import { Supervisor } from './entities/Supervisor.entity';
+import { Supervisor } from '../entities/Supervisor.entity';
 import { RolRepository } from '../../auth/rols/entities/rol.repository';
 import { RoleEnum } from '../../enums/enums';
-import { HomeworkRepository } from '../homework.repository';
-import { Homework } from '../entities/Homework.entity';
-import { ActionSupervisorDTO } from './dto/action.dto';
+import { HomeworkRepository } from '../../homework/homework.repository';
+import { Homework } from '../../homework/entities/Homework.entity';
+import { ActionSupervisorDTO } from '../dto/action.dto';
 import { UsersRepository } from 'src/auth/user.repository';
 
 @Injectable()
@@ -45,7 +45,7 @@ export class SupervisorService {
       return this.supervisorRepository.createSupervisor(user);
     }
   }
-  async getHomewoksToSupervisor(): Promise<Homework[]> {
+  async getHomeworksToSupervise(): Promise<Homework[]> {
     return await this.homeworkRepository.find({
       where: [{ status: 'pending' }, { status: 'rejected' }],
     });

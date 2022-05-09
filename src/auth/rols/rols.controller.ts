@@ -19,7 +19,7 @@ export class RolsController {
   createNewRole(@GetUser() user: User, @Body() rol: RolDto): Promise<Rol> {
     return this.rolService.createNewRol(user, rol);
   }
-  @Roles(RoleEnum.ADMIN)
+  /* @Roles(RoleEnum.ADMIN) */
   @Post('/assingrole/:id')
   assingRole(
     /* @GetUser() user: User, */
