@@ -1,10 +1,11 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RolRepository } from './entities/rol.repository';
-import { Rol } from './entities/rol.entity';
-import { User } from '../entities/user.entity';
-import { RolDto } from './dto/rol.dto';
-import { UsersRepository } from '../user.repository';
+import { RolRepository } from '../repositories/rol.repository';
+import { Rol } from '../entities/rol.entity';
+
+import { RolDto } from '../dto/rol.dto';
+import { UsersRepository } from '../../auth/user.repository';
+import { User } from '../../auth/entities/user.entity';
 
 @Injectable()
 export class RolsService {

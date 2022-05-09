@@ -14,10 +14,14 @@ import { Category } from "./category"; */
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
-  public commentId!: number;
+  id: number;
 
   @Column()
   public content: string;
+  @Column({
+    default: false,
+  })
+  public edited: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',

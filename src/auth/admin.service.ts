@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './user.repository';
 import { User } from './entities/user.entity';
-import { MailService } from '../mail/mail.service';
-import { RolsService } from './rols/rols.service';
-import { DevicesService } from '../devices/devices.service';
-import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class AdminService {

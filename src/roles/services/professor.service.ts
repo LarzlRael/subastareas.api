@@ -1,9 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ProfessorRepository } from '../repositories/professor.repository';
 import { User } from '../../auth/entities/user.entity';
-import { RolRepository } from 'src/auth/rols/entities/rol.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleEnum } from '../../enums/enums';
+import { RolRepository } from '../repositories/rol.repository';
 
 @Injectable()
 export class ProfessorService {

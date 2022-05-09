@@ -4,9 +4,10 @@ import {
 } from '@nestjs/common';
 
 import { EntityRepository, Repository } from 'typeorm';
-import { Rol } from './rol.entity';
-import { User } from '../../entities/user.entity';
+import { Rol } from '../entities/rol.entity';
+
 import { RolDto } from '../dto/rol.dto';
+import { User } from '../../auth/entities/user.entity';
 
 @EntityRepository(Rol)
 export class RolRepository extends Repository<Rol> {

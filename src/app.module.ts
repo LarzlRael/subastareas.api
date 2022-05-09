@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeworkModule } from './homework/homework.module';
 import { CommentsModule } from './comments/comments.module';
 import { AppGateway } from './app.gateway';
-import { RolsModule } from './auth/rols/rols.module';
 import { OfferModule } from './offer/offer.module';
 import { DevicesModule } from './devices/devices.module';
 import { WalletModule } from './wallet/wallet.module';
@@ -33,7 +32,6 @@ import { RolesModule } from './roles/roles.module';
     AuthModule,
     HomeworkModule,
     CommentsModule,
-    RolsModule,
     OfferModule,
     DevicesModule,
     WalletModule,

@@ -8,19 +8,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from './user.repository';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
-import { RolsService } from './rols/rols.service';
-import { RolRepository } from './rols/entities/rol.repository';
+
 import { DevicesService } from '../devices/devices.service';
 import { DeviceRepository } from '../devices/device.repository';
-import { DevicesModule } from 'src/devices/devices.module';
 import { WalletRepository } from '../wallet/wallet.repository';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
+import { RolRepository } from 'src/roles/repositories/rol.repository';
+import { RolesService } from 'src/roles/services/roles.service';
+import { RolesModule } from '../roles/roles.module';
+import { RolsService } from '../roles/services/rols.service';
 
 @Module({
   imports: [
     MailModule,
+    RolesModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       envFilePath: '.env',
@@ -42,10 +45,11 @@ import { AdminController } from './admin.controller';
   providers: [
     AuthService,
     JwtStrategy,
-    RolsService,
     DevicesService,
     WalletService,
     AdminService,
+    RolesService,
+    RolsService,
   ],
   controllers: [AuthController, AdminController],
   exports: [JwtStrategy, PassportModule],

@@ -13,7 +13,7 @@ export class CommentsService {
     private homeworkRepository: HomeworkRepository,
     @InjectRepository(CommentRepository)
     private commentRepository: CommentRepository,
-  ) { }
+  ) {}
   async createComment(
     user: User,
     idHomework: number,

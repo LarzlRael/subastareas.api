@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Rol } from '../rols/entities/rol.entity';
+
 import { Supervisor } from 'src/roles/entities/Supervisor.entity';
 import { Exclude } from 'class-transformer';
 import { Professor } from 'src/roles/entities/professor.entity';
@@ -20,6 +20,7 @@ import { Wallet } from '../../wallet/entities/wallet.entity';
 
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 /* import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity'; */
+import { Rol } from '../../roles/entities/rol.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()

@@ -86,7 +86,7 @@ export class Homework {
   comments: Comment[];
 
   @OneToMany(() => Offer, (offer) => offer.homework, {
-    /* eager: true, */
+    eager: true,
   })
   public offers: Offer[];
 

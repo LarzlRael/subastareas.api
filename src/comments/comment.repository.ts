@@ -31,7 +31,7 @@ export class CommentRepository extends Repository<Comment> {
       if (comment.user.id !== user.id) {
         throw new InternalServerErrorException('You are not the owner');
       }
-      await this.delete(comment.commentId);
+      await this.delete(comment.id);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -40,17 +40,20 @@ export class CommentRepository extends Repository<Comment> {
   async editComment(
     user: User,
     idComment: number,
-    comment: CommentDto,
+    commentDto: CommentDto,
   ): Promise<CommentDto> {
     try {
       const getComment = await this.findOne(idComment);
       if (!getComment) {
         throw new InternalServerErrorException("comment doesn't exist");
       }
+      if (getComment.user.id !== user.id) {
+        throw new InternalServerErrorException('You are not the owner');
+      }
       const commentEdit = await this.save({
-        idcomment: idComment,
         ...getComment,
-        ...comment,
+        ...commentDto,
+        edited: true,
       });
       return commentEdit;
     } catch (error) {

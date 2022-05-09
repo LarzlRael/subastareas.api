@@ -23,6 +23,10 @@ export class Offer {
     default: false,
   })
   accept: boolean;
+  @Column({
+    default: false,
+  })
+  edited: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -37,7 +41,7 @@ export class Offer {
   })
   updated_at: Date;
 
-  @ManyToOne(() => Homework, (homework) => homework.offers, { eager: true })
+  @ManyToOne(() => Homework, (homework) => homework.offers)
   homework!: Homework;
 
   @ManyToOne(() => User, (user) => user.offers, { eager: true })

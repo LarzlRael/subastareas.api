@@ -3,12 +3,12 @@ import { SupervisorRepository } from '../repositories/supervisor.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from '../entities/Supervisor.entity';
-import { RolRepository } from '../../auth/rols/entities/rol.repository';
 import { RoleEnum } from '../../enums/enums';
 import { HomeworkRepository } from '../../homework/homework.repository';
 import { Homework } from '../../homework/entities/Homework.entity';
 import { ActionSupervisorDTO } from '../dto/action.dto';
 import { UsersRepository } from 'src/auth/user.repository';
+import { RolRepository } from '../repositories/rol.repository';
 
 @Injectable()
 export class SupervisorService {

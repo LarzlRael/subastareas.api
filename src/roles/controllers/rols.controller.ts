@@ -1,14 +1,16 @@
 import { Controller, Post, UseGuards, Body, Param, Get } from '@nestjs/common';
 
-import { RolsService } from './rols.service';
+import { RolsService } from '../services/rols.service';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from '../decorators/get-user..decorator';
-import { User } from '../entities/user.entity';
-import { RolDto } from './dto/rol.dto';
-import { Rol } from './entities/rol.entity';
-import { RolesGuard } from '../guard/roles.guard';
-import { Roles } from '../decorators/get.rols.decorator';
+
+import { RolDto } from '../dto/rol.dto';
+import { Rol } from '../entities/rol.entity';
+
 import { RoleEnum } from 'src/enums/enums';
+import { RolesGuard } from '../../auth/guard/roles.guard';
+import { Roles } from '../../auth/decorators/get.rols.decorator';
+import { GetUser } from '../../auth/decorators/get-user..decorator';
+import { User } from '../../auth/entities/user.entity';
 
 @Controller('rols')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

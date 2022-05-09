@@ -69,7 +69,7 @@ export class HomeworkController {
       fileFilter: imageFileFilter,
     }),
   )
-  @Put('/update/:id')
+  @Put('/updatehomework/:id')
   updateHomework(
     @GetUser() user: User,
     @Body() homeworkDto: HomeworkDto,

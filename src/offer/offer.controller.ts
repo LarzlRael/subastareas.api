@@ -6,6 +6,7 @@ import {
   Get,
   UseGuards,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { OfferDto } from './dto/offer.dot';
@@ -21,7 +22,7 @@ import { RoleEnum } from '../enums/enums';
 export class OfferController {
   constructor(private offerService: OfferService) {}
 
-  @Roles(RoleEnum.PROFESSOR)
+  /* @Roles(RoleEnum.PROFESSOR) */
   @Post('makeOffer/:idHomework')
   makeOffer(
     @GetUser() user: User,
@@ -33,6 +34,14 @@ export class OfferController {
   @Get(':idHomework')
   getOfferByHomework(@Param('idHomework') idHomework: string) {
     return this.offerService.getOffersByHomeworks(idHomework);
+  }
+  @Put(':idOffer')
+  editOffer(
+    @GetUser() user: User,
+    @Param('idOffer') idOffer: string,
+    @Body() offerDot: OfferDto,
+  ) {
+    return this.offerService.editOffer(user, idOffer, offerDot);
   }
   @Delete(':idOffer')
   deleteOffer(@GetUser() user: User, @Param('idOffer') idOffer: string) {
