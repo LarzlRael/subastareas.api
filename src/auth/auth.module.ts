@@ -15,6 +15,8 @@ import { DeviceRepository } from '../devices/device.repository';
 import { DevicesModule } from 'src/devices/devices.module';
 import { WalletRepository } from '../wallet/wallet.repository';
 import { WalletService } from '../wallet/wallet.service';
+import { AdminService } from './admin.service';
+import { AdminController } from './admin.controller';
 
 @Module({
   imports: [
@@ -43,8 +45,9 @@ import { WalletService } from '../wallet/wallet.service';
     RolsService,
     DevicesService,
     WalletService,
+    AdminService,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AdminController],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

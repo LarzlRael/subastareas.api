@@ -14,29 +14,23 @@ export class TradeService {
   ) {}
   async newTrade(idOffer: string) {
     const offer = await this.OfferRepository.findOne(idOffer);
+    console.log(offer);
     if (!offer) {
       throw new Error('Offer not found');
     }
-    /* const trade = await this.tradeRepository.newTrade(
-      offer,
-      'this is a testing URL',
-    ); */
-    const offerUserWallet = await this.walletRepository.findOne({
-      user: offer.user,
-    });
-    const homeWoekUserUserWallet = await this.walletRepository.findOne({
-      user: offer.homework.user,
-    });
-    console.log(homeWoekUserUserWallet);
-    console.log(offerUserWallet);
 
-    /* offerUser.wallet.balance = offerUser.wallet.balance + offer.priceOffer; */
+    const offerUserWallet = await this.walletRepository.findOne(
+      offer.user.wallet.id,
+    );
+    const homeworkUserWallet = await this.walletRepository.findOne(
+      offer.homework.user.wallet.id,
+    );
 
-    /* homeworkUser.wallet.balance =
-      homeworkUser.wallet.balance - offer.priceOffer; */
+    offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
+    homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;
 
-    /* await this.userRepository.save(offerUser);
-    await this.userRepository.save(homeworkUser); */
+    await this.walletRepository.save(offerUserWallet);
+    await this.walletRepository.save(homeworkUserWallet);
     return null;
   }
 }

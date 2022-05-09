@@ -18,7 +18,8 @@ export class OfferService {
     user: User,
   ): Promise<Offer> {
     console.log(idHomework);
-    const getHomeWork = await this.HomeworkRepository.findOne();
+    const getHomeWork = await this.HomeworkRepository.findOne(idHomework);
+    console.log(getHomeWork);
     if (!getHomeWork) {
       throw new Error('Homework not found');
     }

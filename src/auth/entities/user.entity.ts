@@ -74,6 +74,7 @@ export class User {
   verify: boolean;
 
   userRols: string[];
+  userDevices: string[];
 
   @CreateDateColumn({
     type: 'timestamp',

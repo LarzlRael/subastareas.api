@@ -94,18 +94,15 @@ export class AuthController {
 
   //TODO render page password change
 
-  /* @Get('requestpasswordchange/:email')
+  @Get('requestpasswordchange/:email')
   sendEmailRequestPasswordChange(
     @Req() req: Request,
     @Param('email') email: string,
   ) {
     this.authService.sendEmailRequestPasswordChange(email, req);
   }
-  @Get('changePassoword/:token')
-  changePassword(@Param('token') token: string) {
-    this.authService.sendEmailRequestPasswordChange(email, req);
-  } */
 
+  //TODO form to change password
   @UseGuards(AuthGuard('jwt'))
   @Post('/changepassword')
   changePassword(

@@ -40,17 +40,24 @@ export class AuthService {
   ): Promise<{ accessToken: string } | { message: string }> {
     const { username, password, idDevice } = authCredentialDTO;
     const user = await this.usersRepository.findOne({ username });
-    user.userRols = user.rols.map((rol) => rol.rolName);
-    delete user.rols;
+    /*  */
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.verify) {
         return {
           message: 'Please verify your email',
         };
       } else {
+        if (user.rols) {
+          user.userRols = user.rols.map((rol) => rol.rolName);
+          delete user.rols;
+        }
+        await this.devicesService.createDevice(user, idDevice);
+        if (user.device) {
+          user.userDevices = user.device.map((device) => device.idDevice);
+          delete user.device;
+        }
         const payload: JWtPayload = { username };
         const accessToken = await this.jwtService.sign(payload);
-        await this.devicesService.createDevice(user, idDevice);
         delete user.password;
         return { ...user, accessToken };
       }

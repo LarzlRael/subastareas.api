@@ -32,7 +32,7 @@ export class Comment {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.comments, { eager: true })sdf
+  @ManyToOne(() => User, (user) => user.comments, { eager: true })
   user: User;
 
   @ManyToOne(() => Homework, (homeWork) => homeWork.comments)
