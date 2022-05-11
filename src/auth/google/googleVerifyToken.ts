@@ -1,5 +1,5 @@
 import { OAuth2Client } from 'google-auth-library';
-import { IGoogleUser } from '../interfaces/jwtPayload';
+import { IGoogleUser } from '../../interfaces/jwtPayload';
 
 const CLIENT_ID =
   '284069546633-2em7jlh59vhkj65ods09vnrb3kobc5so.apps.googleusercontent.com';

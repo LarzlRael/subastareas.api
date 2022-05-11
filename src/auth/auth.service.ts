@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
 import { UsersRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
-import { JWtPayload } from './interfaces/jwtPayload';
+import { JWtPayload } from '../interfaces/jwtPayload';
 import { User } from './entities/user.entity';
 import { validateGoogleToken } from './google/googleVerifyToken';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';

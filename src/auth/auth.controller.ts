@@ -20,7 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from '../utils/utils';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
 import { JwtService } from '@nestjs/jwt';
-import { JWtPayload } from '../auth/interfaces/jwtPayload';
+import { JWtPayload } from '../interfaces/jwtPayload';
 import { Request } from 'express';
 import { ChangePasswordDto } from './dto/ChangePassword.dto';
 
@@ -87,7 +87,7 @@ export class AuthController {
     };
   }
   @UseGuards(AuthGuard('jwt'))
-  @Post('/signout/:idDevice')
+  @Get('/signout/:idDevice')
   async logoutAndDeleteDevice(@Param('idDevice') idDevice: string) {
     this.authService.signOut(idDevice);
   }
