@@ -143,7 +143,7 @@ export class AuthService {
     return await this.usersRepository.save(getUser);
   }
   async signOut(idDevice: string) {
-    await this.devicesService.deleteDevice(idDevice);
+    return await this.devicesService.deleteDevice(idDevice);
   }
   async sendEmail() {
     return this.mailService.sendUserConfirmation(

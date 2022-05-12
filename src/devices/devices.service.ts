@@ -18,7 +18,6 @@ export class DevicesService {
     return this.deviceRepository.newDevice(user, idDevice);
   }
   async deleteDevice(idDevice: string) {
-    console.log(idDevice);
     return await this.deviceRepository.delete({ idDevice });
   }
 }

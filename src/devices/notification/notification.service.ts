@@ -19,8 +19,7 @@ export class NotificationService {
       notification: {
         title: `Saldo recibido`,
         body: `EL usuario ${nameOrigin} te envio ${saldo} BS`,
-        icon:
-          'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png',
+        icon: 'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png',
       },
     };
 

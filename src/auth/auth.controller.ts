@@ -88,8 +88,8 @@ export class AuthController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('/signout/:idDevice')
-  async logoutAndDeleteDevice(@Param('idDevice') idDevice: string) {
-    this.authService.signOut(idDevice);
+  async signOutAndDeleteDevice(@Param('idDevice') idDevice: string) {
+    return this.authService.signOut(idDevice);
   }
 
   //TODO render page password change
