@@ -81,7 +81,7 @@ export class Homework {
   user: User;
 
   @OneToMany(() => Comment, (comment) => comment.homework, {
-    eager: false,
+    eager: true,
   })
   comments: Comment[];
 

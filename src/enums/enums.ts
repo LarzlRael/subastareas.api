@@ -15,7 +15,6 @@ export enum HomeWorkStatusEnum {
 export enum HomeWorkTypeEnum {
   MATEMATICA = 'matematica',
   PROGRAMACION = 'programacion',
-  LENGUAJE = 'lenguaje',
   FISICA = 'fisica',
   QUIMICA = 'quimica',
   ALGEBRA = 'algebra',

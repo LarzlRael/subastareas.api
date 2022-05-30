@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentRepository } from './comment.repository';
 
 import { HomeworkRepository } from '../homework/homework.repository';
+import { NotificationService } from '../devices/notification/notification.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CommentRepository, HomeworkRepository])],
   controllers: [CommentsController],
-  providers: [CommentsService],
-  exports: [CommentsService],
+  providers: [CommentsService, NotificationService],
+  exports: [CommentsService, NotificationService],
 })
-export class CommentsModule { }
+export class CommentsModule {}

@@ -12,10 +12,12 @@ export class DevicesService {
   ) {}
 
   createDevice(user: User, idDevice: string): Promise<Device> {
+    /* console.log(user.device.find((device) => device.idDevice === idDevice)); */
     if (user.device.find((device) => device.idDevice === idDevice)) {
       return;
+    } else {
+      return this.deviceRepository.newDevice(user, idDevice);
     }
-    return this.deviceRepository.newDevice(user, idDevice);
   }
   async deleteDevice(idDevice: string) {
     return await this.deviceRepository.delete({ idDevice });

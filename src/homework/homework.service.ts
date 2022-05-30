@@ -49,4 +49,8 @@ export class HomeworkService {
       where: { status: homeWorkStatusEnum },
     });
   }
+
+  async getHomeworkByCategory(category: string) {
+    return this.homeworkRepository.getHomeworksByCategory(category);
+  }
 }

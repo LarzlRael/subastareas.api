@@ -5,6 +5,7 @@ import { CommentRepository } from './comment.repository';
 import { User } from '../auth/entities/user.entity';
 import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
+import { NotificationService } from '../devices/notification/notification.service';
 
 @Injectable()
 export class CommentsService {
@@ -13,6 +14,8 @@ export class CommentsService {
     private homeworkRepository: HomeworkRepository,
     @InjectRepository(CommentRepository)
     private commentRepository: CommentRepository,
+
+    private notificationService: NotificationService,
   ) {}
   async createComment(
     user: User,
@@ -23,6 +26,15 @@ export class CommentsService {
     if (!findHomework) {
       throw new InternalServerErrorException('Homework Not Found');
     }
+    // rerify if the commnet is different from user comment
+    /* if (findHomework.user.id !== user.id) { */
+    this.notificationService.sendCommentNotification(
+      user.username,
+      findHomework.user.device.map((device) => device.idDevice),
+      comment.content,
+    );
+    /* } */
+
     return this.commentRepository.newComment(user, findHomework, comment);
   }
   async getCommentsByHomework(homeworkId: number): Promise<Comment[]> {

@@ -69,6 +69,15 @@ export class AuthService {
   async renewToken(user: User): Promise<{ accessToken: string }> {
     const payload: JWtPayload = { username: user.username };
     const accessToken = await this.jwtService.sign(payload);
+    if (user.rols) {
+      user.userRols = user.rols.map((rol) => rol.rolName);
+      delete user.rols;
+    }
+    if (user.device) {
+      user.userDevices = user.device.map((device) => device.idDevice);
+      delete user.device;
+    }
+    delete user.password;
     return { ...user, accessToken };
   }
 

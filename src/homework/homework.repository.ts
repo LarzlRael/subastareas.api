@@ -60,8 +60,15 @@ export class HomeworkRepository extends Repository<Homework> {
     });
     return homework;
   }
+  async getHomeworksByCategory(category: string): Promise<Homework[]> {
+    const homework = await this.find({
+      where: { category: category },
+    });
+    return homework;
+  }
   async getOneHomework(id: number): Promise<Homework> {
     const homework = await this.findOne(id);
+    console.log(homework);
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
     }

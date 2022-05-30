@@ -30,6 +30,12 @@ export class HomeworkController {
   getAprovedHomeWorks(): Promise<Homework[]> {
     return this.homeworkService.getAprovedHomeWorks();
   }
+  @Get('/:category')
+  getAprovedHomeWorksByCategory(
+    @Param('category') category: string,
+  ): Promise<Homework[]> {
+    return this.homeworkService.getHomeworkByCategory(category);
+  }
   @Get('/homeworks')
   getHomeWorks(@GetUser() user: User): Promise<Homework[]> {
     return this.homeworkService.getHomeworkByUser(user);
@@ -41,8 +47,10 @@ export class HomeworkController {
   ): Promise<Homework[]> {
     return this.homeworkService.getPendingHomework(status);
   }
-  @Get('/:id')
+
+  @Get('/getonehomework/:id')
   getOneHomeWork(@Param('id') id: number): Promise<Homework> {
+    console.log(id);
     return this.homeworkService.getOneHomework(id);
   }
 
