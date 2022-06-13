@@ -6,9 +6,16 @@ import { CommentRepository } from './comment.repository';
 
 import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
+import { DeviceRepository } from '../devices/device.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CommentRepository, HomeworkRepository])],
+  imports: [
+    TypeOrmModule.forFeature([
+      CommentRepository,
+      HomeworkRepository,
+      DeviceRepository,
+    ]),
+  ],
   controllers: [CommentsController],
   providers: [CommentsService, NotificationService],
   exports: [CommentsService, NotificationService],

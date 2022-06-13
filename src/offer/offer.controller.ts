@@ -31,6 +31,10 @@ export class OfferController {
   ) {
     return this.offerService.makeOffer(idHomework, offerDot, user);
   }
+  @Get('getoffers/offerssent')
+  getOffersByUser(@GetUser() user: User) {
+    return this.offerService.getOffersSentByUser(user);
+  }
   @Get(':idHomework')
   getOfferByHomework(@Param('idHomework') idHomework: string) {
     return this.offerService.getOffersByHomeworks(idHomework);

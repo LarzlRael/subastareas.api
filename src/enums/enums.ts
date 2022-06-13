@@ -13,13 +13,14 @@ export enum HomeWorkStatusEnum {
 }
 
 export enum HomeWorkTypeEnum {
-  MATEMATICA = 'matematica',
-  PROGRAMACION = 'programacion',
-  FISICA = 'fisica',
-  QUIMICA = 'quimica',
-  ALGEBRA = 'algebra',
-  TRIGONOMETRIA = 'trigonometria',
-  GEOMETRIA = 'geometria',
+  matematica = 'Matematica',
+  programacion = 'Programación',
+  fisica = 'Física',
+  quimica = 'Química',
+  algebra = 'Algebra',
+  trigonometria = 'Trigonometria',
+  geometria = 'Geometria',
+  ingles = 'Ingles',
 }
 
 export enum FoldersNameEnum {
@@ -27,4 +28,9 @@ export enum FoldersNameEnum {
   HOMEWORK_IMAGES = 'homework_images',
   PROFILE_IMAGES = 'profile_images',
   SOLVED_HOMEWORK_URL = 'solved_homework_url',
+}
+
+export enum LevelTypeEnum {
+  PREUNIVERSITARIO = 'Preuniversitario',
+  UNIVERSITARIO = 'Universitario',
 }

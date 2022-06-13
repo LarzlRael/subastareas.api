@@ -15,6 +15,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { Request } from 'express';
 import { ChangePasswordDto } from './dto/ChangePassword.dto';
 import { RolsService } from '../roles/services/rols.service';
+import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -39,7 +40,12 @@ export class AuthService {
     authCredentialDTO: AuthCredentialDTO,
   ): Promise<{ accessToken: string } | { message: string }> {
     const { username, password, idDevice } = authCredentialDTO;
-    const user = await this.usersRepository.findOne({ username });
+    const user = await this.usersRepository.findOne(
+      {
+        username,
+      },
+      { relations: ['rols', 'wallet', 'device'] },
+    );
     /*  */
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.verify) {
@@ -52,13 +58,11 @@ export class AuthService {
           delete user.rols;
         }
         await this.devicesService.createDevice(user, idDevice);
-        if (user.device) {
-          user.userDevices = user.device.map((device) => device.idDevice);
-          delete user.device;
-        }
+
         const payload: JWtPayload = { username };
         const accessToken = await this.jwtService.sign(payload);
         delete user.password;
+
         return { ...user, accessToken };
       }
     } else {
@@ -81,8 +85,10 @@ export class AuthService {
     return { ...user, accessToken };
   }
 
-  async googleAuth(token: string) {
-    const googleUser = await validateGoogleToken(token);
+  async googleAuth(googleCredentialDto: GoogleCredentialDto) {
+    const googleUser = await validateGoogleToken(
+      googleCredentialDto.googleToken,
+    );
     if (!googleUser) {
       throw new UnauthorizedException('Please check your login credential');
     }
@@ -93,14 +99,34 @@ export class AuthService {
     if (!user) {
       const newUser = await this.usersRepository.create({
         username: googleUser.name,
+        lastName: googleUser.lastName,
         email: googleUser.email,
         profileImageUrl: googleUser.picture,
         password: 'xD',
+        verify: true,
         google: true,
       });
       await this.usersRepository.save(newUser);
       const payload: JWtPayload = { username: googleUser.name };
       const accessToken = await this.jwtService.sign(payload);
+
+      const user = await this.usersRepository.findOne({
+        email: googleUser.email,
+      });
+      await this.devicesService.createDevice(
+        user,
+        googleCredentialDto.idDevice,
+      );
+
+      if (user.rols) {
+        user.userRols = user.rols.map((rol) => rol.rolName);
+        delete user.rols;
+      }
+      if (user.device) {
+        user.userDevices = user.device.map((device) => device.idDevice);
+        delete user.device;
+      }
+
       return { accessToken, ...user };
     } else {
       const payload: JWtPayload = { username: googleUser.name };

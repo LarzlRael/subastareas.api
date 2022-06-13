@@ -22,7 +22,6 @@ import { HomeWorkStatusEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 
 @Controller('homework')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class HomeworkController {
   constructor(private homeworkService: HomeworkService) {}
 
@@ -30,14 +29,23 @@ export class HomeworkController {
   getAprovedHomeWorks(): Promise<Homework[]> {
     return this.homeworkService.getAprovedHomeWorks();
   }
-  @Get('/:category')
+  @Get('/getSubjectsAndLevels')
+  getSubjectsAndLevels() {
+    return this.homeworkService.getSubjectsAndLevels();
+  }
+  @Get('/category/:category/level/:level')
   getAprovedHomeWorksByCategory(
     @Param('category') category: string,
-  ): Promise<Homework[]> {
-    return this.homeworkService.getHomeworkByCategory(category);
+    @Param('level') level: string,
+  ) {
+    return this.homeworkService.getHomeworkByCategory(
+      category.split(','),
+      level.split(','),
+    );
   }
-  @Get('/homeworks')
-  getHomeWorks(@GetUser() user: User): Promise<Homework[]> {
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/homeworksbyuser')
+  getHomeWorksByUser(@GetUser() user: User): Promise<Homework[]> {
     return this.homeworkService.getHomeworkByUser(user);
   }
 
@@ -49,8 +57,7 @@ export class HomeworkController {
   }
 
   @Get('/getonehomework/:id')
-  getOneHomeWork(@Param('id') id: number): Promise<Homework> {
-    console.log(id);
+  getOneHomeWork(@Param('id') id: number) {
     return this.homeworkService.getOneHomework(id);
   }
 
@@ -59,6 +66,7 @@ export class HomeworkController {
       fileFilter: imageFileFilter,
     }),
   )
+  @UseGuards(AuthGuard('jwt'))
   @Post('/create')
   async postHomeWork(
     @GetUser() user: User,
@@ -72,6 +80,7 @@ export class HomeworkController {
     );
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('homeworkfile', {
       fileFilter: imageFileFilter,
@@ -91,6 +100,8 @@ export class HomeworkController {
       id,
     );
   }
+
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/delete/:id')
   deleteHomeWork(
     @GetUser() user: User,

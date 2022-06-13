@@ -6,10 +6,18 @@ import { HomeworkRepository } from './homework.repository';
 import { AuthModule } from '../auth/auth.module';
 import { CloudinaryProvider } from './cloudinary.provider';
 import { RolesModule } from 'src/roles/roles.module';
+import { OfferRepository } from '../offer/offer.repository';
+import { CommentRepository } from '../comments/comment.repository';
+import { WalletRepository } from '../wallet/wallet.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([HomeworkRepository]),
+    TypeOrmModule.forFeature([
+      HomeworkRepository,
+      OfferRepository,
+      CommentRepository,
+      WalletRepository,
+    ]),
     AuthModule,
     RolesModule,
   ],

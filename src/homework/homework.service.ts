@@ -3,14 +3,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { HomeworkDto } from './dto/Homework.dto';
 import { User } from '../auth/entities/user.entity';
-import { HomeWorkStatusEnum } from '../enums/enums';
+import {
+  HomeWorkStatusEnum,
+  HomeWorkTypeEnum,
+  LevelTypeEnum,
+} from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
+import { OfferRepository } from '../offer/offer.repository';
+import { CommentRepository } from '../comments/comment.repository';
+import { WalletRepository } from '../wallet/wallet.repository';
 
 @Injectable()
 export class HomeworkService {
   constructor(
     @InjectRepository(HomeworkRepository)
     private homeworkRepository: HomeworkRepository,
+    private offerRepository: OfferRepository,
+    private commentRepository: CommentRepository,
+    private walletRepository: WalletRepository,
   ) {}
 
   async createHomework(
@@ -18,18 +28,36 @@ export class HomeworkService {
     file: Express.Multer.File,
     user: User,
   ): Promise<Homework> {
+    console.log(user);
+    /* const wallet = await this.walletRepository.findOne({ user: user });
+    console.log(wallet); */
+    return null;
     return this.homeworkRepository.createHomework(homeworkDto, file, user);
   }
   async getAprovedHomeWorks() {
-    return this.homeworkRepository.find({
+    /* const homeworkAcepted = await this.homeworkRepository.find({
       where: { status: HomeWorkStatusEnum.ACCEPTED },
+    }); */
+    return this.homeworkRepository.getHomeworksByCondition({
+      status: HomeWorkStatusEnum.ACCEPTED,
     });
   }
+  async getHomeworkByCategory(category: string[], level: string[]) {
+    return await this.homeworkRepository.getHomeworksByCategory(
+      category,
+      level,
+    );
+  }
   async getHomeworkByUser(user: User) {
-    return this.homeworkRepository.getHomeworksByUser(user);
+    /* return this.getHomeworksByCondition('user', user); */
+    return this.homeworkRepository.getHomeworksByCondition({ user: user });
   }
   async getOneHomework(id: number) {
-    return this.homeworkRepository.getOneHomework(id);
+    const homework = await this.homeworkRepository.getOneHomework(id);
+    const offers = await this.offerRepository.getOffersByHomeworks(homework);
+    /* console.log(offers); */
+    const comments = await this.commentRepository.getCommentsByHomework(id);
+    return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
     return this.homeworkRepository.deleteHomework(user, id);
@@ -49,8 +77,10 @@ export class HomeworkService {
       where: { status: homeWorkStatusEnum },
     });
   }
-
-  async getHomeworkByCategory(category: string) {
-    return this.homeworkRepository.getHomeworksByCategory(category);
+  getSubjectsAndLevels() {
+    return {
+      subjects: Object.values(HomeWorkTypeEnum),
+      level: Object.values(LevelTypeEnum),
+    };
   }
 }

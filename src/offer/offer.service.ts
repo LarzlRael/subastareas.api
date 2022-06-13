@@ -4,28 +4,44 @@ import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferDto } from './dto/offer.dot';
 import { User } from 'src/auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
+import { NotificationService } from '../devices/notification/notification.service';
+import { DeviceRepository } from '../devices/device.repository';
 
 @Injectable()
 export class OfferService {
   constructor(
     private offerRepository: OfferRepository,
-    private HomeworkRepository: HomeworkRepository,
+    private homeworkRepository: HomeworkRepository,
+    private deviceRepository: DeviceRepository,
+    private notificationService: NotificationService,
   ) {}
 
-  async makeOffer(
-    idHomework: string,
-    offerDto: OfferDto,
-    user: User,
-  ): Promise<Offer> {
-    const getHomeWork = await this.HomeworkRepository.findOne(idHomework);
+  async makeOffer(idHomework: string, offerDto: OfferDto, user: User) {
+    const getHomeWork = await this.homeworkRepository.findOne(idHomework, {
+      relations: ['offers', 'user'],
+    });
+    console.log(getHomeWork);
     if (!getHomeWork) {
       throw new InternalServerErrorException('Homework not found');
     }
-    return this.offerRepository.makeOffer(getHomeWork, user, offerDto);
+    const offered = await this.offerRepository.makeOffer(
+      getHomeWork,
+      user,
+      offerDto,
+    );
+    if (offered) {
+      const gerUserDevices = await this.deviceRepository.find({ user });
+      console.log(gerUserDevices);
+      this.notificationService.sendNewOfferNotification(
+        user.username,
+        gerUserDevices.map((device) => device.idDevice),
+        offerDto.priceOffer,
+      );
+    }
   }
 
   async getOffersByHomeworks(idHomework: string): Promise<Offer[]> {
-    const getHomeWork = await this.HomeworkRepository.findOne(idHomework);
+    const getHomeWork = await this.homeworkRepository.findOne(idHomework);
     if (!getHomeWork) {
       throw new InternalServerErrorException('Homework not found');
     }
@@ -61,6 +77,24 @@ export class OfferService {
       ...getOffer,
       ...offerDto,
       edited: true,
+    });
+  }
+  async getOffersSentByUser(user: User): Promise<Offer[]> {
+    return this.offerRepository.find({
+      where: { user },
+      relations: ['homework'],
+    });
+  }
+  async getOffersReceiveByUser(user: User) {
+    return this.homeworkRepository.find({
+      where: { user },
+      relations: ['homework', 'offers'],
+    });
+  }
+  async getOfferedHomeworkds(user: User): Promise<Offer[]> {
+    return this.offerRepository.find({
+      where: { user },
+      relations: ['homework'],
     });
   }
 }

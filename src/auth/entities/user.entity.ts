@@ -105,7 +105,7 @@ export class User {
   @OneToMany(() => Rol, (rol) => rol.user, { eager: true })
   rols: Rol[];
 
-  @OneToOne(() => Supervisor, { eager: true })
+  @OneToOne(() => Supervisor, { eager: false })
   @JoinColumn({ name: 'id_supervisor' })
   supervisor: Supervisor;
 
@@ -113,13 +113,13 @@ export class User {
   @JoinColumn({ name: 'id_wallet' })
   wallet: Wallet;
 
-  @OneToOne(() => Professor, { eager: true })
+  @OneToOne(() => Professor, { eager: false })
   @JoinColumn({ name: 'id_professor' })
   professor: Professor;
 
   @OneToMany(() => Offer, (offer) => offer.user, { eager: false })
   offers: Offer[];
 
-  @OneToMany(() => Device, (device) => device.user, { eager: true })
+  @OneToMany(() => Device, (device) => device.user, { eager: false })
   device: Device[];
 }

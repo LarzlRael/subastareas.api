@@ -12,7 +12,7 @@ export class OfferRepository extends Repository<Offer> {
     homework: Homework,
     user: User,
     offerDto: OfferDto,
-  ): Promise<Offer> {
+  ): Promise<boolean> {
     if (validateArray(homework.offers)) {
       const verifyOffer = homework.offers.some(
         (offer) => offer.user.id === user.id,
@@ -23,9 +23,11 @@ export class OfferRepository extends Repository<Offer> {
           homework: homework,
           priceOffer: offerDto.priceOffer,
         });
-        return await this.save(offer);
+        await this.save(offer);
+        return true;
       } else {
         throw new InternalServerErrorException('You already have an offer');
+        return false;
       }
     } else {
       const offer = this.create({
@@ -33,13 +35,24 @@ export class OfferRepository extends Repository<Offer> {
         homework: homework,
         priceOffer: offerDto.priceOffer,
       });
-      return await this.save(offer);
+      await this.save(offer);
+      return true;
     }
   }
-  async getOffersByHomeworks(homework: Homework): Promise<Offer[]> {
-    return await this.find({
-      where: { homework: homework },
-    });
+  async getOffersByHomeworks(homework: Homework) {
+    return await this.createQueryBuilder('offer')
+      .where({ homework: homework })
+      .select([
+        'offer.id',
+        'offer.priceOffer',
+        /* 'offer.createdAt', */
+        'user.id',
+        'user.username',
+        'user.profileImageUrl',
+        /* 'user.email', */
+      ])
+      .leftJoin('offer.user', 'user') // bar is the joined table
+      .getMany();
   }
   async deleteOffer(user: User, idOffer) {
     const findOffer = await this.findOne(idOffer);

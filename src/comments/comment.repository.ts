@@ -18,11 +18,25 @@ export class CommentRepository extends Repository<Comment> {
       throw new InternalServerErrorException();
     }
   }
-  async getCommentsByHomework(homeworkId: number): Promise<Comment[]> {
+  async getCommentsByHomework(homeworkId: number): Promise<any[]> {
     try {
-      const comments = await this.find({ where: { homework: homeworkId } });
-      return comments;
+      return await this.createQueryBuilder('comment')
+        .where({ homework: homeworkId })
+        .select([
+          'comment.id',
+          'comment.content',
+          'comment.edited',
+          'comment.created_at',
+          /* 'foo.createdAt', */
+          'user.id',
+          'user.username',
+          'user.profileImageUrl',
+        ])
+        .leftJoin('comment.user', 'user') // bar is the joined table
+        .getMany();
     } catch (error) {
+      console.log(error);
+
       throw new InternalServerErrorException();
     }
   }

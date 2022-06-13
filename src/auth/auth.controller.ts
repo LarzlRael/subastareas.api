@@ -23,6 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JWtPayload } from '../interfaces/jwtPayload';
 import { Request } from 'express';
 import { ChangePasswordDto } from './dto/ChangePassword.dto';
+import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,9 +47,9 @@ export class AuthController {
     return this.authService.renewToken(user);
   }
 
-  @Get('/google')
-  googleAuth(@Body() googleToken: { googleToken: string }) {
-    return this.authService.googleAuth(googleToken.googleToken);
+  @Post('/google')
+  googleAuth(@Body() googleCredentialDto: GoogleCredentialDto) {
+    return this.authService.googleAuth(googleCredentialDto);
   }
 
   @UseGuards(AuthGuard('jwt'))

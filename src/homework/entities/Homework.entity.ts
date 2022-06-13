@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { User } from 'src/auth/entities/user.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
-import { HomeWorkStatusEnum } from 'src/enums/enums';
+import { HomeWorkStatusEnum, LevelTypeEnum } from 'src/enums/enums';
 import { Offer } from '../../offer/entities/offer.entity';
 import {
   Column,
@@ -47,9 +47,16 @@ export class Homework {
   @Column({
     type: 'enum',
     enum: HomeWorkTypeEnum,
-    default: HomeWorkTypeEnum.MATEMATICA,
+    default: HomeWorkTypeEnum.matematica,
   })
   category: HomeWorkTypeEnum;
+
+  @Column({
+    type: 'enum',
+    enum: LevelTypeEnum,
+    default: LevelTypeEnum.PREUNIVERSITARIO,
+  })
+  level: LevelTypeEnum;
 
   @Column({
     nullable: true,
@@ -76,21 +83,21 @@ export class Homework {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.homeworks, { eager: true })
+  @ManyToOne(() => User, (user) => user.homeworks, { eager: false })
   @Exclude({ toPlainOnly: true })
   user: User;
 
   @OneToMany(() => Comment, (comment) => comment.homework, {
-    eager: true,
+    eager: false,
   })
   comments: Comment[];
 
   @OneToMany(() => Offer, (offer) => offer.homework, {
-    eager: true,
+    eager: false,
   })
   public offers: Offer[];
 
-  @ManyToOne(() => User, (user) => user.homeworkSupervisor, { eager: true })
+  @ManyToOne(() => User, (user) => user.homeworkSupervisor, { eager: false })
   @Exclude({ toPlainOnly: true })
   userSupervisor: User;
 }
