@@ -12,6 +12,6 @@ async function bootstrap() {
   /* const reflector = app.get(Reflector); */
   /*   app.useGlobalGuards(new AuthGuard(reflector)); */
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
