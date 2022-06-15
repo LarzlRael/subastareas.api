@@ -17,7 +17,7 @@ import { User } from './entities/user.entity';
 import { GetUser } from './decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { imageFileFilter } from '../utils/utils';
+import { fileFilter } from '../utils/utils';
 import { ProfileEditDto } from './dto/ProfileEdit.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JWtPayload } from '../interfaces/jwtPayload';
@@ -55,7 +55,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('imageProfile', {
-      fileFilter: imageFileFilter,
+      fileFilter: fileFilter,
     }),
   )
   @Put('/updateuser')
@@ -111,5 +111,21 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
     return this.authService.changePasswordxd(changePasswordDto, user);
+  }
+
+  //change profile image
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
+    }),
+  )
+  @Put('/updateprofileimage/:idUser')
+  updateHomework(
+    @GetUser() user: User,
+    @Param('idUser') id: number,
+    @UploadedFile() homeWorkFile: Express.Multer.File,
+  ) {
+    return this.authService.uploadOrUpdateProfileImage(homeWorkFile, user, id);
   }
 }
