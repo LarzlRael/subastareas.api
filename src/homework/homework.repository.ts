@@ -75,10 +75,8 @@ export class HomeworkRepository extends Repository<Homework> {
     });
     return homework;
   }
-  async getHomeworksByCategory(category: string[], level: string[]) {
-    console.log(category, level);
-
-    if (category[0] === 'empty' && level[0] !== 'empty') {
+  async getHomeworksByCategory(category: string[]) {
+    /* if (category[0] === 'empty' && level[0] !== 'empty') {
       return this.getHomeworksByCondition({ level: In(level) });
     }
     if (level[0] === 'empty' && category[0] !== 'empty') {
@@ -90,11 +88,13 @@ export class HomeworkRepository extends Repository<Homework> {
       return this.getHomeworksByCondition({
         status: HomeWorkStatusEnum.ACCEPTED,
       });
-    }
+    } */
 
+    if (category[0] !== 'empty') {
+      return this.getHomeworksByCondition({ category: In(category) });
+    }
     return this.getHomeworksByCondition({
       category: In(category),
-      level: In(level),
     });
   }
   async getOneHomework(id: number) {
@@ -159,7 +159,7 @@ export class HomeworkRepository extends Repository<Homework> {
   ) {
     const homeworks = await this.createQueryBuilder('homework')
       .where(where)
-      
+
       .select([
         'homework',
         /* 'comment.user', */

@@ -13,14 +13,15 @@ export enum HomeWorkStatusEnum {
 }
 
 export enum HomeWorkTypeEnum {
-  matematica = 'Matematica',
-  programacion = 'Programación',
-  fisica = 'Física',
-  quimica = 'Química',
-  algebra = 'Algebra',
-  trigonometria = 'Trigonometria',
-  geometria = 'Geometria',
-  ingles = 'Ingles',
+  MATEMATICA = 'Matematica',
+  PROGRAMACION = 'Programación',
+  FISICA = 'Física',
+  QUIMICA = 'Química',
+  ALGEBRA = 'Algebra',
+  TRIGONOMETRIA = 'Trigonometria',
+  GEOMETRIA = 'Geometria',
+  INGLES = 'Ingles',
+  CONTABILIDAD = 'Contabilidad',
 }
 
 export enum FoldersNameEnum {

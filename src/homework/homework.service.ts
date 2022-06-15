@@ -42,11 +42,8 @@ export class HomeworkService {
       status: HomeWorkStatusEnum.ACCEPTED,
     });
   }
-  async getHomeworkByCategory(category: string[], level: string[]) {
-    return await this.homeworkRepository.getHomeworksByCategory(
-      category,
-      level,
-    );
+  async getHomeworkByCategory(category: string[]) {
+    return await this.homeworkRepository.getHomeworksByCategory(category);
   }
   async getHomeworkByUser(user: User) {
     /* return this.getHomeworksByCondition('user', user); */
@@ -78,9 +75,6 @@ export class HomeworkService {
     });
   }
   getSubjectsAndLevels() {
-    return {
-      subjects: Object.values(HomeWorkTypeEnum),
-      level: Object.values(LevelTypeEnum),
-    };
+    return Object.values(HomeWorkTypeEnum);
   }
 }

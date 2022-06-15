@@ -17,7 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from 'src/utils/utils';
-import { RolesGuard } from '../auth/guard/roles.guard';
+/* import { RolesGuard } from '../auth/guard/roles.guard'; */
 import { HomeWorkStatusEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 
@@ -29,19 +29,13 @@ export class HomeworkController {
   getAprovedHomeWorks(): Promise<Homework[]> {
     return this.homeworkService.getAprovedHomeWorks();
   }
-  @Get('/getSubjectsAndLevels')
+  @Get('/getsubjectslist')
   getSubjectsAndLevels() {
     return this.homeworkService.getSubjectsAndLevels();
   }
-  @Get('/category/:category/level/:level')
-  getAprovedHomeWorksByCategory(
-    @Param('category') category: string,
-    @Param('level') level: string,
-  ) {
-    return this.homeworkService.getHomeworkByCategory(
-      category.split(','),
-      level.split(','),
-    );
+  @Get('/category/:category')
+  getAprovedHomeWorksByCategory(@Param('category') category: string) {
+    return this.homeworkService.getHomeworkByCategory(category.split(','));
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('/homeworksbyuser')

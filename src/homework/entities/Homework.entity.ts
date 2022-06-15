@@ -47,16 +47,14 @@ export class Homework {
   @Column({
     type: 'enum',
     enum: HomeWorkTypeEnum,
-    default: HomeWorkTypeEnum.matematica,
+    default: HomeWorkTypeEnum.MATEMATICA,
   })
   category: HomeWorkTypeEnum;
 
   @Column({
-    type: 'enum',
-    enum: LevelTypeEnum,
-    default: LevelTypeEnum.PREUNIVERSITARIO,
+    nullable: true,
   })
-  level: LevelTypeEnum;
+  subCategory: string;
 
   @Column({
     nullable: true,
