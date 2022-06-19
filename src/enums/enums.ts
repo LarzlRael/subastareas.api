@@ -11,6 +11,13 @@ export enum HomeWorkStatusEnum {
   REJECTED = 'rejected',
   TRADED = 'traded',
 }
+export enum TradeStatusEnum {
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
+  TRADED = 'traded',
+  PENDINGTOTRADE = 'pending_to_trade',
+}
 
 export enum HomeWorkTypeEnum {
   MATEMATICA = 'Matematica',

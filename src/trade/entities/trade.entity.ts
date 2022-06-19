@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Offer } from 'src/offer/entities/offer.entity';
+import { TradeStatusEnum } from 'src/enums/enums';
 
 @Entity()
 export class Trade {
@@ -15,8 +16,15 @@ export class Trade {
   @Column()
   finalAmount: number;
 
-  @Column()
+  @Column({ nullable: true })
   solvedHomeworkUrl: string;
+
+  @Column({
+    type: 'enum',
+    enum: TradeStatusEnum,
+    default: TradeStatusEnum.PENDINGTOTRADE,
+  })
+  status: TradeStatusEnum;
 
   @CreateDateColumn({
     type: 'timestamp',

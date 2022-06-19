@@ -12,6 +12,7 @@ import { DevicesModule } from './devices/devices.module';
 import { WalletModule } from './wallet/wallet.module';
 import { TradeModule } from './trade/trade.module';
 import { RolesModule } from './roles/roles.module';
+import { NotificationsModule } from './notifications/notifications.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +38,7 @@ import { RolesModule } from './roles/roles.module';
     WalletModule,
     TradeModule,
     RolesModule,
+    NotificationsModule,
     /* SuperviseHomeworkModule, */
   ],
   controllers: [AppController],

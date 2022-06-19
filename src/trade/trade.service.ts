@@ -3,6 +3,7 @@ import { TradeRepository } from './trade.repository';
 import { OfferRepository } from '../offer/offer.repository';
 import { UsersRepository } from '../auth/user.repository';
 import { WalletRepository } from '../wallet/wallet.repository';
+import { TradeStatusEnum } from '../enums/enums';
 
 @Injectable()
 export class TradeService {
@@ -12,6 +13,21 @@ export class TradeService {
     private userRepository: UsersRepository,
     private walletRepository: WalletRepository,
   ) {}
+
+  async enterPendingTrade(idOffer: string) {
+    const offer = await this.OfferRepository.findOne(idOffer);
+    if (!offer) {
+      throw new Error('Homework not found');
+    }
+    /* homework.pendingExchange = true; */
+    const newTrade = this.tradeRepository.create({
+      offer,
+      finalAmount: offer.priceOffer,
+      status: TradeStatusEnum.PENDINGTOTRADE,
+    });
+    return await this.tradeRepository.save(newTrade);
+  }
+
   async newTrade(idOffer: string) {
     const offer = await this.OfferRepository.findOne(idOffer);
     console.log(offer);

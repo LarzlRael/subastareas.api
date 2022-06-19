@@ -17,10 +17,11 @@ export class OfferService {
   ) {}
 
   async makeOffer(idHomework: string, offerDto: OfferDto, user: User) {
+    console.log('idehomerok: ' + idHomework);
     const getHomeWork = await this.homeworkRepository.findOne(idHomework, {
       relations: ['offers', 'user'],
     });
-    console.log(getHomeWork);
+
     if (!getHomeWork) {
       throw new InternalServerErrorException('Homework not found');
     }
