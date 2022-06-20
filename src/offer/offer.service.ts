@@ -34,7 +34,7 @@ export class OfferService {
       const gerUserDevices = await this.deviceRepository.find({ user });
       console.log(gerUserDevices);
       this.notificationService.sendNewOfferNotification(
-        user.username,
+        user,
         gerUserDevices.map((device) => device.idDevice),
         offerDto.priceOffer,
       );

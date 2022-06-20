@@ -39,7 +39,7 @@ export class OfferController {
   getOfferByHomework(@Param('idHomework') idHomework: string) {
     return this.offerService.getOffersByHomeworks(idHomework);
   }
-  
+
   @Put('editOffer/:idOffer')
   editOffer(
     @GetUser() user: User,

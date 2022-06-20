@@ -42,3 +42,9 @@ export enum LevelTypeEnum {
   PREUNIVERSITARIO = 'Preuniversitario',
   UNIVERSITARIO = 'Universitario',
 }
+export enum TypeNotificationEnum {
+  NEWCOMMENT = 'new_comment',
+  NEWOFFER = 'new_offer',
+  OFFERACCEPTED = 'offer_accepted',
+  HOMEWORKFINISHED = 'homework_finished',
+}

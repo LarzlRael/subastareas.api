@@ -7,6 +7,7 @@ import { OfferController } from './offer.controller';
 import { UsersRepository } from '../auth/user.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 import { DeviceRepository } from '../devices/device.repository';
+import { NotificationRepository } from '../devices/notification/repository/notification.repository';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DeviceRepository } from '../devices/device.repository';
       HomeworkRepository,
       UsersRepository,
       DeviceRepository,
+      NotificationRepository,
     ]),
   ],
   providers: [OfferService, NotificationService],

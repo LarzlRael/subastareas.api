@@ -36,7 +36,7 @@ export class CommentsService {
     // rerify if the commnet is different from user comment
     /* if (findHomework.user.id !== user.id) { */
     this.notificationService.sendCommentNotification(
-      user.username,
+      user,
       device.map((device) => device.idDevice),
       comment.content,
     );
