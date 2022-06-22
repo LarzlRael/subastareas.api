@@ -23,8 +23,6 @@ export class HomeworkRepository extends Repository<Homework> {
     user: User,
     /* wallet: Wallet, */
   ): Promise<Homework> {
-    delete homeWorkDto.status;
-
     /* if (wallet.balance < homeWorkDto.offered_amount) {
       throw new InternalServerErrorException(
         'You dont have enough money in your wallet',

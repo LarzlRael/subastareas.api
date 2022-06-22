@@ -6,7 +6,7 @@ import { OfferService } from '../offer/offer.service';
 export class TradeController {
   constructor(private readonly tradeService: TradeService) {}
 
-  @Post('enterPendingTrade/:idOffer')
+  @Get('enterPendingTrade/:idOffer')
   enterPendingExchange(@Param('idOffer') idOffer: string) {
     return this.tradeService.enterPendingTrade(idOffer);
   }

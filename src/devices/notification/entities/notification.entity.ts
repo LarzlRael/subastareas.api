@@ -32,6 +32,14 @@ export class Notification {
   seen: boolean;
 
   @Column()
+  idHomeworkOrOffer: number;
+
+  @Column({
+    nullable: true,
+  })
+  category: string;
+
+  @Column()
   content: string;
 
   @CreateDateColumn({

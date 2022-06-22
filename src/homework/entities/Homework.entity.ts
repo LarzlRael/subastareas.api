@@ -64,7 +64,7 @@ export class Homework {
   @Column({
     type: 'enum',
     enum: HomeWorkStatusEnum,
-    default: HomeWorkStatusEnum.PENDING,
+    default: HomeWorkStatusEnum.PENDING_TO_APPROVED,
   })
   status: HomeWorkStatusEnum;
 

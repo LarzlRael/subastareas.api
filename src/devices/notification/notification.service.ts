@@ -5,11 +5,14 @@ import { capitalizeFirstLetter } from 'src/utils/utilsText';
 import { NotificationRepository } from './repository/notification.repository';
 import { User } from '../../auth/entities/user.entity';
 import { TypeNotificationEnum } from 'src/enums/enums';
+import { DeviceRepository } from '../device.repository';
+import { Homework } from '../../homework/entities/Homework.entity';
 
 @Injectable()
 export class NotificationService {
   constructor(
     private readonly notificationRepository: NotificationRepository,
+    private readonly deviceRepository: DeviceRepository,
   ) {}
 
   async getUserNotification(user: User) {
@@ -24,11 +27,11 @@ export class NotificationService {
       .select([
         'notification',
         /* 'comment.user', */
+        'user.id',
         'user.username',
         'user.profileImageUrl',
       ])
       .leftJoin('notification.user', 'user')
-      /* .leftJoin('homework.user', 'user') */
       .getMany();
     return homeworks;
   }
@@ -66,12 +69,11 @@ export class NotificationService {
 
   async sendCommentNotification(
     user: User,
-    userPhones: any[],
     comment: string,
+    homework: Homework,
   ) {
-    console.log('sending comment notification');
     const sendData: IpushNotification = {
-      registration_ids: userPhones,
+      registration_ids: await this.getUserDevices(user),
       data: {
         type_notification: 'comment',
         content: `${user.username}: ${comment}`,
@@ -88,17 +90,51 @@ export class NotificationService {
       type: TypeNotificationEnum.NEWCOMMENT,
       content: `${capitalizeFirstLetter(comment)}`,
       user: user,
+      idHomeworkOrOffer: parseInt(homework.id),
+      category: homework.category,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
   }
-  async sendNewOfferNotification(user: User, userPhones: any[], offer: number) {
+
+  async sendOfferAcceptedNotification(user: User, homework: Homework) {
+    console.log(await this.getUserDevices(user));
+    const sendData: IpushNotification = {
+      registration_ids: await this.getUserDevices(user),
+      data: {
+        type_notification: 'offer_accepted',
+        content: `El usuario user ha aceptado tu oferta`,
+      },
+      notification: {
+        title: `Oferta aceptada`,
+        body: `Tu oferta ha sido aceptada`,
+        /* icon:
+          'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png', */
+      },
+    };
+
+    const createNotification = this.notificationRepository.create({
+      type: TypeNotificationEnum.OFFERACCEPTED,
+      content: `Nueva oferta`,
+      user: user,
+      idHomeworkOrOffer: parseInt(homework.id),
+      category: homework.category,
+    });
+    await this.notificationRepository.save(createNotification);
+    await this.sendNotification(sendData);
+  }
+
+  async sendNewOfferNotification(
+    user: User,
+    offer: number,
+    homework: Homework,
+  ) {
     /* const homework = await this.homeworkRepository.findOne(idHomework); */
     /* console.log(homework); */
     const currency = 'Neo coins';
     const content = `${user.username} hizo una nueva oferta`;
     const sendData: IpushNotification = {
-      registration_ids: userPhones,
+      registration_ids: await this.getUserDevices(user),
       data: {
         type_notification: 'new_offer',
         content: content,
@@ -116,6 +152,8 @@ export class NotificationService {
       type: TypeNotificationEnum.NEWOFFER,
       content: content,
       user: user,
+      idHomeworkOrOffer: parseInt(homework.id),
+      category: homework.category,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -135,7 +173,10 @@ export class NotificationService {
       console.log(error);
     }
   }
+  async getUserDevices(user: User): Promise<string[]> {
+    const gerUserDevices = await this.deviceRepository.find({ user });
+    return gerUserDevices.map((device) => device.idDevice);
+  }
 }
-
 
 //TODO enviar tambien el id del comentario u oferta

@@ -56,7 +56,7 @@ export class HomeworkController {
   }
 
   @UseInterceptors(
-    FileInterceptor('homeworkfile', {
+    FileInterceptor('file', {
       fileFilter: fileFilter,
     }),
   )

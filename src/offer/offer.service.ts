@@ -5,14 +5,12 @@ import { OfferDto } from './dto/offer.dot';
 import { User } from 'src/auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
 import { NotificationService } from '../devices/notification/notification.service';
-import { DeviceRepository } from '../devices/device.repository';
 
 @Injectable()
 export class OfferService {
   constructor(
     private offerRepository: OfferRepository,
     private homeworkRepository: HomeworkRepository,
-    private deviceRepository: DeviceRepository,
     private notificationService: NotificationService,
   ) {}
 
@@ -31,12 +29,10 @@ export class OfferService {
       offerDto,
     );
     if (offered) {
-      const gerUserDevices = await this.deviceRepository.find({ user });
-      console.log(gerUserDevices);
       this.notificationService.sendNewOfferNotification(
         user,
-        gerUserDevices.map((device) => device.idDevice),
         offerDto.priceOffer,
+        getHomeWork,
       );
     }
   }

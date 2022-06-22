@@ -6,8 +6,9 @@ export enum RoleEnum {
   PROFESSOR = 'professor',
 }
 export enum HomeWorkStatusEnum {
-  PENDING = 'pending',
-  ACCEPTED = 'accepted',
+  PENDING_TO_APPROVED = 'pending_to_approved',
+  PENDING_TO_RESOLVE = 'pending_to_resolve',
+  ACCEPTED = 'accepted_to_offer',
   REJECTED = 'rejected',
   TRADED = 'traded',
 }
