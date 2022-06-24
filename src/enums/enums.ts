@@ -6,10 +6,18 @@ export enum RoleEnum {
   PROFESSOR = 'professor',
 }
 export enum HomeWorkStatusEnum {
+  PENDING_TO_APPROVED = 'pending_to_approved',
+  PENDING_TO_RESOLVE = 'pending_to_resolve',
+  ACCEPTED = 'accepted_to_offer',
+  REJECTED = 'rejected',
+  TRADED = 'traded',
+}
+export enum TradeStatusEnum {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
   TRADED = 'traded',
+  PENDINGTOTRADE = 'pending_to_trade',
 }
 
 export enum HomeWorkTypeEnum {
@@ -34,4 +42,10 @@ export enum FoldersNameEnum {
 export enum LevelTypeEnum {
   PREUNIVERSITARIO = 'Preuniversitario',
   UNIVERSITARIO = 'Universitario',
+}
+export enum TypeNotificationEnum {
+  NEWCOMMENT = 'new_comment',
+  NEWOFFER = 'new_offer',
+  OFFERACCEPTED = 'offer_accepted',
+  HOMEWORKFINISHED = 'homework_finished',
 }

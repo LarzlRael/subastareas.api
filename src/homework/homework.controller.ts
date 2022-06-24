@@ -16,7 +16,7 @@ import { GetUser } from '../auth/decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { imageFileFilter } from 'src/utils/utils';
+import { fileFilter } from 'src/utils/utils';
 /* import { RolesGuard } from '../auth/guard/roles.guard'; */
 import { HomeWorkStatusEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
@@ -56,8 +56,8 @@ export class HomeworkController {
   }
 
   @UseInterceptors(
-    FileInterceptor('homeworkfile', {
-      fileFilter: imageFileFilter,
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
     }),
   )
   @UseGuards(AuthGuard('jwt'))
@@ -76,8 +76,8 @@ export class HomeworkController {
 
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
-    FileInterceptor('homeworkfile', {
-      fileFilter: imageFileFilter,
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
     }),
   )
   @Put('/updatehomework/:id')

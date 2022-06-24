@@ -3,15 +3,48 @@ import { TradeRepository } from './trade.repository';
 import { OfferRepository } from '../offer/offer.repository';
 import { UsersRepository } from '../auth/user.repository';
 import { WalletRepository } from '../wallet/wallet.repository';
+import { HomeWorkStatusEnum, TradeStatusEnum } from '../enums/enums';
+import { HomeworkRepository } from '../homework/homework.repository';
+import { NotificationService } from '../devices/notification/notification.service';
 
 @Injectable()
 export class TradeService {
   constructor(
     private tradeRepository: TradeRepository,
     private OfferRepository: OfferRepository,
-    private userRepository: UsersRepository,
     private walletRepository: WalletRepository,
+    private homeworkRepository: HomeworkRepository,
+    private notificationService: NotificationService,
   ) {}
+
+  async enterPendingTrade(idOffer: string) {
+    const offer = await this.OfferRepository.findOne(idOffer, {
+      relations: ['homework'],
+    });
+
+    const getHomework = await this.homeworkRepository.findOne(
+      offer.homework.id,
+    );
+    getHomework.status = HomeWorkStatusEnum.PENDING_TO_RESOLVE;
+    await this.homeworkRepository.save({
+      ...getHomework,
+    });
+    if (!offer) {
+      throw new Error('Offer not found');
+    }
+
+    const newTrade = this.tradeRepository.create({
+      offer,
+      finalAmount: offer.priceOffer,
+      status: TradeStatusEnum.PENDINGTOTRADE,
+    });
+    this.notificationService.sendOfferAcceptedNotification(
+      offer.user,
+      getHomework,
+    );
+    return await this.tradeRepository.save(newTrade);
+  }
+
   async newTrade(idOffer: string) {
     const offer = await this.OfferRepository.findOne(idOffer);
     console.log(offer);

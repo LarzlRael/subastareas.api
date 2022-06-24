@@ -6,7 +6,6 @@ import { User } from '../auth/entities/user.entity';
 import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 import { NotificationService } from '../devices/notification/notification.service';
-import { DeviceRepository } from '../devices/device.repository';
 
 @Injectable()
 export class CommentsService {
@@ -15,8 +14,6 @@ export class CommentsService {
     private homeworkRepository: HomeworkRepository,
     @InjectRepository(CommentRepository)
     private commentRepository: CommentRepository,
-    private deviceRepository: DeviceRepository,
-
     private notificationService: NotificationService,
   ) {}
   async createComment(
@@ -24,25 +21,25 @@ export class CommentsService {
     idHomework: number,
     comment: CommentDto,
   ): Promise<Comment> {
-    const findHomework = await this.homeworkRepository.findOne(idHomework, {
+    const getHomework = await this.homeworkRepository.findOne(idHomework, {
       relations: ['user'],
     });
-    const device = await this.deviceRepository.find({ user: user });
 
-    if (!findHomework) {
+    if (!getHomework) {
       throw new InternalServerErrorException('Homework Not Found');
     }
 
     // rerify if the commnet is different from user comment
     /* if (findHomework.user.id !== user.id) { */
     this.notificationService.sendCommentNotification(
-      user.username,
-      device.map((device) => device.idDevice),
+      user,
       comment.content,
+      getHomework,
     );
     /* } */
+    
 
-    return this.commentRepository.newComment(user, findHomework, comment);
+    return this.commentRepository.newComment(user, getHomework, comment);
   }
   async getCommentsByHomework(homeworkId: number): Promise<Comment[]> {
     return this.commentRepository.getCommentsByHomework(homeworkId);

@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SupervisorRepository } from '../repositories/supervisor.repository';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from '../entities/Supervisor.entity';
 import { RoleEnum } from '../../enums/enums';
@@ -60,7 +59,7 @@ export class SupervisorService {
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
     }
-    homework.status = actionSupervisorDTO.status;
+    /* homework.status = actionSupervisorDTO.status; */
     homework.observation = actionSupervisorDTO.observation;
     homework.userSupervisor = user;
     await this.homeworkRepository.save(homework);

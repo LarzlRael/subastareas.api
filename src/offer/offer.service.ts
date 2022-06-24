@@ -5,22 +5,21 @@ import { OfferDto } from './dto/offer.dot';
 import { User } from 'src/auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
 import { NotificationService } from '../devices/notification/notification.service';
-import { DeviceRepository } from '../devices/device.repository';
 
 @Injectable()
 export class OfferService {
   constructor(
     private offerRepository: OfferRepository,
     private homeworkRepository: HomeworkRepository,
-    private deviceRepository: DeviceRepository,
     private notificationService: NotificationService,
   ) {}
 
   async makeOffer(idHomework: string, offerDto: OfferDto, user: User) {
+    console.log('idehomerok: ' + idHomework);
     const getHomeWork = await this.homeworkRepository.findOne(idHomework, {
       relations: ['offers', 'user'],
     });
-    console.log(getHomeWork);
+
     if (!getHomeWork) {
       throw new InternalServerErrorException('Homework not found');
     }
@@ -30,12 +29,10 @@ export class OfferService {
       offerDto,
     );
     if (offered) {
-      const gerUserDevices = await this.deviceRepository.find({ user });
-      console.log(gerUserDevices);
       this.notificationService.sendNewOfferNotification(
-        user.username,
-        gerUserDevices.map((device) => device.idDevice),
+        user,
         offerDto.priceOffer,
+        getHomeWork,
       );
     }
   }

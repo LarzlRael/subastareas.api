@@ -4,8 +4,14 @@ import { InternalServerErrorException } from '@nestjs/common';
 
 import toStream = require('buffer-to-stream');
 
-export const imageFileFilter = (res, file, callback) => {
+export const fileFilter = (res, file, callback) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png|webp|pdf)$/)) {
+    return callback(new Error('Only image and pdfs files are allowed!'), false);
+  }
+  callback(null, true);
+};
+export const imageFileFiltesr = (res, file, callback) => {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|webp)$/)) {
     return callback(new Error('Only image and pdfs files are allowed!'), false);
   }
   callback(null, true);

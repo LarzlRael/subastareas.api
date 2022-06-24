@@ -3,11 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { HomeworkDto } from './dto/Homework.dto';
 import { User } from '../auth/entities/user.entity';
-import {
-  HomeWorkStatusEnum,
-  HomeWorkTypeEnum,
-  LevelTypeEnum,
-} from '../enums/enums';
+import { HomeWorkStatusEnum, HomeWorkTypeEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 import { OfferRepository } from '../offer/offer.repository';
 import { CommentRepository } from '../comments/comment.repository';
@@ -28,10 +24,10 @@ export class HomeworkService {
     file: Express.Multer.File,
     user: User,
   ): Promise<Homework> {
-    console.log(user);
+    console.log(homeworkDto);
+    console.log(file);
     /* const wallet = await this.walletRepository.findOne({ user: user });
     console.log(wallet); */
-    return null;
     return this.homeworkRepository.createHomework(homeworkDto, file, user);
   }
   async getAprovedHomeWorks() {

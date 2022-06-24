@@ -6,6 +6,7 @@ import { DeviceRepository } from './device.repository';
 import { NotificationService } from './notification/notification.service';
 import { NotificationController } from './notification/notification.controller';
 import { ConfigModule } from '@nestjs/config';
+import { NotificationRepository } from './notification/repository/notification.repository';
 
 @Module({
   /* imports: [TypeOrmModule.forFeature([DeviceRepository])], */
@@ -15,7 +16,7 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([DeviceRepository]),
+    TypeOrmModule.forFeature([DeviceRepository, NotificationRepository]),
   ],
   providers: [DevicesService, NotificationService],
   controllers: [DevicesController, NotificationController],

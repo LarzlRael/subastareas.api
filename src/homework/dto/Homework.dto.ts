@@ -38,6 +38,6 @@ export class HomeworkDto {
   @IsEnum(HomeWorkStatusEnum)
   status: HomeWorkStatusEnum;
 
-  @IsEnum(LevelTypeEnum)
-  level: LevelTypeEnum;
+  /* @IsEnum(LevelTypeEnum)
+  level: LevelTypeEnum; */
 }

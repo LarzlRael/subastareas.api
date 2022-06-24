@@ -7,6 +7,7 @@ import { CommentRepository } from './comment.repository';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 import { DeviceRepository } from '../devices/device.repository';
+import { NotificationRepository } from '../devices/notification/repository/notification.repository';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DeviceRepository } from '../devices/device.repository';
       CommentRepository,
       HomeworkRepository,
       DeviceRepository,
+      NotificationRepository,
     ]),
   ],
   controllers: [CommentsController],

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
@@ -16,6 +20,7 @@ import { Request } from 'express';
 import { ChangePasswordDto } from './dto/ChangePassword.dto';
 import { RolsService } from '../roles/services/rols.service';
 import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
+import { uploadFile } from '../utils/utils';
 @Injectable()
 export class AuthService {
   constructor(
@@ -217,5 +222,32 @@ export class AuthService {
       ...user,
       password: hashedPassword,
     });
+  }
+
+  async uploadOrUpdateProfileImage(
+    file: Express.Multer.File,
+    currentUser: User,
+    idUser: number,
+  ) {
+    const user = await this.usersRepository.findOne(idUser);
+
+    if (!user) {
+      throw new InternalServerErrorException('User not found');
+    }
+    if (currentUser.id !== user.id) {
+      throw new InternalServerErrorException(
+        'You are not the owner of this profile',
+      );
+    } else {
+      if (file) {
+        uploadFile(file, 'PROFILE_IMAGES').then(async (url) => {
+          user.profileImageUrl = url;
+          await this.usersRepository.save(user);
+          return user;
+        });
+      } else {
+        throw new InternalServerErrorException('There is not profileImage');
+      }
+    }
   }
 }
