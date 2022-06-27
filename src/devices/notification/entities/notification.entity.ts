@@ -5,8 +5,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Offer } from 'src/offer/entities/offer.entity';
-import { TradeStatusEnum, TypeNotificationEnum } from 'src/enums/enums';
+
+import { TypeNotificationEnum } from 'src/enums/enums';
 import { User } from '../../../auth/entities/user.entity';
 
 @Entity()
@@ -25,6 +25,11 @@ export class Notification {
     default: true,
   })
   visible: boolean;
+
+  @Column({
+    default: true,
+  })
+  notified: boolean;
 
   @Column({
     default: false,
@@ -55,6 +60,9 @@ export class Notification {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.homeworks, { eager: false })
-  user: User;
+  @ManyToOne(() => User, (user) => user.notification, { eager: false })
+  userOrigin: User;
+
+  @ManyToOne(() => User, (user) => user.notification, { eager: false })
+  userDestiny: User;
 }

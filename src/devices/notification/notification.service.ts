@@ -7,6 +7,7 @@ import { User } from '../../auth/entities/user.entity';
 import { TypeNotificationEnum } from 'src/enums/enums';
 import { DeviceRepository } from '../device.repository';
 import { Homework } from '../../homework/entities/Homework.entity';
+import { Notification } from './entities/notification.entity';
 
 @Injectable()
 export class NotificationService {
@@ -16,13 +17,9 @@ export class NotificationService {
   ) {}
 
   async getUserNotification(user: User) {
-    /*  return await this.notificationRepository.find({
-      where: { user: user },
-      relations: ['user'],
-    }); */
     const homeworks = await this.notificationRepository
       .createQueryBuilder('notification')
-      .where({ user: user })
+      .where({ userDestiny: user })
       .orderBy('notification.created_at', 'DESC')
       .select([
         'notification',
@@ -31,7 +28,7 @@ export class NotificationService {
         'user.username',
         'user.profileImageUrl',
       ])
-      .leftJoin('notification.user', 'user')
+      .leftJoin('notification.userOrigin', 'user')
       .getMany();
     return homeworks;
   }
@@ -89,7 +86,8 @@ export class NotificationService {
     const createNotification = this.notificationRepository.create({
       type: TypeNotificationEnum.NEWCOMMENT,
       content: `${capitalizeFirstLetter(comment)}`,
-      user: user,
+      userOrigin: user,
+      userDestiny: homework.user,
       idHomeworkOrOffer: parseInt(homework.id),
       category: homework.category,
     });
@@ -116,7 +114,8 @@ export class NotificationService {
     const createNotification = this.notificationRepository.create({
       type: TypeNotificationEnum.OFFERACCEPTED,
       content: `Nueva oferta`,
-      user: user,
+      userOrigin: user,
+      userDestiny: homework.user,
       idHomeworkOrOffer: parseInt(homework.id),
       category: homework.category,
     });
@@ -151,7 +150,8 @@ export class NotificationService {
     const createNotification = this.notificationRepository.create({
       type: TypeNotificationEnum.NEWOFFER,
       content: content,
-      user: user,
+      userOrigin: user,
+      userDestiny: user,
       idHomeworkOrOffer: parseInt(homework.id),
       category: homework.category,
     });
@@ -173,6 +173,18 @@ export class NotificationService {
       console.log(error);
     }
   }
+
+  async clearNotificated(user: User) {
+    console.log(user);
+    const xd = await this.notificationRepository
+      .createQueryBuilder()
+      .update(Notification)
+      .set({ notified: false })
+      .where({ userDestiny: user })
+      .execute();
+    console.log(xd);
+  }
+
   async getUserDevices(user: User): Promise<string[]> {
     const gerUserDevices = await this.deviceRepository.find({ user });
     return gerUserDevices.map((device) => device.idDevice);

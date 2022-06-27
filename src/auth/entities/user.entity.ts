@@ -21,6 +21,7 @@ import { Wallet } from '../../wallet/entities/wallet.entity';
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 /* import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity'; */
 import { Rol } from '../../roles/entities/rol.entity';
+import { Notification } from '../../devices/notification/entities/notification.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()
@@ -122,4 +123,9 @@ export class User {
 
   @OneToMany(() => Device, (device) => device.user, { eager: false })
   device: Device[];
+
+  @OneToMany(() => Notification, (notification) => notification.userDestiny, {
+    eager: false,
+  })
+  notification: Notification[];
 }

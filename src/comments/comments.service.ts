@@ -30,14 +30,13 @@ export class CommentsService {
     }
 
     // rerify if the commnet is different from user comment
-    /* if (findHomework.user.id !== user.id) { */
-    this.notificationService.sendCommentNotification(
-      user,
-      comment.content,
-      getHomework,
-    );
-    /* } */
-    
+    if (getHomework.user.id !== user.id) {
+      this.notificationService.sendCommentNotification(
+        user,
+        comment.content,
+        getHomework,
+      );
+    }
 
     return this.commentRepository.newComment(user, getHomework, comment);
   }
@@ -48,7 +47,7 @@ export class CommentsService {
     const findComment = await this.commentRepository.findOne(commentId);
 
     if (!findComment) {
-      throw new InternalServerErrorException('Homework Not Found');
+      throw new InternalServerErrorException('Comment not Found');
     }
     return this.commentRepository.deleteComment(user, findComment);
   }

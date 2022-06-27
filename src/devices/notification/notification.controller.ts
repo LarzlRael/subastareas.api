@@ -27,4 +27,8 @@ export class NotificationController {
   ) {
     return this.notificationService.seeNotification(idNotification);
   }
+  @Get('/clearnotificated')
+  clearNotificated(@GetUser() user: User) {
+    return this.notificationService.clearNotificated(user);
+  }
 }
