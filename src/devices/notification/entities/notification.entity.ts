@@ -39,11 +39,6 @@ export class Notification {
   @Column()
   idHomeworkOrOffer: number;
 
-  @Column({
-    nullable: true,
-  })
-  category: string;
-
   @Column()
   content: string;
 

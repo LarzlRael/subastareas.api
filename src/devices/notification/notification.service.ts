@@ -89,7 +89,6 @@ export class NotificationService {
       userOrigin: user,
       userDestiny: homework.user,
       idHomeworkOrOffer: parseInt(homework.id),
-      category: homework.category,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -117,7 +116,6 @@ export class NotificationService {
       userOrigin: user,
       userDestiny: homework.user,
       idHomeworkOrOffer: parseInt(homework.id),
-      category: homework.category,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -153,7 +151,6 @@ export class NotificationService {
       userOrigin: user,
       userDestiny: user,
       idHomeworkOrOffer: parseInt(homework.id),
-      category: homework.category,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -175,14 +172,12 @@ export class NotificationService {
   }
 
   async clearNotificated(user: User) {
-    console.log(user);
-    const xd = await this.notificationRepository
+    await this.notificationRepository
       .createQueryBuilder()
       .update(Notification)
       .set({ notified: false })
       .where({ userDestiny: user })
       .execute();
-    console.log(xd);
   }
 
   async getUserDevices(user: User): Promise<string[]> {

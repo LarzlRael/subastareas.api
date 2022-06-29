@@ -24,10 +24,6 @@ export class HomeworkService {
     file: Express.Multer.File,
     user: User,
   ): Promise<Homework> {
-    console.log(homeworkDto);
-    console.log(file);
-    /* const wallet = await this.walletRepository.findOne({ user: user });
-    console.log(wallet); */
     return this.homeworkRepository.createHomework(homeworkDto, file, user);
   }
   async getAprovedHomeWorks() {

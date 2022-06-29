@@ -13,8 +13,8 @@ import { Homework } from './entities/Homework.entity';
 import { User } from '../auth/entities/user.entity';
 import { uploadFile } from '../utils/utils';
 import { HomeworkDto } from './dto/Homework.dto';
-import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { HomeWorkStatusEnum } from '../enums/enums';
+
 @EntityRepository(Homework)
 export class HomeworkRepository extends Repository<Homework> {
   async createHomework(
@@ -30,10 +30,9 @@ export class HomeworkRepository extends Repository<Homework> {
     } */
     if (file) {
       uploadFile(file, 'HOMEWORK').then(async (url) => {
-        homeWorkDto.fileUrl = url;
-
         const homework = this.create({
           ...homeWorkDto,
+          fileUrl: url,
           user,
           fileType: file.mimetype,
         });
@@ -44,6 +43,8 @@ export class HomeworkRepository extends Repository<Homework> {
       const createdHomework = this.create({
         user,
         ...homeWorkDto,
+        fileType: 'only_text',
+        status: HomeWorkStatusEnum.ACCEPTED,
       });
       return await this.save(createdHomework);
     }
@@ -74,20 +75,6 @@ export class HomeworkRepository extends Repository<Homework> {
     return homework;
   }
   async getHomeworksByCategory(category: string[]) {
-    /* if (category[0] === 'empty' && level[0] !== 'empty') {
-      return this.getHomeworksByCondition({ level: In(level) });
-    }
-    if (level[0] === 'empty' && category[0] !== 'empty') {
-      return this.getHomeworksByCondition({ category: In(category) });
-    }
-
-    if (category[0] === 'empty' && level[0] === 'empty') {
-      //TODO devolver todos los homeworks
-      return this.getHomeworksByCondition({
-        status: HomeWorkStatusEnum.ACCEPTED,
-      });
-    } */
-
     if (category[0] !== 'empty') {
       return this.getHomeworksByCondition({ category: In(category) });
     }
@@ -122,8 +109,9 @@ export class HomeworkRepository extends Repository<Homework> {
     user: User,
     id: number,
   ): Promise<Homework> {
-    delete homeWorkDto.status;
-    const homework = await this.findOne(id);
+    const homework = await this.findOne(id, {
+      relations: ['user'],
+    });
 
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
@@ -135,8 +123,11 @@ export class HomeworkRepository extends Repository<Homework> {
       } else {
         if (file) {
           uploadFile(file, 'HOMEWORK').then(async (url) => {
-            homeWorkDto.fileUrl = url;
-            await this.update(id, { ...homework, ...homeWorkDto });
+            await this.update(id, {
+              ...homework,
+              ...homeWorkDto,
+              fileUrl: url,
+            });
             return homework;
           });
         } else {
