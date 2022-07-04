@@ -21,7 +21,6 @@ export const uploadFile = (
   file: Express.Multer.File,
   folder: keyof typeof FoldersNameEnum,
 ): Promise<string> => {
-  console.log(file);
   try {
     return new Promise((resolve, reject) => {
       const uploadStream = v2.uploader.upload_stream(

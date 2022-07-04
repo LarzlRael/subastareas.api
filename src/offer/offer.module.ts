@@ -8,6 +8,7 @@ import { UsersRepository } from '../auth/user.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 import { DeviceRepository } from '../devices/device.repository';
 import { NotificationRepository } from '../devices/notification/repository/notification.repository';
+import { HomeworkService } from '../homework/homework.service';
 
 @Module({
   imports: [

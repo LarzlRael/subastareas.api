@@ -18,6 +18,7 @@ export enum TradeStatusEnum {
   REJECTED = 'rejected',
   TRADED = 'traded',
   PENDINGTOTRADE = 'pending_to_trade',
+  PENDINGTOACCEPT = 'pending_to_accept',
 }
 
 export enum HomeWorkTypeEnum {

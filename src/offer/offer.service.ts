@@ -5,6 +5,8 @@ import { OfferDto } from './dto/offer.dot';
 import { User } from 'src/auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
 import { NotificationService } from '../devices/notification/notification.service';
+import { HomeWorkStatusEnum } from '../enums/enums';
+import { In } from 'typeorm';
 
 @Injectable()
 export class OfferService {
@@ -88,10 +90,30 @@ export class OfferService {
       relations: ['homework', 'offers'],
     });
   }
-  async getOfferedHomeworkds(user: User): Promise<Offer[]> {
+  async getOfferedHomeworks(user: User): Promise<Offer[]> {
     return this.offerRepository.find({
       where: { user },
       relations: ['homework'],
     });
+  }
+  async getUsersHomeworksPending(user: User) {
+    const offers = await this.offerRepository.find({
+      where: { user },
+      relations: ['homework'],
+      order: { created_at: 'DESC' },
+    });
+    const idsHomeworks = offers
+      .filter(
+        (offer) =>
+          offer.homework.status === HomeWorkStatusEnum.PENDING_TO_RESOLVE,
+      )
+      .map((offer) => {
+        console.log(offer)
+      });
+    console.log(idsHomeworks);
+    /* return await this.homeworkRepository.find({
+      where: { id: In(idsHomeworks) },
+      relations: ['user', 'offers'],
+    }); */
   }
 }

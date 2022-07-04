@@ -6,6 +6,8 @@ import { WalletRepository } from '../wallet/wallet.repository';
 import { HomeWorkStatusEnum, TradeStatusEnum } from '../enums/enums';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
+import { uploadFile } from '../utils/utils';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class TradeService {
@@ -65,5 +67,20 @@ export class TradeService {
     await this.walletRepository.save(offerUserWallet);
     await this.walletRepository.save(homeworkUserWallet);
     return null;
+  }
+  async uploadResolvedHomework(
+    user: User,
+    id: number,
+    file: Express.Multer.File,
+  ) {
+    const homework = await this.tradeRepository.findOne(id);
+    uploadFile(file, 'SOLVED_HOMEWORK_URL').then(async (url) => {
+      await this.tradeRepository.update(id, {
+        ...homework,
+        solvedHomeworkUrl: url,
+        status: TradeStatusEnum.PENDINGTOACCEPT,
+      });
+      return homework;
+    });
   }
 }

@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Trade } from 'src/trade/entities/trade.entity';
+import { TradeStatusEnum } from '../../enums/enums';
 
 @Entity()
 export class Offer {
@@ -20,9 +21,12 @@ export class Offer {
   priceOffer: number;
 
   @Column({
-    default: false,
+    type: 'enum',
+    enum: TradeStatusEnum,
+    default: TradeStatusEnum.PENDING,
   })
-  accept: boolean;
+  status: TradeStatusEnum;
+
   @Column({
     default: false,
   })

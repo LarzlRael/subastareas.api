@@ -149,7 +149,7 @@ export class NotificationService {
       type: TypeNotificationEnum.NEWOFFER,
       content: content,
       userOrigin: user,
-      userDestiny: user,
+      userDestiny: homework.user,
       idHomeworkOrOffer: parseInt(homework.id),
     });
     await this.notificationRepository.save(createNotification);

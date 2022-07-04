@@ -1,4 +1,4 @@
-import { OneToOne, CreateDateColumn } from 'typeorm';
+import { OneToOne, CreateDateColumn, JoinColumn } from 'typeorm';
 import {
   Column,
   Entity,
@@ -40,6 +40,6 @@ export class Trade {
   updated_at: Date;
 
   @OneToOne(() => Offer, { eager: true })
-  /* @JoinColumn({ name: 'id_offer' }) */
+  @JoinColumn()
   offer: Offer;
 }

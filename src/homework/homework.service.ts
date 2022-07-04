@@ -27,11 +27,14 @@ export class HomeworkService {
     return this.homeworkRepository.createHomework(homeworkDto, file, user);
   }
   async getAprovedHomeWorks() {
-    /* const homeworkAcepted = await this.homeworkRepository.find({
-      where: { status: HomeWorkStatusEnum.ACCEPTED },
-    }); */
     return this.homeworkRepository.getHomeworksByCondition({
       status: HomeWorkStatusEnum.ACCEPTED,
+    });
+  }
+  async getUserPendingOfferAccept(user: User) {
+    return this.homeworkRepository.getHomeworksByCondition({
+      status: HomeWorkStatusEnum.PENDING_TO_RESOLVE,
+      user: user,
     });
   }
   async getHomeworkByCategory(category: string[]) {
@@ -43,9 +46,9 @@ export class HomeworkService {
   }
   async getOneHomework(id: number) {
     const homework = await this.homeworkRepository.getOneHomework(id);
-    const offers = await this.offerRepository.getOffersByHomeworks(homework);
     /* console.log(offers); */
     const comments = await this.commentRepository.getCommentsByHomework(id);
+    const offers = await this.offerRepository.getOffersByHomeworks(homework);
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
