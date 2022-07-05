@@ -45,7 +45,7 @@ export class OfferRepository extends Repository<Offer> {
       .select([
         'offer.id',
         'offer.priceOffer',
-
+        'offer.status',
         /* 'offer.createdAt', */
         'user.id',
         'user.username',

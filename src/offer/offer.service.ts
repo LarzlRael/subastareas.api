@@ -7,12 +7,14 @@ import { Offer } from './entities/offer.entity';
 import { NotificationService } from '../devices/notification/notification.service';
 import { HomeWorkStatusEnum } from '../enums/enums';
 import { In } from 'typeorm';
+import { HomeworkService } from '../homework/homework.service';
 
 @Injectable()
 export class OfferService {
   constructor(
     private offerRepository: OfferRepository,
     private homeworkRepository: HomeworkRepository,
+    private homeworkService: HomeworkService,
     private notificationService: NotificationService,
   ) {}
 
@@ -97,23 +99,36 @@ export class OfferService {
     });
   }
   async getUsersHomeworksPending(user: User) {
-    const offers = await this.offerRepository.find({
-      where: { user },
-      relations: ['homework'],
-      order: { created_at: 'DESC' },
-    });
-    const idsHomeworks = offers
-      .filter(
-        (offer) =>
-          offer.homework.status === HomeWorkStatusEnum.PENDING_TO_RESOLVE,
-      )
-      .map((offer) => {
-        console.log(offer)
-      });
-    console.log(idsHomeworks);
-    /* return await this.homeworkRepository.find({
+    const offers = await this.offerRepository.query(
+      'select h.id as homeworkId , o.id as offerId  FROM offer o inner join homework h on h.id  = o.homeworkId  where o.userId  = ? and h.status = "pending_to_resolve"',
+      [user.id],
+    );
+    /* [ { homeworkId: 11, offerId: 7 }, { homeworkId: 17, offerId: 8 } ] */
+
+    const idsHomeworks = offers.map((offer) => offer.homeworkId);
+
+    /*     const xd = await this.homeworkRepository.find({
       where: { id: In(idsHomeworks) },
       relations: ['user', 'offers'],
     }); */
+
+    const homeworks = await this.homeworkRepository.getHomeworksByCondition({
+      id: In(idsHomeworks),
+    });
+    console.log(homeworks);
+    return homeworks.map((homework, i) => ({
+      ...homework,
+      offerId: offers[i].offerId,
+    }));
   }
 }
+
+
+
+//TODO usar esto 
+/* SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id
+from trade t inner join offer o on 
+t.offerId  = o.id 
+inner join homework h 
+on h.id = o.homeworkId 
+where t.id = 14 */

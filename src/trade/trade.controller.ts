@@ -22,7 +22,7 @@ export class TradeController {
   constructor(private readonly tradeService: TradeService) {}
 
   @Get('enterPendingTrade/:idOffer')
-  enterPendingExchange(@Param('idOffer') idOffer: string) {
+  enterPendingTrade(@Param('idOffer') idOffer: string) {
     return this.tradeService.enterPendingTrade(idOffer);
   }
 

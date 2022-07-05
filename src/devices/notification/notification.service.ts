@@ -8,6 +8,7 @@ import { TypeNotificationEnum } from 'src/enums/enums';
 import { DeviceRepository } from '../device.repository';
 import { Homework } from '../../homework/entities/Homework.entity';
 import { Notification } from './entities/notification.entity';
+import { NotificationTypeEnum } from '../../enums/enums';
 
 @Injectable()
 export class NotificationService {
@@ -41,10 +42,6 @@ export class NotificationService {
     }
     notification.visible = false;
     await this.notificationRepository.save(notification);
-
-    /* return await this.notificationRepository.find({
-      where: { user: user },
-    }); */
   }
   async seeNotification(idNotification: string) {
     const notification = await this.notificationRepository.findOne(
@@ -72,7 +69,7 @@ export class NotificationService {
     const sendData: IpushNotification = {
       registration_ids: await this.getUserDevices(user),
       data: {
-        type_notification: 'comment',
+        type_notification: NotificationTypeEnum.COMMENT,
         content: `${user.username}: ${comment}`,
       },
       notification: {
@@ -84,7 +81,7 @@ export class NotificationService {
     };
 
     const createNotification = this.notificationRepository.create({
-      type: TypeNotificationEnum.NEWCOMMENT,
+      type: TypeNotificationEnum.NEW_COMMENT,
       content: `${capitalizeFirstLetter(comment)}`,
       userOrigin: user,
       userDestiny: homework.user,
@@ -99,7 +96,7 @@ export class NotificationService {
     const sendData: IpushNotification = {
       registration_ids: await this.getUserDevices(user),
       data: {
-        type_notification: 'offer_accepted',
+        type_notification: NotificationTypeEnum.OFFER_ACCEPTED,
         content: `El usuario user ha aceptado tu oferta`,
       },
       notification: {
@@ -111,8 +108,34 @@ export class NotificationService {
     };
 
     const createNotification = this.notificationRepository.create({
-      type: TypeNotificationEnum.OFFERACCEPTED,
+      type: TypeNotificationEnum.OFFER_ACCEPTED,
       content: `Nueva oferta`,
+      userOrigin: user,
+      userDestiny: homework.user,
+      idHomeworkOrOffer: parseInt(homework.id),
+    });
+    await this.notificationRepository.save(createNotification);
+    await this.sendNotification(sendData);
+  }
+  async sendHomeworkResolveNotification(user: User, homework: Homework) {
+    console.log(homework);
+    const sendData: IpushNotification = {
+      registration_ids: await this.getUserDevices(user),
+      data: {
+        type_notification: NotificationTypeEnum.HOMEWORK_RESOLVE,
+        content: `Tu tarea ha sido resuelta`,
+      },
+      notification: {
+        title: `Tarea resuelta`,
+        body: `Hechale un vistazo a tu tarea`,
+        /* icon:
+          'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png', */
+      },
+    };
+
+    const createNotification = this.notificationRepository.create({
+      type: TypeNotificationEnum.HOMEWORK_FINISHED,
+      content: `Tarea resuelta`,
       userOrigin: user,
       userDestiny: homework.user,
       idHomeworkOrOffer: parseInt(homework.id),
@@ -133,7 +156,7 @@ export class NotificationService {
     const sendData: IpushNotification = {
       registration_ids: await this.getUserDevices(user),
       data: {
-        type_notification: 'new_offer',
+        type_notification: TypeNotificationEnum.NEW_OFFER,
         content: content,
         icon:
           'https://www.iconplc.com/site-files/cms-templates/images/open-graph/OG_Facebook.png',
@@ -146,7 +169,7 @@ export class NotificationService {
       },
     };
     const createNotification = this.notificationRepository.create({
-      type: TypeNotificationEnum.NEWOFFER,
+      type: TypeNotificationEnum.NEW_OFFER,
       content: content,
       userOrigin: user,
       userDestiny: homework.user,

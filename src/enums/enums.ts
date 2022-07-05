@@ -19,6 +19,7 @@ export enum TradeStatusEnum {
   TRADED = 'traded',
   PENDINGTOTRADE = 'pending_to_trade',
   PENDINGTOACCEPT = 'pending_to_accept',
+  PENDING_TO_RESOLVE = 'pending_to_resolve',
 }
 
 export enum HomeWorkTypeEnum {
@@ -35,9 +36,10 @@ export enum HomeWorkTypeEnum {
 
 export enum FoldersNameEnum {
   HOMEWORK = 'homework',
+  HOMEWORK_PDF = 'homework_pdf',
   HOMEWORK_IMAGES = 'homework_images',
   PROFILE_IMAGES = 'profile_images',
-  SOLVED_HOMEWORK_URL = 'solved_homework_url',
+  SOLVED_HOMEWORK_URL = 'solved_homework',
 }
 
 export enum LevelTypeEnum {
@@ -45,8 +47,14 @@ export enum LevelTypeEnum {
   UNIVERSITARIO = 'Universitario',
 }
 export enum TypeNotificationEnum {
-  NEWCOMMENT = 'new_comment',
-  NEWOFFER = 'new_offer',
-  OFFERACCEPTED = 'offer_accepted',
-  HOMEWORKFINISHED = 'homework_finished',
+  NEW_COMMENT = 'new_comment',
+  NEW_OFFER = 'new_offer',
+  OFFER_ACCEPTED = 'offer_accepted',
+  HOMEWORK_FINISHED = 'homework_finished',
+}
+export enum NotificationTypeEnum {
+  NEW_OFFER = 'new_offer',
+  COMMENT = 'comment',
+  OFFER_ACCEPTED = 'offer_accepted',
+  HOMEWORK_RESOLVE = 'homework_resolve',
 }

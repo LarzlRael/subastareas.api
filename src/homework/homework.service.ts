@@ -46,9 +46,10 @@ export class HomeworkService {
   }
   async getOneHomework(id: number) {
     const homework = await this.homeworkRepository.getOneHomework(id);
-    /* console.log(offers); */
+
     const comments = await this.commentRepository.getCommentsByHomework(id);
     const offers = await this.offerRepository.getOffersByHomeworks(homework);
+    console.log(offers);
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {

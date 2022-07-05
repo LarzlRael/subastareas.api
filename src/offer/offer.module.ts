@@ -9,6 +9,8 @@ import { NotificationService } from '../devices/notification/notification.servic
 import { DeviceRepository } from '../devices/device.repository';
 import { NotificationRepository } from '../devices/notification/repository/notification.repository';
 import { HomeworkService } from '../homework/homework.service';
+import { CommentRepository } from '../comments/comment.repository';
+import { WalletRepository } from '../wallet/wallet.repository';
 
 @Module({
   imports: [
@@ -18,9 +20,11 @@ import { HomeworkService } from '../homework/homework.service';
       UsersRepository,
       DeviceRepository,
       NotificationRepository,
+      CommentRepository,
+      WalletRepository,
     ]),
   ],
-  providers: [OfferService, NotificationService],
+  providers: [OfferService, NotificationService, HomeworkService],
   controllers: [OfferController],
 })
 export class OfferModule {}

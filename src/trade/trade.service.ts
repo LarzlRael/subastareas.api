@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { TradeRepository } from './trade.repository';
 import { OfferRepository } from '../offer/offer.repository';
 import { UsersRepository } from '../auth/user.repository';
@@ -24,6 +24,12 @@ export class TradeService {
       relations: ['homework'],
     });
 
+    if (!offer) {
+      throw new Error('Offer not found');
+    } else {
+      offer.status = TradeStatusEnum.PENDING_TO_RESOLVE;
+      await this.OfferRepository.save(offer);
+    }
     const getHomework = await this.homeworkRepository.findOne(
       offer.homework.id,
     );
@@ -31,9 +37,6 @@ export class TradeService {
     await this.homeworkRepository.save({
       ...getHomework,
     });
-    if (!offer) {
-      throw new Error('Offer not found');
-    }
 
     const newTrade = this.tradeRepository.create({
       offer,
@@ -49,7 +52,7 @@ export class TradeService {
 
   async newTrade(idOffer: string) {
     const offer = await this.OfferRepository.findOne(idOffer);
-    console.log(offer);
+
     if (!offer) {
       throw new Error('Offer not found');
     }
@@ -73,14 +76,49 @@ export class TradeService {
     id: number,
     file: Express.Multer.File,
   ) {
-    const homework = await this.tradeRepository.findOne(id);
+    const getOffer = await this.OfferRepository.findOne(id, {
+      relations: ['homework'],
+    });
+    if (!getOffer) {
+      throw new InternalServerErrorException('Offer not found');
+    }
+
+    const getTrade = await this.tradeRepository.findOne({
+      where: { offer: getOffer },
+    });
+
+    if (!getTrade) {
+      throw new Error('Trade not found');
+    } else if (getTrade.offer.user.id !== user.id) {
+      throw new InternalServerErrorException(
+        'You are not the owner of this offer',
+      );
+    }
+    getOffer.status = TradeStatusEnum.PENDINGTOACCEPT;
+    await this.OfferRepository.save(getOffer);
+    //get user owner of this homework
+    const getuserHomework = await this.homeworkRepository.findOne(
+      getOffer.homework.id,
+      { relations: ['user'] },
+    );
+    const homeworkHomeworkDestination = await this.homeworkRepository.findOne(
+      getOffer.homework.id,
+      { relations: ['user'] },
+    );
+    console.log(homeworkHomeworkDestination);
+
+    await this.notificationService.sendHomeworkResolveNotification(
+      getuserHomework.user,
+      homeworkHomeworkDestination,
+    );
+
     uploadFile(file, 'SOLVED_HOMEWORK_URL').then(async (url) => {
-      await this.tradeRepository.update(id, {
-        ...homework,
+      await this.tradeRepository.update(getTrade.id, {
+        ...getTrade,
         solvedHomeworkUrl: url,
         status: TradeStatusEnum.PENDINGTOACCEPT,
       });
-      return homework;
+      return getTrade;
     });
   }
 }
