@@ -7,21 +7,24 @@ import { OfferController } from './offer.controller';
 import { UsersRepository } from '../auth/user.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 import { DeviceRepository } from '../devices/device.repository';
-import { NotificationRepository } from '../devices/notification/repository/notification.repository';
+
 import { HomeworkService } from '../homework/homework.service';
 import { CommentRepository } from '../comments/comment.repository';
-import { WalletRepository } from '../wallet/wallet.repository';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
+import { Notification } from 'src/devices/notification/entities/notification.entity';
+import { DevicesModule } from '../devices/devices.module';
 
 @Module({
   imports: [
+    DevicesModule,
     TypeOrmModule.forFeature([
       OfferRepository,
       HomeworkRepository,
       UsersRepository,
       DeviceRepository,
-      NotificationRepository,
       CommentRepository,
-      WalletRepository,
+      Notification,
+      Wallet,
     ]),
   ],
   providers: [OfferService, NotificationService, HomeworkService],

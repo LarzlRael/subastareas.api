@@ -8,7 +8,7 @@ import { CloudinaryProvider } from './cloudinary.provider';
 import { RolesModule } from 'src/roles/roles.module';
 import { OfferRepository } from '../offer/offer.repository';
 import { CommentRepository } from '../comments/comment.repository';
-import { WalletRepository } from '../wallet/wallet.repository';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { WalletRepository } from '../wallet/wallet.repository';
       HomeworkRepository,
       OfferRepository,
       CommentRepository,
-      WalletRepository,
+      Wallet,
     ]),
     AuthModule,
     RolesModule,

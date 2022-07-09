@@ -6,7 +6,7 @@ import { DeviceRepository } from './device.repository';
 import { NotificationService } from './notification/notification.service';
 import { NotificationController } from './notification/notification.controller';
 import { ConfigModule } from '@nestjs/config';
-import { NotificationRepository } from './notification/repository/notification.repository';
+import { Notification } from './notification/entities/notification.entity';
 
 @Module({
   /* imports: [TypeOrmModule.forFeature([DeviceRepository])], */
@@ -16,9 +16,10 @@ import { NotificationRepository } from './notification/repository/notification.r
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([DeviceRepository, NotificationRepository]),
+    TypeOrmModule.forFeature([DeviceRepository, Notification]),
   ],
   providers: [DevicesService, NotificationService],
   controllers: [DevicesController, NotificationController],
+  exports: [DevicesService, NotificationService],
 })
 export class DevicesModule {}

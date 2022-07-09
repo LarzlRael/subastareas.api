@@ -17,7 +17,7 @@ import { HomeWorkTypeEnum } from '../../enums/enums';
 @Entity()
 export class Homework {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   title: string;

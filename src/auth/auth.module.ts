@@ -11,7 +11,6 @@ import { ConfigModule } from '@nestjs/config';
 
 import { DevicesService } from '../devices/devices.service';
 import { DeviceRepository } from '../devices/device.repository';
-import { WalletRepository } from '../wallet/wallet.repository';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
@@ -19,6 +18,7 @@ import { RolRepository } from 'src/roles/repositories/rol.repository';
 import { RolesService } from 'src/roles/services/roles.service';
 import { RolesModule } from '../roles/roles.module';
 import { RolsService } from '../roles/services/rols.service';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import { RolsService } from '../roles/services/rols.service';
       UsersRepository,
       RolRepository,
       DeviceRepository,
-      WalletRepository,
+      Wallet,
     ]),
   ],
   providers: [

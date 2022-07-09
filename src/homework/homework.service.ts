@@ -7,7 +7,6 @@ import { HomeWorkStatusEnum, HomeWorkTypeEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 import { OfferRepository } from '../offer/offer.repository';
 import { CommentRepository } from '../comments/comment.repository';
-import { WalletRepository } from '../wallet/wallet.repository';
 
 @Injectable()
 export class HomeworkService {
@@ -16,7 +15,6 @@ export class HomeworkService {
     private homeworkRepository: HomeworkRepository,
     private offerRepository: OfferRepository,
     private commentRepository: CommentRepository,
-    private walletRepository: WalletRepository,
   ) {}
 
   async createHomework(
