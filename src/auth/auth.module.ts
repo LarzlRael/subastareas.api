@@ -13,12 +13,12 @@ import { DevicesService } from '../devices/devices.service';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
-import { RolRepository } from 'src/roles/repositories/rol.repository';
-import { RolesService } from 'src/roles/services/roles.service';
+
 import { RolesModule } from '../roles/roles.module';
 import { RolsService } from '../roles/services/rols.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Device } from 'src/devices/entities/devices.entity';
+import { Rol } from '../roles/entities/rol.entity';
 
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { Device } from 'src/devices/entities/devices.entity';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([UsersRepository, RolRepository, Device, Wallet]),
+    TypeOrmModule.forFeature([UsersRepository, Rol, Device, Wallet]),
   ],
   providers: [
     AuthService,
@@ -43,7 +43,6 @@ import { Device } from 'src/devices/entities/devices.entity';
     DevicesService,
     WalletService,
     AdminService,
-    RolesService,
     RolsService,
   ],
   controllers: [AuthController, AdminController],

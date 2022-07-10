@@ -27,7 +27,7 @@ export class RolsController {
     /* @GetUser() user: User, */
     @Body() rol: RolDto,
     @Param('id') id: number,
-  ): Promise<Rol> {
+  ) {
     return this.rolService.assignRole(id, rol);
   }
 

@@ -1,23 +1,37 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RolRepository } from '../repositories/rol.repository';
 import { Rol } from '../entities/rol.entity';
-
 import { RolDto } from '../dto/rol.dto';
 import { UsersRepository } from '../../auth/user.repository';
 import { User } from '../../auth/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RolsService {
   constructor(
-    @InjectRepository(RolRepository)
-    private rolRepository: RolRepository,
+    @InjectRepository(Rol)
+    private rolRepository: Repository<Rol>,
     private userRepository: UsersRepository,
   ) {}
-  createNewRol(user: User, rol: RolDto): Promise<Rol> {
-    return this.rolRepository.createRol(user, rol);
+
+  async createNewRol(user: User, rol: RolDto): Promise<Rol> {
+    try {
+      return await this.rolRepository.save({ ...rol, user });
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        // duplicate user
+        throw new ConflictException('Rol already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
-  async assignRole(id: number, rol: RolDto): Promise<Rol> {
+  async assignRole(id: number, rol: RolDto) {
     const findUser = await this.userRepository.findOne(id);
     if (!findUser) {
       throw new InternalServerErrorException('User not found');
@@ -29,17 +43,27 @@ export class RolsService {
       throw new InternalServerErrorException('Rol already exists');
     }
 
-    return this.rolRepository.assignRole(findUser, rol);
+    try {
+      await this.userRepository.save({ ...rol, findUser });
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        // duplicate user
+        throw new ConflictException('Rol already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
-  async assignStudenRole(user: User, rol: RolDto): Promise<Rol> {
-    return this.rolRepository.assignRole(user, rol);
+  async assignStudenRole(user: User, rol: RolDto) {
+    return this.assignRole(user.id, rol);
   }
-  async listUserRoles(idUser: number): Promise<Rol[]> {
+  async listUserRoles(idUser: number) {
     const findUser = await this.userRepository.findOne(idUser);
     if (!findUser) {
       throw new InternalServerErrorException('User not found');
     }
-    return this.rolRepository.listUserRoles(findUser);
+    return await this.rolRepository.find({ user: findUser });
   }
   async removeRole(idRole: number) {
     const getRole = await this.rolRepository.findOne(idRole);

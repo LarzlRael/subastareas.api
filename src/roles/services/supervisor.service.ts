@@ -6,24 +6,24 @@ import { HomeworkRepository } from '../../homework/homework.repository';
 import { Homework } from '../../homework/entities/Homework.entity';
 import { ActionSupervisorDTO } from '../dto/action.dto';
 import { UsersRepository } from 'src/auth/user.repository';
-import { RolRepository } from '../repositories/rol.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RolsService } from './rols.service';
 
 @Injectable()
 export class SupervisorService {
   constructor(
     @InjectRepository(Supervisor)
     private supervisorRepository: Repository<Supervisor>,
-    public rolRepository: RolRepository,
     public homeworkRepository: HomeworkRepository,
     public usersRepository: UsersRepository,
+    private rolService: RolsService,
   ) {}
   async createSupervisor(user: User): Promise<Supervisor> {
     if (user.supervisor) {
       throw new InternalServerErrorException('You are already a supervisor');
     }
-    this.rolRepository.assignRole(user, {
+    this.rolService.assignRole(user.id, {
       rolName: RoleEnum.SUPERVISOR,
       id: user.id,
       active: true,
@@ -39,7 +39,7 @@ export class SupervisorService {
       if (user.supervisor) {
         throw new InternalServerErrorException('You are already a supervisor');
       }
-      this.rolRepository.assignRole(user, {
+      this.rolService.assignRole(user.id, {
         rolName: RoleEnum.SUPERVISOR,
         id: user.id,
         active: true,
