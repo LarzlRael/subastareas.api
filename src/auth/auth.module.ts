@@ -10,7 +10,6 @@ import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
 import { DevicesService } from '../devices/devices.service';
-import { DeviceRepository } from '../devices/device.repository';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
@@ -19,6 +18,7 @@ import { RolesService } from 'src/roles/services/roles.service';
 import { RolesModule } from '../roles/roles.module';
 import { RolsService } from '../roles/services/rols.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
+import { Device } from 'src/devices/entities/devices.entity';
 
 @Module({
   imports: [
@@ -35,12 +35,7 @@ import { Wallet } from 'src/wallet/entities/wallet.entity';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([
-      UsersRepository,
-      RolRepository,
-      DeviceRepository,
-      Wallet,
-    ]),
+    TypeOrmModule.forFeature([UsersRepository, RolRepository, Device, Wallet]),
   ],
   providers: [
     AuthService,

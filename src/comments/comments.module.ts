@@ -9,7 +9,7 @@ import { NotificationService } from '../devices/notification/notification.servic
 import { Notification } from 'src/devices/notification/entities/notification.entity';
 import { DevicesService } from '../devices/devices.service';
 import { Device } from '../devices/entities/devices.entity';
-import { DeviceRepository } from '../devices/device.repository';
+
 import { DevicesModule } from '../devices/devices.module';
 
 @Module({
@@ -18,7 +18,7 @@ import { DevicesModule } from '../devices/devices.module';
     TypeOrmModule.forFeature([
       CommentRepository,
       HomeworkRepository,
-      DeviceRepository,
+
       Notification,
     ]),
   ],

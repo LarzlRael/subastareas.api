@@ -6,7 +6,6 @@ import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferController } from './offer.controller';
 import { UsersRepository } from '../auth/user.repository';
 import { NotificationService } from '../devices/notification/notification.service';
-import { DeviceRepository } from '../devices/device.repository';
 
 import { HomeworkService } from '../homework/homework.service';
 import { CommentRepository } from '../comments/comment.repository';
@@ -21,7 +20,7 @@ import { DevicesModule } from '../devices/devices.module';
       OfferRepository,
       HomeworkRepository,
       UsersRepository,
-      DeviceRepository,
+
       CommentRepository,
       Notification,
       Wallet,

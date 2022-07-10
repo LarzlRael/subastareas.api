@@ -7,11 +7,11 @@ import { UsersRepository } from '../auth/user.repository';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 
-import { DeviceRepository } from '../devices/device.repository';
 import { Wallet } from '../wallet/entities/wallet.entity';
 import { Trade } from 'src/trade/entities/trade.entity';
 import { Notification } from 'src/devices/notification/entities/notification.entity';
 import { DevicesModule } from '../devices/devices.module';
+import { Device } from '../devices/entities/devices.entity';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { DevicesModule } from '../devices/devices.module';
       UsersRepository,
 
       HomeworkRepository,
-      DeviceRepository,
+      Device,
       Notification,
       Trade,
       Wallet,
