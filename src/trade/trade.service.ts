@@ -1,6 +1,4 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { OfferRepository } from '../offer/offer.repository';
-import { UsersRepository } from '../auth/user.repository';
 import { HomeWorkStatusEnum, TradeStatusEnum } from '../enums/enums';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
@@ -10,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Wallet } from '../wallet/entities/wallet.entity';
 import { Repository } from 'typeorm';
 import { Trade } from './entities/trade.entity';
+import { OfferService } from '../offer/offer.service';
 
 @Injectable()
 export class TradeService {
@@ -18,21 +17,19 @@ export class TradeService {
     private tradeRepository: Repository<Trade>,
     @InjectRepository(Wallet)
     private walletRepository: Repository<Wallet>,
-    private OfferRepository: OfferRepository,
+    private offerService: OfferService,
     private homeworkRepository: HomeworkRepository,
     private notificationService: NotificationService,
   ) {}
 
-  async enterPendingTrade(idOffer: string) {
-    const offer = await this.OfferRepository.findOne(idOffer, {
-      relations: ['homework'],
-    });
+  async enterPendingTrade(idOffer: number) {
+    const offer = await this.offerService.getOneOffer(idOffer);
 
     if (!offer) {
       throw new Error('Offer not found');
     } else {
       offer.status = TradeStatusEnum.PENDING_TO_RESOLVE;
-      await this.OfferRepository.save(offer);
+      await this.offerService.saveOffer(offer);
     }
     const getHomework = await this.homeworkRepository.findOne(
       offer.homework.id,
@@ -54,8 +51,8 @@ export class TradeService {
     return await this.tradeRepository.save(newTrade);
   }
 
-  async newTrade(idOffer: string) {
-    const offer = await this.OfferRepository.findOne(idOffer);
+  async newTrade(idOffer: number) {
+    const offer = await this.offerService.getOneOffer(idOffer);
 
     if (!offer) {
       throw new Error('Offer not found');
@@ -80,9 +77,7 @@ export class TradeService {
     id: number,
     file: Express.Multer.File,
   ) {
-    const getOffer = await this.OfferRepository.findOne(id, {
-      relations: ['homework'],
-    });
+    const getOffer = await this.offerService.getOneOffer(id);
     if (!getOffer) {
       throw new InternalServerErrorException('Offer not found');
     }
@@ -99,7 +94,7 @@ export class TradeService {
       );
     }
     getOffer.status = TradeStatusEnum.PENDINGTOACCEPT;
-    await this.OfferRepository.save(getOffer);
+    await this.offerService.saveOffer(getOffer);
     //get user owner of this homework
     const getuserHomework = await this.homeworkRepository.findOne(
       getOffer.homework.id,

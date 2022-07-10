@@ -40,7 +40,7 @@ export class OfferController {
     return this.offerService.getUsersHomeworksPending(user);
   }
   @Get(':idHomework')
-  getOfferByHomework(@Param('idHomework') idHomework: string) {
+  getOfferByHomework(@Param('idHomework') idHomework: number) {
     return this.offerService.getOffersByHomeworks(idHomework);
   }
 

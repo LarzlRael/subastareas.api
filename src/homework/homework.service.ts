@@ -5,15 +5,15 @@ import { HomeworkDto } from './dto/Homework.dto';
 import { User } from '../auth/entities/user.entity';
 import { HomeWorkStatusEnum, HomeWorkTypeEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
-import { OfferRepository } from '../offer/offer.repository';
 import { CommentsService } from '../comments/comments.service';
+import { OfferService } from '../offer/offer.service';
 
 @Injectable()
 export class HomeworkService {
   constructor(
     @InjectRepository(HomeworkRepository)
     private homeworkRepository: HomeworkRepository,
-    private offerRepository: OfferRepository,
+    private offerService: OfferService,
     private commentService: CommentsService,
   ) {}
 
@@ -45,7 +45,7 @@ export class HomeworkService {
   async getOneHomework(id: number) {
     const homework = await this.homeworkRepository.getOneHomework(id);
     const comments = await this.commentService.getCommentsByHomework(id);
-    const offers = await this.offerRepository.getOffersByHomeworks(homework);
+    const offers = await this.offerService.getOffersByHomeworks(homework.id);
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { OfferRepository } from './offer.repository';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferController } from './offer.controller';
 import { UsersRepository } from '../auth/user.repository';
@@ -13,15 +12,16 @@ import { Notification } from 'src/devices/notification/entities/notification.ent
 import { DevicesModule } from '../devices/devices.module';
 import { CommentsService } from '../comments/comments.service';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { Offer } from './entities/offer.entity';
 
 @Module({
   imports: [
     DevicesModule,
     TypeOrmModule.forFeature([
-      OfferRepository,
       HomeworkRepository,
       UsersRepository,
 
+      Offer,
       Comment,
       Notification,
       Wallet,
@@ -34,5 +34,6 @@ import { Comment } from 'src/comments/entities/comment.entity';
     CommentsService,
   ],
   controllers: [OfferController],
+  exports: [OfferService],
 })
 export class OfferModule {}
