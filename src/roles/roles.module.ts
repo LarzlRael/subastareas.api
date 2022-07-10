@@ -10,10 +10,10 @@ import { SupervisorRepository } from './repositories/supervisor.repository';
 
 import { HomeworkRepository } from '../homework/homework.repository';
 import { UsersRepository } from '../auth/user.repository';
-import { ProfessorRepository } from './repositories/professor.repository';
 import { RolRepository } from './repositories/rol.repository';
 import { RolsController } from './controllers/rols.controller';
 import { RolsService } from './services/rols.service';
+import { Professor } from './entities/professor.entity';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { RolsService } from './services/rols.service';
       RolRepository,
       HomeworkRepository,
       UsersRepository,
-      ProfessorRepository,
+      Professor,
     ]),
   ],
   controllers: [
