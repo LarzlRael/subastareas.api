@@ -1,5 +1,4 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { SupervisorRepository } from '../repositories/supervisor.repository';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from '../entities/Supervisor.entity';
 import { RoleEnum } from '../../enums/enums';
@@ -8,16 +7,19 @@ import { Homework } from '../../homework/entities/Homework.entity';
 import { ActionSupervisorDTO } from '../dto/action.dto';
 import { UsersRepository } from 'src/auth/user.repository';
 import { RolRepository } from '../repositories/rol.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SupervisorService {
   constructor(
-    public supervisorRepository: SupervisorRepository,
+    @InjectRepository(Supervisor)
+    private supervisorRepository: Repository<Supervisor>,
     public rolRepository: RolRepository,
     public homeworkRepository: HomeworkRepository,
     public usersRepository: UsersRepository,
   ) {}
-  createSupervisor(user: User): Promise<Supervisor> {
+  async createSupervisor(user: User): Promise<Supervisor> {
     if (user.supervisor) {
       throw new InternalServerErrorException('You are already a supervisor');
     }
@@ -26,7 +28,8 @@ export class SupervisorService {
       id: user.id,
       active: true,
     });
-    return this.supervisorRepository.createSupervisor(user);
+    const createNewSupervisor = this.supervisorRepository.create({ user });
+    return await this.supervisorRepository.save(createNewSupervisor);
   }
   async becomeSupervisor(idUser: number): Promise<Supervisor> {
     const user = await this.usersRepository.findOne(idUser);
@@ -41,7 +44,9 @@ export class SupervisorService {
         id: user.id,
         active: true,
       });
-      return this.supervisorRepository.createSupervisor(user);
+      /* return this.supervisorRepository.createSupervisor(user); */
+      const createNewSupervisor = this.supervisorRepository.create({ user });
+      return await this.supervisorRepository.save(createNewSupervisor);
     }
   }
   async getHomeworksToSupervise(): Promise<Homework[]> {
