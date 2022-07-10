@@ -29,9 +29,7 @@ export class CommentsController {
     return this.commentService.createComment(user, idHomework, comment);
   }
   @Get('/getcomments/:homeworkId')
-  getCommentsByHomework(
-    @Param('homeworkId') homeworkId: number,
-  ): Promise<Comment[]> {
+  getCommentsByHomework(@Param('homeworkId') homeworkId: number) {
     return this.commentService.getCommentsByHomework(homeworkId);
   }
 

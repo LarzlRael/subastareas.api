@@ -8,10 +8,11 @@ import { UsersRepository } from '../auth/user.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 
 import { HomeworkService } from '../homework/homework.service';
-import { CommentRepository } from '../comments/comment.repository';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Notification } from 'src/devices/notification/entities/notification.entity';
 import { DevicesModule } from '../devices/devices.module';
+import { CommentsService } from '../comments/comments.service';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Module({
   imports: [
@@ -21,12 +22,17 @@ import { DevicesModule } from '../devices/devices.module';
       HomeworkRepository,
       UsersRepository,
 
-      CommentRepository,
+      Comment,
       Notification,
       Wallet,
     ]),
   ],
-  providers: [OfferService, NotificationService, HomeworkService],
+  providers: [
+    OfferService,
+    NotificationService,
+    HomeworkService,
+    CommentsService,
+  ],
   controllers: [OfferController],
 })
 export class OfferModule {}

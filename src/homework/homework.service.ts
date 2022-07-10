@@ -6,7 +6,7 @@ import { User } from '../auth/entities/user.entity';
 import { HomeWorkStatusEnum, HomeWorkTypeEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 import { OfferRepository } from '../offer/offer.repository';
-import { CommentRepository } from '../comments/comment.repository';
+import { CommentsService } from '../comments/comments.service';
 
 @Injectable()
 export class HomeworkService {
@@ -14,7 +14,7 @@ export class HomeworkService {
     @InjectRepository(HomeworkRepository)
     private homeworkRepository: HomeworkRepository,
     private offerRepository: OfferRepository,
-    private commentRepository: CommentRepository,
+    private commentService: CommentsService,
   ) {}
 
   async createHomework(
@@ -44,10 +44,8 @@ export class HomeworkService {
   }
   async getOneHomework(id: number) {
     const homework = await this.homeworkRepository.getOneHomework(id);
-
-    const comments = await this.commentRepository.getCommentsByHomework(id);
+    const comments = await this.commentService.getCommentsByHomework(id);
     const offers = await this.offerRepository.getOffersByHomeworks(homework);
-    console.log(offers);
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
