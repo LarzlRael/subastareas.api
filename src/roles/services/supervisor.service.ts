@@ -26,7 +26,6 @@ export class SupervisorService {
     private userService: AuthService,
     private rolService: RolsService,
 
-    @Inject(forwardRef(() => HomeworkService))
     private homeworkService: HomeworkService,
   ) {}
   async createSupervisor(user: User): Promise<Supervisor> {

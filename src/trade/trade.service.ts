@@ -4,7 +4,7 @@ import { NotificationService } from '../devices/notification/notification.servic
 import { uploadFile } from '../utils/utils';
 import { User } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Wallet } from '../wallet/entities/wallet.entity';
+
 import { Repository } from 'typeorm';
 import { Trade } from './entities/trade.entity';
 import { OfferService } from '../offer/offer.service';
@@ -16,11 +16,9 @@ export class TradeService {
   constructor(
     @InjectRepository(Trade)
     private tradeRepository: Repository<Trade>,
-    /*     @InjectRepository(Wallet)
-    private walletRepository: Repository<Wallet>, */
+
     private walletService: WalletService,
     private offerService: OfferService,
-
     private homeworkService: HomeworkService,
     private notificationService: NotificationService,
   ) {}
@@ -102,8 +100,9 @@ export class TradeService {
     const getuserHomework = await this.homeworkService.getOneHomeworkAll(
       getOffer.homework.id,
     );
-    const homeworkHomeworkDestination =
-      await this.homeworkService.getOneHomeworkAll(getOffer.homework.id);
+    const homeworkHomeworkDestination = await this.homeworkService.getOneHomeworkAll(
+      getOffer.homework.id,
+    );
 
     await this.notificationService.sendHomeworkResolveNotification(
       getuserHomework.user,

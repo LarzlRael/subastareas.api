@@ -34,10 +34,10 @@ export class AuthService {
     private usersRepository: UsersRepository,
 
     private mailService: MailService,
-    private jwtService: JwtService,
     private devicesService: DevicesService,
     private walletService: WalletService,
-    /* @Inject(forwardRef(() => RolsService)) */
+    @Inject(forwardRef(() => RolsService))
+    private jwtService: JwtService,
     private rolsService: RolsService,
   ) {}
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {

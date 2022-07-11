@@ -18,9 +18,9 @@ import { HomeworkModule } from '../homework/homework.module';
 
 @Module({
   imports: [
-    HomeworkModule,
     forwardRef(() => AuthModule),
-    TypeOrmModule.forFeature([Rol, User, Homework, Supervisor, Professor]),
+    HomeworkModule,
+    TypeOrmModule.forFeature([Rol, Homework, Supervisor, Professor]),
   ],
   controllers: [
     RolesController,

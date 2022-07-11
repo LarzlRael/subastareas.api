@@ -21,11 +21,14 @@ import { Rol } from '../roles/entities/rol.entity';
 import { User } from './entities/user.entity';
 import { AuthService } from './services/auth.service';
 import { AdminController } from './controllers/admin.controller';
+import { WalletModule } from '../wallet/wallet.module';
+import { DevicesModule } from '../devices/devices.module';
 
 @Module({
   imports: [
+    DevicesModule,
+    WalletModule,
     forwardRef(() => RolesModule),
-
     MailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({

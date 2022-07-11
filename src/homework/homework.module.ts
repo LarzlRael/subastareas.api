@@ -18,7 +18,7 @@ import { Homework } from './entities/Homework.entity';
     RolesModule,
     forwardRef(() => OfferModule),
     forwardRef(() => CommentsModule),
-    TypeOrmModule.forFeature([Homework, Offer, Wallet]),
+    TypeOrmModule.forFeature([Homework]),
   ],
   controllers: [HomeworkController],
   providers: [HomeworkService, CloudinaryProvider],
