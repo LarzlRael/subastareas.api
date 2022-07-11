@@ -2,7 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { HomeworkService } from './homework.service';
 import { HomeworkController } from './homework.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HomeworkRepository } from './homework.repository';
+
 import { AuthModule } from '../auth/auth.module';
 import { CloudinaryProvider } from './cloudinary.provider';
 import { RolesModule } from 'src/roles/roles.module';
@@ -15,12 +15,12 @@ import { Homework } from './entities/Homework.entity';
 @Module({
   imports: [
     //ciruclar dependency
+
     RolesModule,
     forwardRef(() => OfferModule),
     forwardRef(() => CommentsModule),
     TypeOrmModule.forFeature([Homework, Offer, Wallet]),
     AuthModule,
-    RolesModule,
   ],
   controllers: [HomeworkController],
   providers: [HomeworkService, CloudinaryProvider],

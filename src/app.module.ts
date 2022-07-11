@@ -37,7 +37,6 @@ import { RolesModule } from './roles/roles.module';
     WalletModule,
     TradeModule,
     RolesModule,
-    /* SuperviseHomeworkModule, */
   ],
   controllers: [AppController],
   providers: [AppService],

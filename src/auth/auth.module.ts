@@ -48,6 +48,6 @@ import { User } from './entities/user.entity';
     RolsService,
   ],
   controllers: [AuthController, AdminController, AuthService],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, PassportModule, AuthService],
 })
 export class AuthModule {}
