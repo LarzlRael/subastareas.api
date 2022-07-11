@@ -3,7 +3,6 @@ import { TradeController } from './trade.controller';
 import { TradeService } from './trade.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from '../auth/user.repository';
-import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 
 import { Wallet } from '../wallet/entities/wallet.entity';
@@ -12,15 +11,15 @@ import { Notification } from 'src/devices/notification/entities/notification.ent
 import { DevicesModule } from '../devices/devices.module';
 import { Device } from '../devices/entities/devices.entity';
 import { OfferModule } from '../offer/offer.module';
+import { HomeworkModule } from '../homework/homework.module';
 
 @Module({
   imports: [
+    HomeworkModule,
     OfferModule,
     DevicesModule,
     TypeOrmModule.forFeature([
       UsersRepository,
-
-      HomeworkRepository,
 
       Device,
       Notification,

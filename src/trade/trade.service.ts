@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { HomeWorkStatusEnum, TradeStatusEnum } from '../enums/enums';
-import { HomeworkRepository } from '../homework/homework.repository';
 import { NotificationService } from '../devices/notification/notification.service';
 import { uploadFile } from '../utils/utils';
 import { User } from '../auth/entities/user.entity';
@@ -9,6 +8,7 @@ import { Wallet } from '../wallet/entities/wallet.entity';
 import { Repository } from 'typeorm';
 import { Trade } from './entities/trade.entity';
 import { OfferService } from '../offer/offer.service';
+import { HomeworkService } from '../homework/homework.service';
 
 @Injectable()
 export class TradeService {
@@ -18,7 +18,8 @@ export class TradeService {
     @InjectRepository(Wallet)
     private walletRepository: Repository<Wallet>,
     private offerService: OfferService,
-    private homeworkRepository: HomeworkRepository,
+
+    private homeworkService: HomeworkService,
     private notificationService: NotificationService,
   ) {}
 
@@ -31,11 +32,11 @@ export class TradeService {
       offer.status = TradeStatusEnum.PENDING_TO_RESOLVE;
       await this.offerService.saveOffer(offer);
     }
-    const getHomework = await this.homeworkRepository.findOne(
+    const getHomework = await this.homeworkService.getOneHomeworkAll(
       offer.homework.id,
     );
     getHomework.status = HomeWorkStatusEnum.PENDING_TO_RESOLVE;
-    await this.homeworkRepository.save({
+    await this.homeworkService.saveHomework({
       ...getHomework,
     });
 
@@ -96,15 +97,12 @@ export class TradeService {
     getOffer.status = TradeStatusEnum.PENDINGTOACCEPT;
     await this.offerService.saveOffer(getOffer);
     //get user owner of this homework
-    const getuserHomework = await this.homeworkRepository.findOne(
+    const getuserHomework = await this.homeworkService.getOneHomeworkUser(
       getOffer.homework.id,
-      { relations: ['user'] },
     );
-    const homeworkHomeworkDestination = await this.homeworkRepository.findOne(
+    const homeworkHomeworkDestination = await this.homeworkService.getOneHomeworkUser(
       getOffer.homework.id,
-      { relations: ['user'] },
     );
-    console.log(homeworkHomeworkDestination);
 
     await this.notificationService.sendHomeworkResolveNotification(
       getuserHomework.user,
