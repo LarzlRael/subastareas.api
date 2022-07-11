@@ -9,8 +9,9 @@ import { Rol } from '../entities/rol.entity';
 import { RolDto } from '../dto/rol.dto';
 import { User } from '../../auth/entities/user.entity';
 import { Repository } from 'typeorm';
-import { AuthService } from '../../auth/auth.service';
+
 import { forwardRef } from '@nestjs/common';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
 export class RolsService {

@@ -15,11 +15,12 @@ import { HomeworkService } from '../homework/homework.service';
 @Injectable()
 export class CommentsService {
   constructor(
+    @InjectRepository(Comment)
+    private commentRepository: Repository<Comment>,
+
     @Inject(forwardRef(() => HomeworkService))
     private homeworkService: HomeworkService,
 
-    @InjectRepository(Comment)
-    private commentRepository: Repository<Comment>,
     private notificationService: NotificationService,
   ) {}
   async createComment(

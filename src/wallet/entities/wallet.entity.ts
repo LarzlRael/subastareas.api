@@ -11,7 +11,7 @@ import { User } from '../../auth/entities/user.entity';
 @Entity()
 export class Wallet {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({
     default: 0,

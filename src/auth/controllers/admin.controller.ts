@@ -1,13 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { User } from './entities/user.entity';
-
 import { AuthGuard } from '@nestjs/passport';
 
-import { AdminService } from './admin.service';
-import { RolesGuard } from './guard/roles.guard';
-import { Roles } from './decorators/get.rols.decorator';
-import { RoleEnum } from '../enums/enums';
+import { User } from '../entities/user.entity';
+import { AdminService } from '../services/admin.service';
+import { RolesGuard } from '../guard/roles.guard';
+import { RoleEnum } from '../../enums/enums';
+import { Roles } from '../decorators/get.rols.decorator';
 
 @Controller('admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

@@ -11,19 +11,20 @@ import {
   Render,
   Req,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
-import { User } from './entities/user.entity';
-import { GetUser } from './decorators/get-user..decorator';
+
+import { AuthCredentialDTO, RegisterUserDTO } from '../dto/AuthCredentialDTO ';
+import { User } from '../entities/user.entity';
+import { GetUser } from '../decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from '../utils/utils';
-import { ProfileEditDto } from './dto/ProfileEdit.dto';
+import { fileFilter } from '../../utils/utils';
+import { ProfileEditDto } from '../dto/ProfileEdit.dto';
 import { JwtService } from '@nestjs/jwt';
-import { JWtPayload } from '../interfaces/jwtPayload';
+import { JWtPayload } from '../../interfaces/jwtPayload';
 import { Request } from 'express';
-import { ChangePasswordDto } from './dto/ChangePassword.dto';
-import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
+import { ChangePasswordDto } from '../dto/ChangePassword.dto';
+import { GoogleCredentialDto } from '../dto/GoogleCredential.dto';
+import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
 export class AuthController {

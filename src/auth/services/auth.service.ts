@@ -6,23 +6,27 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
-import { UsersRepository } from './user.repository';
+import {
+  AuthCredentialDTO,
+  RegisterUserDTO,
+} from './../dto/AuthCredentialDTO ';
+import { UsersRepository } from './../user.repository';
 import * as bcrypt from 'bcrypt';
-import { JWtPayload } from '../interfaces/jwtPayload';
-import { User } from './entities/user.entity';
-import { validateGoogleToken } from './google/googleVerifyToken';
-import { ProfileEditDto } from './dto/ProfileEdit.dto';
-import { MailService } from '../mail/mail.service';
+import { JWtPayload } from '../../interfaces/jwtPayload';
+import { User } from './../entities/user.entity';
+import { validateGoogleToken } from './../google/googleVerifyToken';
+import { ProfileEditDto } from './../dto/ProfileEdit.dto';
+import { MailService } from '../../mail/mail.service';
 import { RoleEnum } from 'src/enums/enums';
-import { DevicesService } from '../devices/devices.service';
-import { WalletService } from '../wallet/wallet.service';
+import { DevicesService } from '../../devices/devices.service';
+import { WalletService } from '../../wallet/wallet.service';
 import { Request } from 'express';
-import { ChangePasswordDto } from './dto/ChangePassword.dto';
-import { RolsService } from '../roles/services/rols.service';
-import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
-import { uploadFile } from '../utils/utils';
+import { ChangePasswordDto } from './../dto/ChangePassword.dto';
+import { RolsService } from '../../roles/services/rols.service';
+import { GoogleCredentialDto } from './../dto/GoogleCredential.dto';
+
 import { forwardRef } from '@nestjs/common';
+import { uploadFile } from '../../utils/utils';
 @Injectable()
 export class AuthService {
   constructor(

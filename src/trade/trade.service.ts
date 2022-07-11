@@ -9,14 +9,16 @@ import { Repository } from 'typeorm';
 import { Trade } from './entities/trade.entity';
 import { OfferService } from '../offer/offer.service';
 import { HomeworkService } from '../homework/homework.service';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class TradeService {
   constructor(
     @InjectRepository(Trade)
     private tradeRepository: Repository<Trade>,
-    @InjectRepository(Wallet)
-    private walletRepository: Repository<Wallet>,
+    /*     @InjectRepository(Wallet)
+    private walletRepository: Repository<Wallet>, */
+    private walletService: WalletService,
     private offerService: OfferService,
 
     private homeworkService: HomeworkService,
@@ -59,18 +61,18 @@ export class TradeService {
       throw new Error('Offer not found');
     }
 
-    const offerUserWallet = await this.walletRepository.findOne(
+    const offerUserWallet = await this.walletService.getWalletByUserId(
       offer.user.wallet.id,
     );
-    const homeworkUserWallet = await this.walletRepository.findOne(
+    const homeworkUserWallet = await this.walletService.getWalletByUserId(
       offer.homework.user.wallet.id,
     );
 
     offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
     homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;
 
-    await this.walletRepository.save(offerUserWallet);
-    await this.walletRepository.save(homeworkUserWallet);
+    await this.walletService.saveWallet(offerUserWallet);
+    await this.walletService.saveWallet(homeworkUserWallet);
     return null;
   }
   async uploadResolvedHomework(
@@ -97,12 +99,11 @@ export class TradeService {
     getOffer.status = TradeStatusEnum.PENDINGTOACCEPT;
     await this.offerService.saveOffer(getOffer);
     //get user owner of this homework
-    const getuserHomework = await this.homeworkService.getOneHomeworkUser(
+    const getuserHomework = await this.homeworkService.getOneHomeworkAll(
       getOffer.homework.id,
     );
-    const homeworkHomeworkDestination = await this.homeworkService.getOneHomeworkUser(
-      getOffer.homework.id,
-    );
+    const homeworkHomeworkDestination =
+      await this.homeworkService.getOneHomeworkAll(getOffer.homework.id);
 
     await this.notificationService.sendHomeworkResolveNotification(
       getuserHomework.user,

@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+
+import { AuthController } from './controllers/auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MailModule } from '../mail/mail.module';
@@ -11,8 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { DevicesService } from '../devices/devices.service';
 import { WalletService } from '../wallet/wallet.service';
-import { AdminService } from './admin.service';
-import { AdminController } from './admin.controller';
+import { AdminService } from './services/admin.service';
 
 import { RolesModule } from '../roles/roles.module';
 import { RolsService } from '../roles/services/rols.service';
@@ -20,6 +19,8 @@ import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Device } from 'src/devices/entities/devices.entity';
 import { Rol } from '../roles/entities/rol.entity';
 import { User } from './entities/user.entity';
+import { AuthService } from './services/auth.service';
+import { AdminController } from './controllers/admin.controller';
 
 @Module({
   imports: [

@@ -14,8 +14,9 @@ import { ActionSupervisorDTO } from '../dto/action.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RolsService } from './rols.service';
-import { AuthService } from '../../auth/auth.service';
+
 import { HomeworkService } from '../../homework/homework.service';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
 export class SupervisorService {

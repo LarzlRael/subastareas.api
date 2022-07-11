@@ -3,7 +3,6 @@ import { HomeworkService } from './homework.service';
 import { HomeworkController } from './homework.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthModule } from '../auth/auth.module';
 import { CloudinaryProvider } from './cloudinary.provider';
 import { RolesModule } from 'src/roles/roles.module';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
@@ -20,7 +19,6 @@ import { Homework } from './entities/Homework.entity';
     forwardRef(() => OfferModule),
     forwardRef(() => CommentsModule),
     TypeOrmModule.forFeature([Homework, Offer, Wallet]),
-    AuthModule,
   ],
   controllers: [HomeworkController],
   providers: [HomeworkService, CloudinaryProvider],

@@ -12,11 +12,11 @@ import { DevicesModule } from '../devices/devices.module';
 import { Device } from '../devices/entities/devices.entity';
 import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
-import { AuthModule } from '../auth/auth.module';
+import { WalletModule } from '../wallet/wallet.module';
 
 @Module({
   imports: [
-    AuthModule,
+    WalletModule,
     HomeworkModule,
     OfferModule,
     DevicesModule,
@@ -24,5 +24,6 @@ import { AuthModule } from '../auth/auth.module';
   ],
   controllers: [TradeController],
   providers: [TradeService, NotificationService],
+  exports: [TradeService],
 })
 export class TradeModule {}

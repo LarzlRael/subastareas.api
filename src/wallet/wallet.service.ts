@@ -14,4 +14,12 @@ export class WalletService {
     const newWallet = this.walletRepository.create({ user });
     return await this.walletRepository.save(newWallet);
   }
+  async getWalletByUserId(idUser: number) {
+    const offerUserWallet = await this.walletRepository.findOne(idUser);
+    return offerUserWallet;
+  }
+
+  async saveWallet(wallet: Wallet) {
+    return await this.walletRepository.save(wallet);
+  }
 }

@@ -25,6 +25,7 @@ export class HomeworkService {
   constructor(
     @InjectRepository(Homework)
     private homeworkRepository: Repository<Homework>,
+
     @Inject(forwardRef(() => OfferService))
     private offerService: OfferService,
     @Inject(forwardRef(() => CommentsService))
