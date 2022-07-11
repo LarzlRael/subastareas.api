@@ -27,7 +27,7 @@ export class OfferController {
   makeOffer(
     @GetUser() user: User,
     @Body() offerDot: OfferDto,
-    @Param('idHomework') idHomework: string,
+    @Param('idHomework') idHomework: number,
   ) {
     return this.offerService.makeOffer(idHomework, offerDot, user);
   }

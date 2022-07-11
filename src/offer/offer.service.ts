@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
   forwardRef,
 } from '@nestjs/common';
-import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferDto } from './dto/offer.dot';
 import { User } from 'src/auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
@@ -20,16 +19,15 @@ export class OfferService {
   constructor(
     @InjectRepository(Offer)
     private offerRepository: Repository<Offer>,
-    private homeworkRepository: HomeworkRepository,
     private notificationService: NotificationService,
     @Inject(forwardRef(() => HomeworkService))
     private readonly homeworkService: HomeworkService,
   ) {}
 
-  async makeOffer(idHomework: string, offerDto: OfferDto, user: User) {
-    const homework = await this.homeworkRepository.findOne(idHomework, {
-      relations: ['offers', 'user'],
-    });
+  async makeOffer(idHomework: number, offerDto: OfferDto, user: User) {
+    const homework = await this.homeworkService.getOneHomeworkOfferAndUser(
+      idHomework,
+    );
 
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
@@ -69,7 +67,9 @@ export class OfferService {
   }
 
   async getOffersByHomeworks(idHomework: number): Promise<Offer[]> {
-    const getHomeWork = await this.homeworkRepository.findOne(idHomework);
+    const getHomeWork = await this.homeworkService.getOneHomeworkAll(
+      idHomework,
+    );
     if (!getHomeWork) {
       throw new InternalServerErrorException('Homework not found');
     }
@@ -137,10 +137,7 @@ export class OfferService {
     });
   }
   async getOffersReceiveByUser(user: User) {
-    return this.homeworkRepository.find({
-      where: { user },
-      relations: ['homework', 'offers'],
-    });
+    return this.homeworkService.getOffersReceiveByUser(user);
   }
   async getOfferedHomeworks(user: User): Promise<Offer[]> {
     return this.offerRepository.find({
@@ -162,7 +159,7 @@ export class OfferService {
       relations: ['user', 'offers'],
     }); */
 
-    const homeworks = await this.homeworkRepository.getHomeworksByCondition({
+    const homeworks = await this.homeworkService.getHomeworksByCondition({
       id: In(idsHomeworks),
     });
     console.log(homeworks);

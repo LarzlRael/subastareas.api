@@ -7,6 +7,7 @@ import { HomeWorkStatusEnum, HomeWorkTypeEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
 import { CommentsService } from '../comments/comments.service';
 import { OfferService } from '../offer/offer.service';
+import { Brackets, ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class HomeworkService {
@@ -70,5 +71,48 @@ export class HomeworkService {
   }
   getSubjectsAndLevels() {
     return Object.values(HomeWorkTypeEnum);
+  }
+  async getOneHomeworkOfferAndUser(id: number) {
+    const homework = await this.homeworkRepository.findOne(id, {
+      relations: ['offers', 'user'],
+    });
+    return homework;
+  }
+  async getOneHomeworkAll(id: number) {
+    return await this.homeworkRepository.findOne(id);
+  }
+  async getOffersReceiveByUser(user: User) {
+    return this.homeworkRepository.find({
+      where: { user },
+      relations: ['homework', 'offers'],
+    });
+  }
+
+  async getHomeworksByCondition(
+    where:
+      | string
+      | Brackets
+      | ObjectLiteral
+      | ObjectLiteral[]
+      | ((qb: SelectQueryBuilder<Homework>) => string),
+  ) {
+    const homeworks = await this.homeworkRepository
+      .createQueryBuilder('homework')
+      .where(where)
+
+      .select([
+        'homework',
+        /* 'comment.user', */
+        'offers.id',
+        'offers.priceOffer',
+        /* 'offers.title',
+        'offers', */
+        'user.id',
+      ])
+      .leftJoin('homework.offers', 'offers')
+      .leftJoin('homework.user', 'user')
+      .getMany();
+    console.log(homeworks);
+    return homeworks;
   }
 }
