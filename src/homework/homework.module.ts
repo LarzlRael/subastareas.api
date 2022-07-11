@@ -15,6 +15,7 @@ import { Homework } from './entities/Homework.entity';
 @Module({
   imports: [
     //ciruclar dependency
+    RolesModule,
     forwardRef(() => OfferModule),
     forwardRef(() => CommentsModule),
     TypeOrmModule.forFeature([Homework, Offer, Wallet]),

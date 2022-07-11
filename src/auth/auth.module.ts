@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersRepository } from './user.repository';
+
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
@@ -19,11 +19,13 @@ import { RolsService } from '../roles/services/rols.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Device } from 'src/devices/entities/devices.entity';
 import { Rol } from '../roles/entities/rol.entity';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
+    forwardRef(() => RolesModule),
+
     MailModule,
-    RolesModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       envFilePath: '.env',
@@ -35,7 +37,7 @@ import { Rol } from '../roles/entities/rol.entity';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([UsersRepository, Rol, Device, Wallet]),
+    TypeOrmModule.forFeature([User, Rol, Device, Wallet]),
   ],
   providers: [
     AuthService,
@@ -45,7 +47,7 @@ import { Rol } from '../roles/entities/rol.entity';
     AdminService,
     RolsService,
   ],
-  controllers: [AuthController, AdminController],
+  controllers: [AuthController, AdminController, AuthService],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

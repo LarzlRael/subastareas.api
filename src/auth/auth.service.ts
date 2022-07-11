@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   InternalServerErrorException,
+  Inject,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,15 +22,19 @@ import { ChangePasswordDto } from './dto/ChangePassword.dto';
 import { RolsService } from '../roles/services/rols.service';
 import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
 import { uploadFile } from '../utils/utils';
+import { forwardRef } from '@nestjs/common';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
+    @InjectRepository(UsersRepository)
+    private usersRepository: UsersRepository,
+
     private mailService: MailService,
     private jwtService: JwtService,
-    private rolsService: RolsService,
     private devicesService: DevicesService,
     private walletService: WalletService,
+    /* @Inject(forwardRef(() => RolsService)) */
+    private rolsService: RolsService,
   ) {}
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const newUser = await this.usersRepository.createUser(registerUserDTO);
@@ -249,5 +254,19 @@ export class AuthService {
         throw new InternalServerErrorException('There is not profileImage');
       }
     }
+  }
+  async getOneUser(idUser: number) {
+    const findUser = await this.usersRepository.findOne(idUser);
+    if (!findUser) {
+      throw new InternalServerErrorException('User not found');
+    }
+    return findUser;
+  }
+  async saveUser(user: User) {
+    return await this.usersRepository.save(user);
+  }
+
+  async getAllUsers() {
+    return await this.usersRepository.find();
   }
 }

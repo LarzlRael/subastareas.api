@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import { InjectRepository } from '@nestjs/typeorm';
-import { UsersRepository } from './user.repository';
 import { User } from './entities/user.entity';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AdminService {
-  constructor(
-    @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
-  ) {}
+  constructor(private userServices: AuthService) {}
   async getUsers(): Promise<User[]> {
     //TODO add pagination and filters
 
-    const users = await this.usersRepository.find();
+    const users = await this.userServices.getAllUsers();
 
     const deleteFields = users.map((user) => {
       delete user.password;

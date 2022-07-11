@@ -1,23 +1,32 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  forwardRef,
+} from '@nestjs/common';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from '../entities/Supervisor.entity';
 import { RoleEnum } from '../../enums/enums';
-import { HomeworkRepository } from '../../homework/homework.repository';
+
 import { Homework } from '../../homework/entities/Homework.entity';
 import { ActionSupervisorDTO } from '../dto/action.dto';
-import { UsersRepository } from 'src/auth/user.repository';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RolsService } from './rols.service';
+import { AuthService } from '../../auth/auth.service';
+import { HomeworkService } from '../../homework/homework.service';
 
 @Injectable()
 export class SupervisorService {
   constructor(
     @InjectRepository(Supervisor)
     private supervisorRepository: Repository<Supervisor>,
-    public homeworkRepository: HomeworkRepository,
-    public usersRepository: UsersRepository,
+    private userService: AuthService,
     private rolService: RolsService,
+
+    @Inject(forwardRef(() => HomeworkService))
+    private homeworkService: HomeworkService,
   ) {}
   async createSupervisor(user: User): Promise<Supervisor> {
     if (user.supervisor) {
@@ -32,7 +41,7 @@ export class SupervisorService {
     return await this.supervisorRepository.save(createNewSupervisor);
   }
   async becomeSupervisor(idUser: number): Promise<Supervisor> {
-    const user = await this.usersRepository.findOne(idUser);
+    const user = await this.userService.getOneUser(idUser);
     if (!user) {
       throw new InternalServerErrorException('User not found');
     } else {
@@ -50,15 +59,13 @@ export class SupervisorService {
     }
   }
   async getHomeworksToSupervise(): Promise<Homework[]> {
-    return await this.homeworkRepository.find({
-      where: [{ status: 'pending' }, { status: 'rejected' }],
-    });
+    return await this.homeworkService.getHomewokrTosupervisor();
   }
   async superviseHomework(
     user: User,
     actionSupervisorDTO: ActionSupervisorDTO,
   ): Promise<Homework> {
-    const homework = await this.homeworkRepository.findOne(
+    const homework = await this.homeworkService.getOneHomeworkAll(
       actionSupervisorDTO.idHomework,
     );
     if (!homework) {
@@ -67,7 +74,7 @@ export class SupervisorService {
     /* homework.status = actionSupervisorDTO.status; */
     homework.observation = actionSupervisorDTO.observation;
     homework.userSupervisor = user;
-    await this.homeworkRepository.save(homework);
+    await this.homeworkService.saveHomework(homework);
     homework.userSupervisor = user;
     const getSuperisorid = await this.supervisorRepository.findOne(
       user.supervisor.id,
