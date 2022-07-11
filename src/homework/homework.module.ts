@@ -15,7 +15,7 @@ import { Offer } from '../offer/entities/offer.entity';
   imports: [
     //ciruclar dependency
     forwardRef(() => OfferModule),
-    CommentsModule,
+    forwardRef(() => CommentsModule),
     TypeOrmModule.forFeature([HomeworkRepository, Offer, Wallet]),
     AuthModule,
     RolesModule,

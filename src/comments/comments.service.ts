@@ -1,17 +1,25 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HomeworkRepository } from '../homework/homework.repository';
 import { User } from '../auth/entities/user.entity';
 import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 import { NotificationService } from '../devices/notification/notification.service';
 import { Repository } from 'typeorm';
+import { HomeworkService } from '../homework/homework.service';
 
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectRepository(HomeworkRepository)
-    private homeworkRepository: HomeworkRepository,
+    /* @InjectRepository(HomeworkRepository)
+    private homeworkService: HomeworkRepository, */
+    @Inject(forwardRef(() => HomeworkService))
+    private homeworkService: HomeworkService,
+
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
     private notificationService: NotificationService,
@@ -21,9 +29,9 @@ export class CommentsService {
     idHomework: number,
     comment: CommentDto,
   ): Promise<Comment> {
-    const getHomework = await this.homeworkRepository.findOne(idHomework, {
-      relations: ['user'],
-    });
+    const getHomework = await this.homeworkService.getOneHomeworkUser(
+      idHomework,
+    );
 
     if (!getHomework) {
       throw new InternalServerErrorException('Homework Not Found');
@@ -50,7 +58,7 @@ export class CommentsService {
   }
   async getCommentsByHomework(homeworkId: number) {
     try {
-      return await this.homeworkRepository
+      return await this.commentRepository
         .createQueryBuilder('comment')
         .where({ homework: homeworkId })
         .select([
