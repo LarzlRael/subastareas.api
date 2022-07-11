@@ -153,8 +153,6 @@ export class NotificationService {
     offer: number,
     homework: Homework,
   ) {
-    /* const homework = await this.homeworkRepository.findOne(idHomework); */
-    /* console.log(homework); */
     const currency = 'Neo coins';
     const content = `${user.username} hizo una nueva oferta`;
     const sendData: IpushNotification = {

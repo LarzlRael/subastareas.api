@@ -15,8 +15,6 @@ import { HomeworkService } from '../homework/homework.service';
 @Injectable()
 export class CommentsService {
   constructor(
-    /* @InjectRepository(HomeworkRepository)
-    private homeworkService: HomeworkRepository, */
     @Inject(forwardRef(() => HomeworkService))
     private homeworkService: HomeworkService,
 

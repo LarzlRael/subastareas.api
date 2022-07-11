@@ -1,7 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferController } from './offer.controller';
 import { UsersRepository } from '../auth/user.repository';
 import { NotificationService } from '../devices/notification/notification.service';
@@ -14,13 +13,14 @@ import { CommentsService } from '../comments/comments.service';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Offer } from './entities/offer.entity';
 import { HomeworkModule } from '../homework/homework.module';
+import { Homework } from 'src/homework/entities/Homework.entity';
 
 @Module({
   imports: [
     forwardRef(() => HomeworkModule),
     DevicesModule,
     TypeOrmModule.forFeature([
-      HomeworkRepository,
+      Homework,
       UsersRepository,
 
       Offer,

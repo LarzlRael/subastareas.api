@@ -10,13 +10,14 @@ import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { CommentsModule } from '../comments/comments.module';
 import { OfferModule } from '../offer/offer.module';
 import { Offer } from '../offer/entities/offer.entity';
+import { Homework } from './entities/Homework.entity';
 
 @Module({
   imports: [
     //ciruclar dependency
     forwardRef(() => OfferModule),
     forwardRef(() => CommentsModule),
-    TypeOrmModule.forFeature([HomeworkRepository, Offer, Wallet]),
+    TypeOrmModule.forFeature([Homework, Offer, Wallet]),
     AuthModule,
     RolesModule,
   ],

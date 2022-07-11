@@ -154,11 +154,6 @@ export class OfferService {
 
     const idsHomeworks = offers.map((offer) => offer.homeworkId);
 
-    /*     const xd = await this.homeworkRepository.find({
-      where: { id: In(idsHomeworks) },
-      relations: ['user', 'offers'],
-    }); */
-
     const homeworks = await this.homeworkService.getHomeworksByCondition({
       id: In(idsHomeworks),
     });
