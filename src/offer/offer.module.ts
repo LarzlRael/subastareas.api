@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeworkRepository } from '../homework/homework.repository';
@@ -13,9 +13,11 @@ import { DevicesModule } from '../devices/devices.module';
 import { CommentsService } from '../comments/comments.service';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Offer } from './entities/offer.entity';
+import { HomeworkModule } from '../homework/homework.module';
 
 @Module({
   imports: [
+    forwardRef(() => HomeworkModule),
     DevicesModule,
     TypeOrmModule.forFeature([
       HomeworkRepository,

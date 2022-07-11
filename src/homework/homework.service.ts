@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkRepository } from './homework.repository';
 import { HomeworkDto } from './dto/Homework.dto';
@@ -13,8 +13,10 @@ export class HomeworkService {
   constructor(
     @InjectRepository(HomeworkRepository)
     private homeworkRepository: HomeworkRepository,
-    private offerService: OfferService,
+
     private commentService: CommentsService,
+    @Inject(forwardRef(() => OfferService))
+    private offerService: OfferService,
   ) {}
 
   async createHomework(

@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  forwardRef,
+} from '@nestjs/common';
 import { HomeworkRepository } from '../homework/homework.repository';
 import { OfferDto } from './dto/offer.dot';
 import { User } from 'src/auth/entities/user.entity';
@@ -8,6 +13,7 @@ import { NotificationService } from '../devices/notification/notification.servic
 import { In, Repository } from 'typeorm';
 import { validateArray } from '../utils/validation';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HomeworkService } from '../homework/homework.service';
 
 @Injectable()
 export class OfferService {
@@ -16,6 +22,8 @@ export class OfferService {
     private offerRepository: Repository<Offer>,
     private homeworkRepository: HomeworkRepository,
     private notificationService: NotificationService,
+    @Inject(forwardRef(() => HomeworkService))
+    private readonly homeworkService: HomeworkService,
   ) {}
 
   async makeOffer(idHomework: string, offerDto: OfferDto, user: User) {

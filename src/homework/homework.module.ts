@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { HomeworkService } from './homework.service';
 import { HomeworkController } from './homework.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,8 +13,9 @@ import { Offer } from '../offer/entities/offer.entity';
 
 @Module({
   imports: [
+    //ciruclar dependency
+    forwardRef(() => OfferModule),
     CommentsModule,
-    OfferModule,
     TypeOrmModule.forFeature([HomeworkRepository, Offer, Wallet]),
     AuthModule,
     RolesModule,
