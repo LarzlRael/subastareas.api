@@ -88,7 +88,9 @@ export class HomeworkService {
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
-    const homework = await this.homeworkRepository.findOne(id);
+    const homework = await this.homeworkRepository.findOne({
+      where: { id },
+    });
 
     if (homework.user.id !== user.id) {
       throw new InternalServerErrorException(
@@ -107,7 +109,8 @@ export class HomeworkService {
     user: User,
     id: number,
   ) {
-    const homework = await this.homeworkRepository.findOne(id, {
+    const homework = await this.homeworkRepository.findOne({
+      where: { id },
       relations: ['user'],
     });
 
@@ -133,7 +136,9 @@ export class HomeworkService {
             ...homework,
             ...homeWorkDto,
           });
-          return this.homeworkRepository.findOne(id);
+          return this.homeworkRepository.findOne({
+            where: { id },
+          });
         }
       }
     }
@@ -149,17 +154,24 @@ export class HomeworkService {
     return Object.values(HomeWorkTypeEnum);
   }
   async getOneHomeworkOfferAndUser(id: number) {
-    const homework = await this.homeworkRepository.findOne(id, {
+    const homework = await this.homeworkRepository.findOne({
+      where: { id },
       relations: ['offers', 'user'],
     });
     return homework;
   }
   async getOneHomeworkAll(id: number) {
-    return await this.homeworkRepository.findOne(id);
+    return await this.homeworkRepository.findOne({
+      where: { id },
+    });
   }
   async getOffersReceiveByUser(user: User) {
     return this.homeworkRepository.find({
-      where: { user },
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
       relations: ['homework', 'offers'],
     });
   }
@@ -218,13 +230,17 @@ export class HomeworkService {
     return this.homeworkRepository.save(homework);
   }
   async getOneHomeworkUser(idHomework: number) {
-    return await this.homeworkRepository.findOne(idHomework, {
+    return await this.homeworkRepository.findOne({
+      where: { id: idHomework },
       relations: ['user'],
     });
   }
   async getHomewokrTosupervisor() {
     return await this.homeworkRepository.find({
-      where: [{ status: 'pending' }, { status: 'rejected' }],
+      where: [
+        { status: HomeWorkStatusEnum.ACCEPTED },
+        { status: HomeWorkStatusEnum.REJECTED },
+      ],
     });
   }
 }

@@ -37,9 +37,9 @@ export class NotificationService {
     return homeworks;
   }
   async deleteNotification(idNotification: string) {
-    const notification = await this.notificationRepository.findOne(
-      idNotification,
-    );
+    const notification = await this.notificationRepository.findOne({
+      where: { id: idNotification },
+    });
     if (!notification) {
       throw new Error('Notification not found');
     }
@@ -47,21 +47,15 @@ export class NotificationService {
     await this.notificationRepository.save(notification);
   }
   async seeNotification(idNotification: string) {
-    const notification = await this.notificationRepository.findOne(
-      idNotification,
-      {
-        relations: ['user'],
-      },
-    );
+    const notification = await this.notificationRepository.findOne({
+      where: { id: idNotification },
+      relations: ['user'],
+    });
     notification.seen = true;
     if (!notification) {
       throw new Error('Notification not found');
     }
     await this.notificationRepository.save(notification);
-
-    /* return await this.notificationRepository.find({
-      where: { user: user },
-    }); */
   }
 
   async sendCommentNotification(

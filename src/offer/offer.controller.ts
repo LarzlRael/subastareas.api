@@ -47,13 +47,13 @@ export class OfferController {
   @Put('editOffer/:idOffer')
   editOffer(
     @GetUser() user: User,
-    @Param('idOffer') idOffer: string,
+    @Param('idOffer') idOffer: number,
     @Body() offerDot: OfferDto,
   ) {
     return this.offerService.editOffer(user, idOffer, offerDot);
   }
   @Delete(':idOffer')
-  deleteOffer(@GetUser() user: User, @Param('idOffer') idOffer: string) {
+  deleteOffer(@GetUser() user: User, @Param('idOffer') idOffer: number) {
     return this.offerService.deleteOffer(user, idOffer);
   }
 }

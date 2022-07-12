@@ -75,9 +75,13 @@ export class SupervisorService {
     homework.userSupervisor = user;
     await this.homeworkService.saveHomework(homework);
     homework.userSupervisor = user;
-    const getSuperisorid = await this.supervisorRepository.findOne(
-      user.supervisor.id,
-    );
+    const getSuperisorid = await this.supervisorRepository.findOne({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
     getSuperisorid.supervisedHomework += 1;
     await this.supervisorRepository.save(getSuperisorid);
     return homework;

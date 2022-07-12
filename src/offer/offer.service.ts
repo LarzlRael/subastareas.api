@@ -89,8 +89,10 @@ export class OfferService {
       .leftJoin('offer.user', 'user') // bar is the joined table
       .getMany();
   }
-  async deleteOffer(user: User, idOffer: string): Promise<Offer> {
-    const getOffer = await this.offerRepository.findOne(idOffer);
+  async deleteOffer(user: User, idOffer: number): Promise<Offer> {
+    const getOffer = await this.offerRepository.findOne({
+      where: { id: idOffer },
+    });
     if (!getOffer) {
       throw new InternalServerErrorException('Offer not found');
     }
@@ -99,7 +101,9 @@ export class OfferService {
         'You are not the owner of this offer',
       );
     }
-    const findOffer = await this.offerRepository.findOne(idOffer);
+    const findOffer = await this.offerRepository.findOne({
+      where: { id: idOffer },
+    });
     if (findOffer.user.id === user.id) {
       await this.offerRepository.delete(idOffer);
       return findOffer;
@@ -112,10 +116,12 @@ export class OfferService {
 
   async editOffer(
     user: User,
-    idOffer: string,
+    idOffer: number,
     offerDto: OfferDto,
   ): Promise<Offer> {
-    const getOffer = await this.offerRepository.findOne(idOffer);
+    const getOffer = await this.offerRepository.findOne({
+      where: { id: idOffer },
+    });
     if (!getOffer) {
       throw new InternalServerErrorException('Homework not found');
     }
@@ -132,7 +138,11 @@ export class OfferService {
   }
   async getOffersSentByUser(user: User): Promise<Offer[]> {
     return this.offerRepository.find({
-      where: { user },
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
       relations: ['homework'],
     });
   }
@@ -141,7 +151,11 @@ export class OfferService {
   }
   async getOfferedHomeworks(user: User): Promise<Offer[]> {
     return this.offerRepository.find({
-      where: { user },
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
       relations: ['homework'],
     });
   }
@@ -168,13 +182,14 @@ export class OfferService {
     return await this.offerRepository.save(offer);
   }
   async getOneOffer(idOffer: number) {
-    const offer = await this.offerRepository.findOne(idOffer, {
+    const offer = await this.offerRepository.findOne({
+      where: { id: idOffer },
       relations: ['homework'],
     });
     return offer;
   }
 }
-
+//Todo se repite mucho findone
 //TODO usar esto
 /* SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id
 from trade t inner join offer o on 

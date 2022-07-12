@@ -77,7 +77,9 @@ export class CommentsService {
     }
   }
   async deleteComment(user: User, commentId: number): Promise<void> {
-    const findComment = await this.commentRepository.findOne(commentId);
+    const findComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+    });
 
     if (!findComment) {
       throw new InternalServerErrorException('Comment not Found');
@@ -99,7 +101,9 @@ export class CommentsService {
   ): Promise<CommentDto> {
     /* return this.commentRepository.editComment(user, idComment, comment); */
     try {
-      const getComment = await this.commentRepository.findOne(idComment);
+      const getComment = await this.commentRepository.findOne({
+        where: { id: idComment },
+      });
       if (!getComment) {
         throw new InternalServerErrorException("comment doesn't exist");
       }

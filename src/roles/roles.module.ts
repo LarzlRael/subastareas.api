@@ -10,10 +10,8 @@ import { RolsService } from './services/rols.service';
 import { Professor } from './entities/professor.entity';
 import { Supervisor } from './entities/Supervisor.entity';
 import { Rol } from './entities/rol.entity';
-import { Homework } from '../homework/entities/Homework.entity';
 import { AuthModule } from '../auth/auth.module';
 import { HomeworkModule } from '../homework/homework.module';
-import { OfferModule } from '../offer/offer.module';
 
 @Module({
   imports: [

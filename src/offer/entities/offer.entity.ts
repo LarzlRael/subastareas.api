@@ -15,7 +15,7 @@ import { TradeStatusEnum } from '../../enums/enums';
 @Entity()
 export class Offer {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   priceOffer: number;

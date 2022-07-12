@@ -33,14 +33,15 @@ import { Repository } from 'typeorm';
 export class AuthService {
   constructor(
     @InjectRepository(User)
+    private usersRepository: Repository<User>,
+
+    @Inject(forwardRef(() => RolsService))
+    private rolsService: RolsService,
+
     private mailService: MailService,
     private devicesService: DevicesService,
     private walletService: WalletService,
-    @Inject(forwardRef(() => RolsService))
     private jwtService: JwtService,
-    private rolsService: RolsService,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
   ) {}
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
@@ -74,34 +75,36 @@ export class AuthService {
   async singIn(
     authCredentialDTO: AuthCredentialDTO,
   ): Promise<{ accessToken: string } | { message: string }> {
-    const { username, password, idDevice } = authCredentialDTO;
-    const user = await this.usersRepository.findOne(
-      {
-        username,
-      },
-      { relations: ['rols', 'wallet', 'device'] },
-    );
-    /*  */
-    if (user && (await bcrypt.compare(password, user.password))) {
-      if (!user.verify) {
-        return {
-          message: 'Please verify your email',
-        };
-      } else {
-        if (user.rols) {
-          user.userRols = user.rols.map((rol) => rol.rolName);
-          delete user.rols;
+    try {
+      const { username, password, idDevice } = authCredentialDTO;
+      const user = await this.usersRepository.findOne({
+        where: { username },
+        relations: ['rols', 'wallet', 'device'],
+      });
+      /*  */
+      if (user && (await bcrypt.compare(password, user.password))) {
+        if (!user.verify) {
+          return {
+            message: 'Please verify your email',
+          };
+        } else {
+          if (user.rols) {
+            user.userRols = user.rols.map((rol) => rol.rolName);
+            delete user.rols;
+          }
+          await this.devicesService.createDevice(user, idDevice);
+
+          const payload: JWtPayload = { username };
+          const accessToken = await this.jwtService.sign(payload);
+          delete user.password;
+
+          return { ...user, accessToken };
         }
-        await this.devicesService.createDevice(user, idDevice);
-
-        const payload: JWtPayload = { username };
-        const accessToken = await this.jwtService.sign(payload);
-        delete user.password;
-
-        return { ...user, accessToken };
+      } else {
+        throw new UnauthorizedException('Please check your login credential');
       }
-    } else {
-      throw new UnauthorizedException('Please check your login credential');
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -129,7 +132,7 @@ export class AuthService {
     }
     //TODO check if user exists
     const user = await this.usersRepository.findOne({
-      email: googleUser.email,
+      where: { email: googleUser.email },
     });
     if (!user) {
       const newUser = await this.usersRepository.create({
@@ -146,7 +149,7 @@ export class AuthService {
       const accessToken = await this.jwtService.sign(payload);
 
       const user = await this.usersRepository.findOne({
-        email: googleUser.email,
+        where: { email: googleUser.email },
       });
       await this.devicesService.createDevice(
         user,
@@ -203,7 +206,9 @@ export class AuthService {
     }
   }
   async sendEmailTokenVerification(email: string, req: Request) {
-    const getUser = await this.usersRepository.findOne({ email });
+    const getUser = await this.usersRepository.findOne({
+      where: { email },
+    });
     const hostname = req.headers.host;
     const protocol = req.protocol;
 
@@ -227,7 +232,9 @@ export class AuthService {
     }
   }
   async verifyEmail(username: string): Promise<User> {
-    const getUser = await this.usersRepository.findOne({ username });
+    const getUser = await this.usersRepository.findOne({
+      where: { username },
+    });
     if (getUser.verify) {
       return;
     }
@@ -247,7 +254,9 @@ export class AuthService {
     );
   }
   async sendEmailRequestPasswordChange(email: string, req: Request) {
-    const getUser = await this.usersRepository.findOne({ email });
+    const getUser = await this.usersRepository.findOne({
+      where: { email },
+    });
     const hostname = req.headers.host;
     const protocol = req.protocol;
     const hostName = `${protocol}://${hostname}`;
@@ -281,7 +290,9 @@ export class AuthService {
     currentUser: User,
     idUser: number,
   ) {
-    const user = await this.usersRepository.findOne(idUser);
+    const user = await this.usersRepository.findOne({
+      where: { id: idUser },
+    });
 
     if (!user) {
       throw new InternalServerErrorException('User not found');
@@ -303,7 +314,9 @@ export class AuthService {
     }
   }
   async getOneUser(idUser: number) {
-    const findUser = await this.usersRepository.findOne(idUser);
+    const findUser = await this.usersRepository.findOne({
+      where: { id: idUser },
+    });
     if (!findUser) {
       throw new InternalServerErrorException('User not found');
     }

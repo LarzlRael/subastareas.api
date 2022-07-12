@@ -15,7 +15,9 @@ export class WalletService {
     return await this.walletRepository.save(newWallet);
   }
   async getWalletByUserId(idUser: number) {
-    const offerUserWallet = await this.walletRepository.findOne(idUser);
+    const offerUserWallet = await this.walletRepository.findOne({
+      where: { user: { id: idUser } },
+    });
     return offerUserWallet;
   }
 

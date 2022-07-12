@@ -6,7 +6,6 @@ import { OfferController } from './offer.controller';
 import { NotificationService } from '../devices/notification/notification.service';
 
 import { HomeworkService } from '../homework/homework.service';
-import { Wallet } from '../wallet/entities/wallet.entity';
 import { Notification } from '../devices/notification/entities/notification.entity';
 import { DevicesModule } from '../devices/devices.module';
 import { CommentsService } from '../comments/comments.service';
@@ -19,7 +18,7 @@ import { Homework } from '../homework/entities/Homework.entity';
   imports: [
     DevicesModule,
     forwardRef(() => HomeworkModule),
-    TypeOrmModule.forFeature([Offer, Notification, Homework, Comment, Wallet]),
+    TypeOrmModule.forFeature([Offer, Notification, Comment, Homework]),
   ],
   providers: [
     OfferService,

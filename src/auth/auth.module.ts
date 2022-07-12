@@ -29,8 +29,8 @@ import { DevicesModule } from '../devices/devices.module';
   imports: [
     DevicesModule,
     WalletModule,
-    forwardRef(() => RolesModule),
     MailModule,
+    forwardRef(() => RolesModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       envFilePath: '.env',

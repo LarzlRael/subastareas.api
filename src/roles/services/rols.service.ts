@@ -62,11 +62,19 @@ export class RolsService {
     return this.assignRole(user.id, rol);
   }
   async listUserRoles(idUser: number) {
-    const findUser = this.userService.getOneUser(idUser);
-    return await this.rolRepository.find({ where: { user: findUser } });
+    const findUser = await this.userService.getOneUser(idUser);
+    return await this.rolRepository.find({
+      where: {
+        user: {
+          id: findUser.id,
+        },
+      },
+    });
   }
   async removeRole(idRole: number) {
-    const getRole = await this.rolRepository.findOne(idRole);
+    const getRole = await this.rolRepository.findOne({
+      where: { id: idRole },
+    });
     if (!getRole) {
       throw new InternalServerErrorException('Rol not found not found');
     }

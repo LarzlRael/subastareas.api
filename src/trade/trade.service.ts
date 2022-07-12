@@ -84,7 +84,11 @@ export class TradeService {
     }
 
     const getTrade = await this.tradeRepository.findOne({
-      where: { offer: getOffer },
+      where: {
+        offer: {
+          id: getOffer.id,
+        },
+      },
     });
 
     if (!getTrade) {
