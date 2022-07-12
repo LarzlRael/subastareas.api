@@ -17,7 +17,6 @@ export class NotificationService {
   constructor(
     @InjectRepository(Notification)
     private notificationRepository: Repository<Notification>,
-    /* private readonly deviceRepository: DeviceRepository, */
     private devicesService: DevicesService,
   ) {}
 

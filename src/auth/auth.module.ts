@@ -52,7 +52,7 @@ import { DevicesModule } from '../devices/devices.module';
     AdminService,
     RolsService,
   ],
-  controllers: [AuthController, AdminController, AuthService],
+  controllers: [AuthController, AdminController],
   exports: [JwtStrategy, PassportModule, AuthService],
 })
 export class AuthModule {}

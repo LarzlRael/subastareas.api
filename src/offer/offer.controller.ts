@@ -17,8 +17,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../auth/decorators/get.rols.decorator';
 import { RoleEnum } from '../enums/enums';
 
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('offer')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class OfferController {
   constructor(private offerService: OfferService) {}
 

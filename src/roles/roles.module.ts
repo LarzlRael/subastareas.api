@@ -1,5 +1,4 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { RolesController } from './controllers/roles.controller';
 import { ProfessorController } from './controllers/professor.controller';
 import { SupervisorController } from './controllers/supervisor.controller';
 import { ProfessorService } from './services/professor.service';
@@ -18,17 +17,11 @@ import { OfferModule } from '../offer/offer.module';
 
 @Module({
   imports: [
-    OfferModule,
     forwardRef(() => AuthModule),
     HomeworkModule,
     TypeOrmModule.forFeature([Rol, Professor, Supervisor]),
   ],
-  controllers: [
-    RolesController,
-    ProfessorController,
-    SupervisorController,
-    RolsController,
-  ],
+  controllers: [ProfessorController, SupervisorController, RolsController],
   providers: [ProfessorService, SupervisorService, RolsService],
 })
 export class RolesModule {}

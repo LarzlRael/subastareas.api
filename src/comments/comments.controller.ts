@@ -15,8 +15,8 @@ import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 import { AuthGuard } from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('comments')
+@UseGuards(AuthGuard('jwt'))
 export class CommentsController {
   constructor(private commentService: CommentsService) {}
 
