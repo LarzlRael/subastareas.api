@@ -9,7 +9,7 @@ import { Homework } from '../../homework/entities/Homework.entity';
 import { Notification } from './entities/notification.entity';
 import { NotificationTypeEnum } from '../../enums/enums';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { DevicesService } from '../devices.service';
 
 @Injectable()
@@ -37,8 +37,8 @@ export class NotificationService {
     return homeworks;
   }
   async deleteNotification(idNotification: string) {
-    const notification = await this.notificationRepository.findOne({
-      where: { id: idNotification },
+    const notification = await this.getOneNotificationWhere({
+      id: idNotification,
     });
     if (!notification) {
       throw new Error('Notification not found');
@@ -47,10 +47,12 @@ export class NotificationService {
     await this.notificationRepository.save(notification);
   }
   async seeNotification(idNotification: string) {
-    const notification = await this.notificationRepository.findOne({
-      where: { id: idNotification },
-      relations: ['user'],
-    });
+    const notification = await this.getOneNotificationWhere(
+      {
+        id: idNotification,
+      },
+      ['user'],
+    );
     notification.seen = true;
     if (!notification) {
       throw new Error('Notification not found');
@@ -196,6 +198,15 @@ export class NotificationService {
       .set({ notified: false })
       .where({ userDestiny: user })
       .execute();
+  }
+  async getOneNotificationWhere(
+    where: FindOptionsWhere<Notification> | FindOptionsWhere<Notification>[],
+    relations?: string[],
+  ) {
+    return await this.notificationRepository.findOne({
+      where: where,
+      relations: relations,
+    });
   }
 }
 

@@ -9,7 +9,7 @@ import { User } from '../auth/entities/user.entity';
 import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 import { NotificationService } from '../devices/notification/notification.service';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { HomeworkService } from '../homework/homework.service';
 
 @Injectable()
@@ -118,6 +118,17 @@ export class CommentsService {
       return commentEdit;
     } catch (error) {
       console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+  async getOneCommentWhere(
+    where: FindOptionsWhere<Comment> | FindOptionsWhere<Comment>[],
+  ) {
+    try {
+      return await this.commentRepository.findOne({
+        where,
+      });
+    } catch (error) {
       throw new InternalServerErrorException();
     }
   }

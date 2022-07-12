@@ -58,3 +58,8 @@ export enum NotificationTypeEnum {
   OFFER_ACCEPTED = 'offer_accepted',
   HOMEWORK_RESOLVE = 'homework_resolve',
 }
+export enum TableNameEnum {
+  ROLS = 'rols',
+  WALLET = 'wallet',
+  DEVICE = 'device',
+}

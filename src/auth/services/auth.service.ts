@@ -1,6 +1,5 @@
 import {
   Injectable,
-  UnauthorizedException,
   InternalServerErrorException,
   Inject,
   ConflictException,
@@ -18,7 +17,7 @@ import { User } from './../entities/user.entity';
 import { validateGoogleToken } from './../google/googleVerifyToken';
 import { ProfileEditDto } from './../dto/ProfileEdit.dto';
 import { MailService } from '../../mail/mail.service';
-import { RoleEnum } from '../../enums/enums';
+import { RoleEnum, HomeWorkStatusEnum, TableNameEnum } from '../../enums/enums';
 import { DevicesService } from '../../devices/devices.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { Request } from 'express';
@@ -26,9 +25,9 @@ import { ChangePasswordDto } from './../dto/ChangePassword.dto';
 import { RolsService } from '../../roles/services/rols.service';
 import { GoogleCredentialDto } from './../dto/GoogleCredential.dto';
 
-import { forwardRef } from '@nestjs/common';
+import { forwardRef, UnauthorizedException } from '@nestjs/common';
 import { uploadFile } from '../../utils/utils';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 @Injectable()
 export class AuthService {
   constructor(
@@ -56,17 +55,21 @@ export class AuthService {
     });
     try {
       const newUser = await this.usersRepository.save(user);
-      this.rolsService.assignStudenRole(newUser, {
+      await this.rolsService.assignStudenRole(newUser, {
         rolName: RoleEnum.STUDENT,
         active: true,
       });
-      await this.walletService.createWallet(newUser);
-      return newUser;
+      const wallet = await this.walletService.createWallet(newUser);
+      newUser.wallet = wallet;
+      console.log(newUser);
+
+      return await this.usersRepository.save(newUser);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
         // duplicate user
-        throw new ConflictException('Username already exists');
+        throw new ConflictException('Username or email already exists');
       } else {
+        console.log(error);
         throw new InternalServerErrorException();
       }
     }
@@ -74,31 +77,21 @@ export class AuthService {
 
   async singIn(
     authCredentialDTO: AuthCredentialDTO,
-  ): Promise<{ accessToken: string } | { message: string }> {
+  ): Promise<{ accessToken: string } | any> {
     try {
       const { username, password, idDevice } = authCredentialDTO;
-      const user = await this.usersRepository.findOne({
-        where: { username },
-        relations: ['rols', 'wallet', 'device'],
-      });
+      const user = await this.getUserWhere({ username }, [
+        TableNameEnum.ROLS,
+        TableNameEnum.WALLET,
+        TableNameEnum.DEVICE,
+      ]);
       /*  */
       if (user && (await bcrypt.compare(password, user.password))) {
         if (!user.verify) {
-          return {
-            message: 'Please verify your email',
-          };
+          throw new UnauthorizedException('Please verify your email');
         } else {
-          if (user.rols) {
-            user.userRols = user.rols.map((rol) => rol.rolName);
-            delete user.rols;
-          }
           await this.devicesService.createDevice(user, idDevice);
-
-          const payload: JWtPayload = { username };
-          const accessToken = await this.jwtService.sign(payload);
-          delete user.password;
-
-          return { ...user, accessToken };
+          return this.getUserToReturn(user);
         }
       } else {
         throw new UnauthorizedException('Please check your login credential');
@@ -109,18 +102,7 @@ export class AuthService {
   }
 
   async renewToken(user: User): Promise<{ accessToken: string }> {
-    const payload: JWtPayload = { username: user.username };
-    const accessToken = await this.jwtService.sign(payload);
-    if (user.rols) {
-      user.userRols = user.rols.map((rol) => rol.rolName);
-      delete user.rols;
-    }
-    if (user.device) {
-      user.userDevices = user.device.map((device) => device.idDevice);
-      delete user.device;
-    }
-    delete user.password;
-    return { ...user, accessToken };
+    return this.getUserToReturn(user);
   }
 
   async googleAuth(googleCredentialDto: GoogleCredentialDto) {
@@ -130,10 +112,8 @@ export class AuthService {
     if (!googleUser) {
       throw new UnauthorizedException('Please check your login credential');
     }
-    //TODO check if user exists
-    const user = await this.usersRepository.findOne({
-      where: { email: googleUser.email },
-    });
+
+    const user = await this.getUserWhere({ email: googleUser.email });
     if (!user) {
       const newUser = await this.usersRepository.create({
         username: googleUser.name,
@@ -148,9 +128,7 @@ export class AuthService {
       const payload: JWtPayload = { username: googleUser.name };
       const accessToken = await this.jwtService.sign(payload);
 
-      const user = await this.usersRepository.findOne({
-        where: { email: googleUser.email },
-      });
+      const user = await this.getUserWhere({ email: googleUser.email });
       await this.devicesService.createDevice(
         user,
         googleCredentialDto.idDevice,
@@ -206,9 +184,7 @@ export class AuthService {
     }
   }
   async sendEmailTokenVerification(email: string, req: Request) {
-    const getUser = await this.usersRepository.findOne({
-      where: { email },
-    });
+    const getUser = await this.getUserWhere({ email });
     const hostname = req.headers.host;
     const protocol = req.protocol;
 
@@ -232,9 +208,7 @@ export class AuthService {
     }
   }
   async verifyEmail(username: string): Promise<User> {
-    const getUser = await this.usersRepository.findOne({
-      where: { username },
-    });
+    const getUser = await this.getUserWhere({ username });
     if (getUser.verify) {
       return;
     }
@@ -254,9 +228,7 @@ export class AuthService {
     );
   }
   async sendEmailRequestPasswordChange(email: string, req: Request) {
-    const getUser = await this.usersRepository.findOne({
-      where: { email },
-    });
+    const getUser = await this.getUserWhere({ email });
     const hostname = req.headers.host;
     const protocol = req.protocol;
     const hostName = `${protocol}://${hostname}`;
@@ -290,9 +262,7 @@ export class AuthService {
     currentUser: User,
     idUser: number,
   ) {
-    const user = await this.usersRepository.findOne({
-      where: { id: idUser },
-    });
+    const user = await this.getUserWhere({ id: idUser });
 
     if (!user) {
       throw new InternalServerErrorException('User not found');
@@ -314,9 +284,7 @@ export class AuthService {
     }
   }
   async getOneUser(idUser: number) {
-    const findUser = await this.usersRepository.findOne({
-      where: { id: idUser },
-    });
+    const findUser = await this.getUserWhere({ id: idUser });
     if (!findUser) {
       throw new InternalServerErrorException('User not found');
     }
@@ -328,5 +296,30 @@ export class AuthService {
 
   async getAllUsers() {
     return await this.usersRepository.find();
+  }
+
+  async getUserToReturn(user: User) {
+    const payload: JWtPayload = { username: user.username };
+    const accessToken = await this.jwtService.sign(payload);
+    if (user.rols) {
+      user.userRols = user.rols.map((rol) => rol.rolName);
+      delete user.rols;
+    }
+    if (user.device) {
+      user.userDevices = user.device.map((device) => device.idDevice);
+      delete user.device;
+    }
+    delete user.password;
+    return { ...user, accessToken };
+  }
+
+  async getUserWhere(
+    where: FindOptionsWhere<User> | FindOptionsWhere<User>[],
+    relations?: TableNameEnum[],
+  ): Promise<User> {
+    return await this.usersRepository.findOne({
+      where,
+      relations: relations,
+    });
   }
 }

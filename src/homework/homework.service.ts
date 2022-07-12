@@ -19,6 +19,7 @@ import {
   Repository,
 } from 'typeorm';
 import { uploadFile } from '../utils/utils';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class HomeworkService {
@@ -88,9 +89,7 @@ export class HomeworkService {
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
-    const homework = await this.homeworkRepository.findOne({
-      where: { id },
-    });
+    const homework = await this.getOneHomeworkWhere({ id });
 
     if (homework.user.id !== user.id) {
       throw new InternalServerErrorException(
@@ -109,10 +108,7 @@ export class HomeworkService {
     user: User,
     id: number,
   ) {
-    const homework = await this.homeworkRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    const homework = await this.getOneHomeworkWhere({ id }, ['user']);
 
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
@@ -136,8 +132,8 @@ export class HomeworkService {
             ...homework,
             ...homeWorkDto,
           });
-          return this.homeworkRepository.findOne({
-            where: { id },
+          return this.getOneHomeworkWhere({
+            id,
           });
         }
       }
@@ -154,26 +150,21 @@ export class HomeworkService {
     return Object.values(HomeWorkTypeEnum);
   }
   async getOneHomeworkOfferAndUser(id: number) {
-    const homework = await this.homeworkRepository.findOne({
-      where: { id },
-      relations: ['offers', 'user'],
-    });
+    const homework = await this.getOneHomeworkWhere({ id }, ['offers', 'user']);
     return homework;
   }
   async getOneHomeworkAll(id: number) {
-    return await this.homeworkRepository.findOne({
-      where: { id },
-    });
+    return await this.getOneHomeworkWhere({ id });
   }
   async getOffersReceiveByUser(user: User) {
-    return this.homeworkRepository.find({
-      where: {
+    return this.getOneHomeworkWhere(
+      {
         user: {
           id: user.id,
         },
       },
-      relations: ['homework', 'offers'],
-    });
+      ['homework', 'offers'],
+    );
   }
 
   async getHomeworksByCondition(
@@ -230,10 +221,12 @@ export class HomeworkService {
     return this.homeworkRepository.save(homework);
   }
   async getOneHomeworkUser(idHomework: number) {
-    return await this.homeworkRepository.findOne({
-      where: { id: idHomework },
-      relations: ['user'],
-    });
+    return await this.getOneHomeworkWhere(
+      {
+        id: idHomework,
+      },
+      ['user'],
+    );
   }
   async getHomewokrTosupervisor() {
     return await this.homeworkRepository.find({
@@ -241,6 +234,15 @@ export class HomeworkService {
         { status: HomeWorkStatusEnum.ACCEPTED },
         { status: HomeWorkStatusEnum.REJECTED },
       ],
+    });
+  }
+  async getOneHomeworkWhere(
+    where: FindOptionsWhere<Homework> | FindOptionsWhere<Homework>[],
+    relations?: string[],
+  ) {
+    return await this.homeworkRepository.findOne({
+      where,
+      relations: relations,
     });
   }
 }

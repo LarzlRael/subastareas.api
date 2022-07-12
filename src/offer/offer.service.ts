@@ -9,7 +9,7 @@ import { User } from '../auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
 import { NotificationService } from '../devices/notification/notification.service';
 
-import { In, Repository } from 'typeorm';
+import { In, Repository, FindOptionsWhere } from 'typeorm';
 import { validateArray } from '../utils/validation';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkService } from '../homework/homework.service';
@@ -90,8 +90,8 @@ export class OfferService {
       .getMany();
   }
   async deleteOffer(user: User, idOffer: number): Promise<Offer> {
-    const getOffer = await this.offerRepository.findOne({
-      where: { id: idOffer },
+    const getOffer = await this.getOfferWhere({
+      id: idOffer,
     });
     if (!getOffer) {
       throw new InternalServerErrorException('Offer not found');
@@ -101,9 +101,7 @@ export class OfferService {
         'You are not the owner of this offer',
       );
     }
-    const findOffer = await this.offerRepository.findOne({
-      where: { id: idOffer },
-    });
+    const findOffer = await this.getOfferWhere({ id: idOffer });
     if (findOffer.user.id === user.id) {
       await this.offerRepository.delete(idOffer);
       return findOffer;
@@ -119,8 +117,8 @@ export class OfferService {
     idOffer: number,
     offerDto: OfferDto,
   ): Promise<Offer> {
-    const getOffer = await this.offerRepository.findOne({
-      where: { id: idOffer },
+    const getOffer = await this.getOfferWhere({
+      id: idOffer,
     });
     if (!getOffer) {
       throw new InternalServerErrorException('Homework not found');
@@ -182,14 +180,19 @@ export class OfferService {
     return await this.offerRepository.save(offer);
   }
   async getOneOffer(idOffer: number) {
-    const offer = await this.offerRepository.findOne({
-      where: { id: idOffer },
-      relations: ['homework'],
-    });
+    const offer = await this.getOfferWhere({ id: idOffer }, ['homework']);
     return offer;
   }
+  async getOfferWhere(
+    where: FindOptionsWhere<Offer> | FindOptionsWhere<Offer>[],
+    relations?: string[],
+  ) {
+    return await this.offerRepository.findOne({
+      where: where,
+      relations: relations,
+    });
+  }
 }
-//Todo se repite mucho findone
 //TODO usar esto
 /* SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id
 from trade t inner join offer o on 

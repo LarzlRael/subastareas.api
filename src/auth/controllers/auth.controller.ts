@@ -37,14 +37,12 @@ export class AuthController {
     return this.authService.singUp(registerUserDTO);
   }
   @Post('/signin')
-  signin(
-    @Body() authCredentialDTO: AuthCredentialDTO,
-  ): Promise<{ accessToken: string } | { message: string }> {
+  signin(@Body() authCredentialDTO: AuthCredentialDTO) {
     return this.authService.singIn(authCredentialDTO);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('/renewtoken')
-  renewToken(@GetUser() user: User): Promise<{ accessToken: string }> {
+  renewToken(@GetUser() user: User) {
     return this.authService.renewToken(user);
   }
 

@@ -104,9 +104,8 @@ export class TradeService {
     const getuserHomework = await this.homeworkService.getOneHomeworkAll(
       getOffer.homework.id,
     );
-    const homeworkHomeworkDestination = await this.homeworkService.getOneHomeworkAll(
-      getOffer.homework.id,
-    );
+    const homeworkHomeworkDestination =
+      await this.homeworkService.getOneHomeworkAll(getOffer.homework.id);
 
     await this.notificationService.sendHomeworkResolveNotification(
       getuserHomework.user,
