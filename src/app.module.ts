@@ -32,9 +32,9 @@ import { MailModule } from './mail/mail.module';
     }),
     AuthModule,
     RolesModule,
+    /* OfferModule, */
     /* HomeworkModule,
     CommentsModule,
-    OfferModule,
     DevicesModule,
     WalletModule,
     TradeModule, */

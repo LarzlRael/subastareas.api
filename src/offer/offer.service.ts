@@ -5,7 +5,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { OfferDto } from './dto/offer.dot';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
 import { NotificationService } from '../devices/notification/notification.service';
 

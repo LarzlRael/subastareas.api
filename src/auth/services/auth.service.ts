@@ -18,7 +18,7 @@ import { User } from './../entities/user.entity';
 import { validateGoogleToken } from './../google/googleVerifyToken';
 import { ProfileEditDto } from './../dto/ProfileEdit.dto';
 import { MailService } from '../../mail/mail.service';
-import { RoleEnum } from 'src/enums/enums';
+import { RoleEnum } from '../../enums/enums';
 import { DevicesService } from '../../devices/devices.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { Request } from 'express';

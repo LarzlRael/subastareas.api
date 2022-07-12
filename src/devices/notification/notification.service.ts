@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { IpushNotification } from '../../interfaces/pushNotication';
-import { capitalizeFirstLetter } from 'src/utils/utilsText';
+import { capitalizeFirstLetter } from '../../utils/utilsText';
 
 import { User } from '../../auth/entities/user.entity';
-import { TypeNotificationEnum } from 'src/enums/enums';
+import { TypeNotificationEnum } from '../../enums/enums';
 import { Homework } from '../../homework/entities/Homework.entity';
 import { Notification } from './entities/notification.entity';
 import { NotificationTypeEnum } from '../../enums/enums';

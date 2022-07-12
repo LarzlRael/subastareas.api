@@ -14,12 +14,14 @@ import { Rol } from './entities/rol.entity';
 import { Homework } from '../homework/entities/Homework.entity';
 import { AuthModule } from '../auth/auth.module';
 import { HomeworkModule } from '../homework/homework.module';
+import { OfferModule } from '../offer/offer.module';
 
 @Module({
   imports: [
+    OfferModule,
     forwardRef(() => AuthModule),
     HomeworkModule,
-    TypeOrmModule.forFeature([Rol]),
+    TypeOrmModule.forFeature([Rol, Professor, Supervisor]),
   ],
   controllers: [
     RolesController,

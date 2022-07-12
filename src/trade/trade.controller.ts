@@ -13,7 +13,7 @@ import { OfferService } from '../offer/offer.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter } from '../utils/utils';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/decorators/get-user..decorator';
+import { GetUser } from '../auth/decorators/get-user..decorator';
 import { User } from '../auth/entities/user.entity';
 
 @UseGuards(AuthGuard('jwt'))

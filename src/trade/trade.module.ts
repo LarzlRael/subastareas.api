@@ -6,13 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationService } from '../devices/notification/notification.service';
 
 import { Wallet } from '../wallet/entities/wallet.entity';
-import { Notification } from 'src/devices/notification/entities/notification.entity';
+import { Notification } from '../devices/notification/entities/notification.entity';
 import { Device } from '../devices/entities/devices.entity';
-import { Trade } from 'src/trade/entities/trade.entity';
+import { Trade } from '../trade/entities/trade.entity';
 import { DevicesModule } from '../devices/devices.module';
 import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
 import { WalletModule } from '../wallet/wallet.module';
+import { Offer } from '../offer/entities/offer.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { WalletModule } from '../wallet/wallet.module';
     WalletModule,
     OfferModule,
     DevicesModule,
-    TypeOrmModule.forFeature([Trade]),
+    TypeOrmModule.forFeature([Trade, Offer, Notification, Wallet, Device]),
   ],
   controllers: [TradeController],
   providers: [TradeService, NotificationService],

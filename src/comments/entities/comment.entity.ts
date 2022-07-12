@@ -1,5 +1,5 @@
-import { User } from 'src/auth/entities/user.entity';
-import { Homework } from 'src/homework/entities/Homework.entity';
+import { User } from '../../auth/entities/user.entity';
+import { Homework } from '../../homework/entities/Homework.entity';
 import {
   Entity,
   Column,

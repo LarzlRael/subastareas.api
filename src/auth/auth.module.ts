@@ -15,8 +15,9 @@ import { AdminService } from './services/admin.service';
 
 import { RolesModule } from '../roles/roles.module';
 import { RolsService } from '../roles/services/rols.service';
-import { Wallet } from 'src/wallet/entities/wallet.entity';
-import { Device } from 'src/devices/entities/devices.entity';
+import { Wallet } from '../wallet/entities/wallet.entity';
+
+import { Device } from '../devices/entities/devices.entity';
 import { Rol } from '../roles/entities/rol.entity';
 import { User } from './entities/user.entity';
 import { AuthService } from './services/auth.service';
@@ -41,7 +42,7 @@ import { DevicesModule } from '../devices/devices.module';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Device, Wallet, Rol]),
   ],
   providers: [
     AuthService,

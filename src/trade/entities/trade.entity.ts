@@ -5,8 +5,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Offer } from 'src/offer/entities/offer.entity';
-import { TradeStatusEnum } from 'src/enums/enums';
+
+import { TradeStatusEnum } from '../../enums/enums';
+import { Offer } from '../../offer/entities/offer.entity';
 
 @Entity()
 export class Trade {

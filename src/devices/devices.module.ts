@@ -14,7 +14,7 @@ import { Device } from './entities/devices.entity';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([Device]),
+    TypeOrmModule.forFeature([Device, Notification]),
   ],
   providers: [DevicesService, NotificationService],
   controllers: [DevicesController, NotificationController],

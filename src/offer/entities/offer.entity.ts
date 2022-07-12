@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Trade } from 'src/trade/entities/trade.entity';
+import { Trade } from '../../trade/entities/trade.entity';
 import { TradeStatusEnum } from '../../enums/enums';
 
 @Entity()

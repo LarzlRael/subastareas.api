@@ -16,10 +16,11 @@ import { GetUser } from '../auth/decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from 'src/utils/utils';
+
 /* import { RolesGuard } from '../auth/guard/roles.guard'; */
 import { HomeWorkStatusEnum } from '../enums/enums';
 import { Homework } from './entities/Homework.entity';
+import { fileFilter } from '../utils/utils';
 
 @Controller('homework')
 export class HomeworkController {

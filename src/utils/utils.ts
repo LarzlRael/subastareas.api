@@ -1,4 +1,4 @@
-import { FoldersNameEnum } from 'src/enums/enums';
+import { FoldersNameEnum } from '../enums/enums';
 import { v2 } from 'cloudinary';
 import { InternalServerErrorException } from '@nestjs/common';
 

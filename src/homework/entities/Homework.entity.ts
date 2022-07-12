@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
-import { User } from 'src/auth/entities/user.entity';
-import { Comment } from 'src/comments/entities/comment.entity';
-import { HomeWorkStatusEnum, LevelTypeEnum } from 'src/enums/enums';
+import { User } from '../../auth/entities/user.entity';
+import { Comment } from '../../comments/entities/comment.entity';
+import { HomeWorkStatusEnum, LevelTypeEnum } from '../../enums/enums';
 import { Offer } from '../../offer/entities/offer.entity';
 import {
   Column,

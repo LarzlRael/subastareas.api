@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolDto } from '../dto/rol.dto';
 import { Rol } from '../entities/rol.entity';
 
-import { RoleEnum } from 'src/enums/enums';
+import { RoleEnum } from '../../enums/enums';
 import { RolesGuard } from '../../auth/guard/roles.guard';
 import { Roles } from '../../auth/decorators/get.rols.decorator';
 import { GetUser } from '../../auth/decorators/get-user..decorator';

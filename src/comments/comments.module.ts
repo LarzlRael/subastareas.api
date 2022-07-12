@@ -4,7 +4,7 @@ import { CommentsService } from './comments.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { NotificationService } from '../devices/notification/notification.service';
-import { Notification } from 'src/devices/notification/entities/notification.entity';
+import { Notification } from '../devices/notification/entities/notification.entity';
 
 import { DevicesModule } from '../devices/devices.module';
 import { Comment } from './entities/comment.entity';
@@ -14,7 +14,7 @@ import { HomeworkModule } from '../homework/homework.module';
   imports: [
     forwardRef(() => HomeworkModule),
     DevicesModule,
-    TypeOrmModule.forFeature([Comment]),
+    TypeOrmModule.forFeature([Comment, Notification]),
   ],
   controllers: [CommentsController],
   providers: [CommentsService, NotificationService],

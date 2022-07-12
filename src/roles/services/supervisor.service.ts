@@ -25,7 +25,6 @@ export class SupervisorService {
     private supervisorRepository: Repository<Supervisor>,
     private userService: AuthService,
     private rolService: RolsService,
-
     private homeworkService: HomeworkService,
   ) {}
   async createSupervisor(user: User): Promise<Supervisor> {

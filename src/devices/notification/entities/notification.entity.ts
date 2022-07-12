@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { TypeNotificationEnum } from 'src/enums/enums';
 import { User } from '../../../auth/entities/user.entity';
+import { TypeNotificationEnum } from '../../../enums/enums';
 
 @Entity()
 export class Notification {
