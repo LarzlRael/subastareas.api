@@ -41,7 +41,7 @@ import { DevicesModule } from '../devices/devices.module';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([User, Rol, Device, Wallet]),
+    TypeOrmModule.forFeature([User]),
   ],
   providers: [
     AuthService,

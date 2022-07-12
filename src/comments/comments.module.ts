@@ -14,7 +14,7 @@ import { HomeworkModule } from '../homework/homework.module';
   imports: [
     forwardRef(() => HomeworkModule),
     DevicesModule,
-    TypeOrmModule.forFeature([Comment, Notification]),
+    TypeOrmModule.forFeature([Comment]),
   ],
   controllers: [CommentsController],
   providers: [CommentsService, NotificationService],

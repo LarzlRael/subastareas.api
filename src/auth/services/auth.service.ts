@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   Inject,
+  ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,7 +11,7 @@ import {
   AuthCredentialDTO,
   RegisterUserDTO,
 } from './../dto/AuthCredentialDTO ';
-import { UsersRepository } from './../user.repository';
+
 import * as bcrypt from 'bcrypt';
 import { JWtPayload } from '../../interfaces/jwtPayload';
 import { User } from './../entities/user.entity';
@@ -27,27 +28,47 @@ import { GoogleCredentialDto } from './../dto/GoogleCredential.dto';
 
 import { forwardRef } from '@nestjs/common';
 import { uploadFile } from '../../utils/utils';
+import { Repository } from 'typeorm';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UsersRepository)
-    private usersRepository: UsersRepository,
-
+    @InjectRepository(User)
     private mailService: MailService,
     private devicesService: DevicesService,
     private walletService: WalletService,
     @Inject(forwardRef(() => RolsService))
     private jwtService: JwtService,
     private rolsService: RolsService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
-    const newUser = await this.usersRepository.createUser(registerUserDTO);
-    this.rolsService.assignStudenRole(newUser, {
-      rolName: RoleEnum.STUDENT,
-      active: true,
+    const { username, password, email } = registerUserDTO;
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = this.usersRepository.create({
+      username,
+      password: hashedPassword,
+      email: email,
     });
-    await this.walletService.createWallet(newUser);
-    return newUser;
+    try {
+      const newUser = await this.usersRepository.save(user);
+      this.rolsService.assignStudenRole(newUser, {
+        rolName: RoleEnum.STUDENT,
+        active: true,
+      });
+      await this.walletService.createWallet(newUser);
+      return newUser;
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        // duplicate user
+        throw new ConflictException('Username already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async singIn(
@@ -153,11 +174,33 @@ export class AuthService {
     profileImageUrl: Express.Multer.File,
     user: User,
   ) {
-    return this.usersRepository.updateUserProfile(
-      updateUser,
-      profileImageUrl,
-      user,
-    );
+    try {
+      if (profileImageUrl) {
+        uploadFile(profileImageUrl, 'PROFILE_IMAGES').then(async (url) => {
+          updateUser.profileImageUrl = url;
+          const updatedProfile = await this.usersRepository.save({
+            ...user,
+            name: updateUser.name,
+            lastName: updateUser.lastName,
+            nickName: updateUser.nickName,
+            phone: updateUser.phone,
+            profileImageUrl: updateUser.profileImageUrl,
+          });
+          return updatedProfile;
+        });
+      } else {
+        return await this.usersRepository.save({
+          ...user,
+          name: updateUser.name,
+          lastName: updateUser.lastName,
+          nickName: updateUser.nickName,
+          phone: updateUser.phone,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
   async sendEmailTokenVerification(email: string, req: Request) {
     const getUser = await this.usersRepository.findOne({ email });

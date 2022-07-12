@@ -17,9 +17,9 @@ import { Homework } from 'src/homework/entities/Homework.entity';
 
 @Module({
   imports: [
-    forwardRef(() => HomeworkModule),
     DevicesModule,
-    TypeOrmModule.forFeature([Homework, Offer, Comment, Notification, Wallet]),
+    forwardRef(() => HomeworkModule),
+    TypeOrmModule.forFeature([Offer]),
   ],
   providers: [
     OfferService,

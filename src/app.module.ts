@@ -12,6 +12,7 @@ import { DevicesModule } from './devices/devices.module';
 import { WalletModule } from './wallet/wallet.module';
 import { TradeModule } from './trade/trade.module';
 import { RolesModule } from './roles/roles.module';
+import { MailModule } from './mail/mail.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,13 +31,13 @@ import { RolesModule } from './roles/roles.module';
       /* ssl: {}, */
     }),
     AuthModule,
-    HomeworkModule,
+    RolesModule,
+    /* HomeworkModule,
     CommentsModule,
     OfferModule,
     DevicesModule,
     WalletModule,
-    TradeModule,
-    RolesModule,
+    TradeModule, */
   ],
   controllers: [AppController],
   providers: [AppService],

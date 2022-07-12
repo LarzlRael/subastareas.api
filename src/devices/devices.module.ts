@@ -9,14 +9,12 @@ import { Notification } from './notification/entities/notification.entity';
 import { Device } from './entities/devices.entity';
 
 @Module({
-  /* imports: [TypeOrmModule.forFeature([DeviceRepository])], */
-
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([Device, Notification]),
+    TypeOrmModule.forFeature([Device]),
   ],
   providers: [DevicesService, NotificationService],
   controllers: [DevicesController, NotificationController],
