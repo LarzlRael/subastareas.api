@@ -17,7 +17,7 @@ import { User } from './../entities/user.entity';
 import { validateGoogleToken } from './../google/googleVerifyToken';
 import { ProfileEditDto } from './../dto/ProfileEdit.dto';
 import { MailService } from '../../mail/mail.service';
-import { RoleEnum, HomeWorkStatusEnum, TableNameEnum } from '../../enums/enums';
+import { RoleEnum, TableNameEnum } from '../../enums/enums';
 import { DevicesService } from '../../devices/devices.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { Request } from 'express';
@@ -28,6 +28,8 @@ import { GoogleCredentialDto } from './../dto/GoogleCredential.dto';
 import { forwardRef, UnauthorizedException } from '@nestjs/common';
 import { uploadFile } from '../../utils/utils';
 import { FindOptionsWhere, Repository } from 'typeorm';
+import { VerifyUserDTO } from '../dto/VerifyUser.dto';
+import { getHostName } from '../../utils/hostUtils';
 @Injectable()
 export class AuthService {
   constructor(
@@ -55,13 +57,6 @@ export class AuthService {
     });
     try {
       const newUser = await this.usersRepository.save(user);
-      await this.rolsService.assignStudenRole(newUser, {
-        rolName: RoleEnum.STUDENT,
-        active: true,
-      });
-      const wallet = await this.walletService.createWallet(newUser);
-      newUser.wallet = wallet;
-      console.log(newUser);
 
       return await this.usersRepository.save(newUser);
     } catch (error) {
@@ -75,7 +70,7 @@ export class AuthService {
     }
   }
 
-  async singIn(
+  async signIn(
     authCredentialDTO: AuthCredentialDTO,
   ): Promise<{ accessToken: string } | any> {
     try {
@@ -125,8 +120,8 @@ export class AuthService {
         google: true,
       });
       await this.usersRepository.save(newUser);
-      const payload: JWtPayload = { username: googleUser.name };
-      const accessToken = await this.jwtService.sign(payload);
+
+      const accessToken = await this.generateToken(googleUser.name, '24h');
 
       const user = await this.getUserWhere({ email: googleUser.email });
       await this.devicesService.createDevice(
@@ -145,8 +140,7 @@ export class AuthService {
 
       return { accessToken, ...user };
     } else {
-      const payload: JWtPayload = { username: googleUser.name };
-      const accessToken = await this.jwtService.sign(payload);
+      const accessToken = await this.generateToken(googleUser.name, '24h');
       return { accessToken, ...user };
     }
   }
@@ -185,18 +179,15 @@ export class AuthService {
   }
   async sendEmailTokenVerification(email: string, req: Request) {
     const getUser = await this.getUserWhere({ email });
-    const hostname = req.headers.host;
-    const protocol = req.protocol;
-
-    const hostName = `${protocol}://${hostname}`;
+    console.log(getUser);
     if (getUser) {
       if (!getUser.verify) {
-        const payload: JWtPayload = { username: getUser.username };
         //generate token
-        const accessToken = await this.jwtService.sign(payload);
+        const accessToken = await this.generateToken(getUser.username, '30M');
         //send email
         await this.mailService.sendEmailVerification(
-          hostName,
+          /* getHostName(req), */
+          getHostName(req),
           { email: getUser.email, name: getUser.username },
           accessToken,
         );
@@ -207,41 +198,38 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
   }
-  async verifyEmail(username: string): Promise<User> {
-    const getUser = await this.getUserWhere({ username });
+  async verifyUser(user: User, verifyUser: VerifyUserDTO): Promise<User> {
+    const getUser = await this.getUserWhere({ username: user.username });
     if (getUser.verify) {
       return;
     }
+
+    await this.rolsService.assignStudenRole(user, {
+      rolName: RoleEnum.STUDENT,
+      active: true,
+    });
+    /* const wallet = await this.walletService.createWallet(newUser);
+    newUser.wallet = wallet;
+    console.log(newUser); */
     getUser.verify = true;
-    return await this.usersRepository.save(getUser);
+    const wallet = await this.walletService.createWallet(user);
+    getUser.wallet = wallet;
+    return await this.usersRepository.save({ ...getUser, ...verifyUser });
   }
   async signOut(idDevice: string) {
     return await this.devicesService.deleteDevice(idDevice);
   }
-  async sendEmail() {
-    return this.mailService.sendUserConfirmation(
-      {
-        email: 'seug.ri.pe@gmail.com',
-        name: 'Rael',
-      },
-      '1231564545',
-    );
-  }
+
   async sendEmailRequestPasswordChange(email: string, req: Request) {
     const getUser = await this.getUserWhere({ email });
-    const hostname = req.headers.host;
-    const protocol = req.protocol;
-    const hostName = `${protocol}://${hostname}`;
+
     if (getUser) {
-      const payload: JWtPayload = { username: getUser.username };
       //generate token
-      const accessToken = await this.jwtService.sign(payload, {
-        expiresIn: '3600',
-      });
+      const accessToken = await this.generateToken(getUser.username, '5M');
       this.mailService.sendEmailRequestpasswordChange(
         { email: getUser.email, name: getUser.username },
         accessToken,
-        hostName,
+        getHostName(req),
       );
     } else {
       throw new UnauthorizedException('User not found');
@@ -299,8 +287,7 @@ export class AuthService {
   }
 
   async getUserToReturn(user: User) {
-    const payload: JWtPayload = { username: user.username };
-    const accessToken = await this.jwtService.sign(payload);
+    const accessToken = await this.generateToken(user.username, '24h');
     if (user.rols) {
       user.userRols = user.rols.map((rol) => rol.rolName);
       delete user.rols;
@@ -321,5 +308,18 @@ export class AuthService {
       where,
       relations: relations,
     });
+  }
+  async generateToken(username, period: string): Promise<string> {
+    const payload: JWtPayload = { username };
+
+    const accessToken = await this.jwtService.sign(payload, {
+      expiresIn: period,
+    });
+    return accessToken;
+  }
+
+  async renewTemporaryToken(user: User) {
+    const token = await this.generateToken(user.username, '5m');
+    return { token };
   }
 }

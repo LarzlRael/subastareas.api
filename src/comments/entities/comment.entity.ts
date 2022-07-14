@@ -17,11 +17,16 @@ export class Comment {
   id: number;
 
   @Column()
-  public content: string;
+  content: string;
   @Column({
     default: false,
   })
-  public edited: boolean;
+  edited: boolean;
+
+  @Column({
+    default: true,
+  })
+  visible: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -36,9 +41,11 @@ export class Comment {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.comments, { eager: true })
+  @ManyToOne(() => User, (user) => user.comments)
   user: User;
 
-  @ManyToOne(() => Homework, (homeWork) => homeWork.comments)
+  @ManyToOne(() => Homework, (homeWork) => homeWork.comments, {
+    nullable: false,
+  })
   homework: Homework;
 }

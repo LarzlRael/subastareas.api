@@ -19,9 +19,11 @@ export class OfferService {
   constructor(
     @InjectRepository(Offer)
     private offerRepository: Repository<Offer>,
-    private notificationService: NotificationService,
+
     @Inject(forwardRef(() => HomeworkService))
     private readonly homeworkService: HomeworkService,
+
+    private notificationService: NotificationService,
   ) {}
 
   async makeOffer(idHomework: number, offerDto: OfferDto, user: User) {
@@ -44,9 +46,9 @@ export class OfferService {
         });
 
         await this.offerRepository.save(offer);
-
+        console.log('oferta ' + offer);
         if (offer) {
-          this.notificationService.sendNewOfferNotification(
+          await this.notificationService.sendNewOfferNotification(
             user,
             offerDto.priceOffer,
             homework,
@@ -62,6 +64,11 @@ export class OfferService {
         priceOffer: offerDto.priceOffer,
       });
       await this.offerRepository.save(offer);
+      await this.notificationService.sendNewOfferNotification(
+        user,
+        offerDto.priceOffer,
+        homework,
+      );
       return true;
     }
   }

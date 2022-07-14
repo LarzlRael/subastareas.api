@@ -4,15 +4,10 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HomeworkModule } from './homework/homework.module';
-import { CommentsModule } from './comments/comments.module';
-import { AppGateway } from './app.gateway';
-import { OfferModule } from './offer/offer.module';
-import { DevicesModule } from './devices/devices.module';
-import { WalletModule } from './wallet/wallet.module';
-import { TradeModule } from './trade/trade.module';
 import { RolesModule } from './roles/roles.module';
-import { MailModule } from './mail/mail.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,12 +27,10 @@ import { MailModule } from './mail/mail.module';
     }),
     AuthModule,
     RolesModule,
-    /* OfferModule, */
-    /* HomeworkModule,
-    CommentsModule,
-    DevicesModule,
-    WalletModule,
-    TradeModule, */
+
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../', 'client'),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

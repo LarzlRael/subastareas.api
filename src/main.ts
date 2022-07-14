@@ -11,6 +11,7 @@ async function bootstrap() {
   app.setViewEngine('hbs');
   /* const reflector = app.get(Reflector); */
   /*   app.useGlobalGuards(new AuthGuard(reflector)); */
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }

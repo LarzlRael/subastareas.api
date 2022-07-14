@@ -1,14 +1,14 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-
+interface UserEmailI {
+  email: string;
+  name: string;
+}
 @Injectable()
 export class MailService {
   constructor(private mailerService: MailerService) {}
-
-  async sendUserConfirmation(
-    user: { email: string; name: string },
-    token: string,
-  ) {
+  async sendUserConfirmation(user: UserEmailI, token: string) {
+    // cambiar por el url del front
     const url = `example.com/auth/confirm?token=${token}`;
 
     await this.mailerService.sendMail({
@@ -25,10 +25,10 @@ export class MailService {
   }
   async sendEmailVerification(
     hostName: string,
-    user: { email: string; name: string },
+    user: UserEmailI,
     token: string,
   ) {
-    const url = `${hostName}/auth/verifyemail/${token}`;
+    const url = `${hostName}/completeregister?token=${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -43,11 +43,11 @@ export class MailService {
     });
   }
   async sendEmailRequestpasswordChange(
-    user: { email: string; name: string },
+    user: UserEmailI,
     token: string,
-    hostName,
+    hostname,
   ) {
-    const url = `${hostName}/auth/changePassoword/${token}`;
+    const url = hostname + '/changepassword?token=' + token;
 
     await this.mailerService.sendMail({
       to: user.email,

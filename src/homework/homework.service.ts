@@ -191,7 +191,7 @@ export class HomeworkService {
       .leftJoin('homework.offers', 'offers')
       .leftJoin('homework.user', 'user')
       .getMany();
-    console.log(homeworks);
+
     return homeworks;
   }
 

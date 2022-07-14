@@ -91,7 +91,6 @@ export class NotificationService {
   }
 
   async sendOfferAcceptedNotification(user: User, homework: Homework) {
-    console.log(await this.devicesService.getUserDevices(user));
     const sendData: IpushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {
@@ -117,7 +116,6 @@ export class NotificationService {
     await this.sendNotification(sendData);
   }
   async sendHomeworkResolveNotification(user: User, homework: Homework) {
-    console.log(homework);
     const sendData: IpushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {

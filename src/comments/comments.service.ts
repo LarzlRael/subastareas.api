@@ -38,7 +38,7 @@ export class CommentsService {
 
     // rerify if the commnet is different from user comment
     if (getHomework.user.id !== user.id) {
-      this.notificationService.sendCommentNotification(
+      await this.notificationService.sendCommentNotification(
         user,
         comment.content,
         getHomework,
@@ -48,7 +48,7 @@ export class CommentsService {
     try {
       return await this.commentRepository.save({
         user,
-        getHomework,
+        homework: getHomework,
         ...comment,
       });
     } catch (error) {
@@ -59,7 +59,7 @@ export class CommentsService {
     try {
       return await this.commentRepository
         .createQueryBuilder('comment')
-        .where({ homework: homeworkId })
+        .where({ homework: homeworkId, visible: true })
         .select([
           'comment.id',
           'comment.content',
@@ -88,7 +88,8 @@ export class CommentsService {
       if (findComment.user.id !== user.id) {
         throw new InternalServerErrorException('You are not the owner');
       }
-      await this.commentRepository.delete(findComment.id);
+      findComment.visible = false;
+      await this.commentRepository.save(findComment);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -101,9 +102,13 @@ export class CommentsService {
   ): Promise<CommentDto> {
     /* return this.commentRepository.editComment(user, idComment, comment); */
     try {
-      const getComment = await this.commentRepository.findOne({
-        where: { id: idComment },
-      });
+      const getComment = await this.getOneCommentWhere(
+        {
+          id: idComment,
+        },
+        ['user'],
+      );
+
       if (!getComment) {
         throw new InternalServerErrorException("comment doesn't exist");
       }
@@ -117,16 +122,17 @@ export class CommentsService {
       });
       return commentEdit;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException();
     }
   }
   async getOneCommentWhere(
     where: FindOptionsWhere<Comment> | FindOptionsWhere<Comment>[],
+    relations?: string[],
   ) {
     try {
       return await this.commentRepository.findOne({
         where,
+        relations: relations,
       });
     } catch (error) {
       throw new InternalServerErrorException();

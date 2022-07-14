@@ -59,7 +59,7 @@ export class RolsService {
     }
   }
   async assignStudenRole(user: User, rol: RolDto) {
-    return this.assignRole(user.id, rol);
+    return await this.assignRole(user.id, rol);
   }
   async listUserRoles(idUser: number) {
     const findUser = await this.userService.getOneUser(idUser);
