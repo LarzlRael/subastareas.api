@@ -15,8 +15,8 @@ import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 import { AuthGuard } from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('comments')
+@UseGuards(AuthGuard('jwt'))
 export class CommentsController {
   constructor(private commentService: CommentsService) {}
 
@@ -29,9 +29,7 @@ export class CommentsController {
     return this.commentService.createComment(user, idHomework, comment);
   }
   @Get('/getcomments/:homeworkId')
-  getCommentsByHomework(
-    @Param('homeworkId') homeworkId: number,
-  ): Promise<Comment[]> {
+  getCommentsByHomework(@Param('homeworkId') homeworkId: number) {
     return this.commentService.getCommentsByHomework(homeworkId);
   }
 

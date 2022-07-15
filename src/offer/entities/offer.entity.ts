@@ -9,20 +9,24 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Trade } from 'src/trade/entities/trade.entity';
+import { Trade } from '../../trade/entities/trade.entity';
+import { TradeStatusEnum } from '../../enums/enums';
 
 @Entity()
 export class Offer {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   priceOffer: number;
 
   @Column({
-    default: false,
+    type: 'enum',
+    enum: TradeStatusEnum,
+    default: TradeStatusEnum.PENDING,
   })
-  accept: boolean;
+  status: TradeStatusEnum;
+
   @Column({
     default: false,
   })
@@ -48,6 +52,6 @@ export class Offer {
   @ManyToOne(() => User, (user) => user.offers, { eager: true })
   user!: User;
 
-  @OneToOne(() => Trade, (trade) => trade.offer)
-  offer!: Offer;
+  /* @OneToOne(() => Trade, (trade) => trade.offer)
+  offer!: Offer; */
 }

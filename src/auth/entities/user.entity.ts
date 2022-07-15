@@ -1,4 +1,4 @@
-import { Homework } from 'src/homework/entities/Homework.entity';
+import { Homework } from '../../homework/entities/Homework.entity';
 import { Comment } from '../../comments/entities/comment.entity';
 import {
   Column,
@@ -11,16 +11,16 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { Supervisor } from 'src/roles/entities/Supervisor.entity';
 import { Exclude } from 'class-transformer';
-import { Professor } from 'src/roles/entities/professor.entity';
+import { Professor } from '../../roles/entities/professor.entity';
+import { Supervisor } from '../../roles/entities/Supervisor.entity';
 import { Offer } from '../../offer/entities/offer.entity';
-import { Device } from 'src/devices/entities/devices.entity';
+import { Device } from '../../devices/entities/devices.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
 
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
-/* import { SuperviseHomeWork } from 'src/supervise-homework/entities/superviseHomework..entity'; */
 import { Rol } from '../../roles/entities/rol.entity';
+import { Notification } from '../../devices/notification/entities/notification.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()
@@ -47,6 +47,7 @@ export class User {
 
   @Column({
     nullable: true,
+    unique: true,
   })
   email: string;
 
@@ -122,4 +123,9 @@ export class User {
 
   @OneToMany(() => Device, (device) => device.user, { eager: false })
   device: Device[];
+
+  @OneToMany(() => Notification, (notification) => notification.userDestiny, {
+    eager: false,
+  })
+  notification: Notification[];
 }

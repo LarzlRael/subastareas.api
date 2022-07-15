@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { WalletController } from './wallet.controller';
 import { WalletService } from './wallet.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WalletRepository } from './wallet.repository';
+import { Wallet } from './entities/wallet.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WalletRepository])],
+  imports: [TypeOrmModule.forFeature([Wallet])],
   controllers: [WalletController],
   providers: [WalletService],
+  exports: [WalletService],
 })
 export class WalletModule {}

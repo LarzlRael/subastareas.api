@@ -1,12 +1,13 @@
-import { OneToOne, CreateDateColumn } from 'typeorm';
+import { OneToOne, CreateDateColumn, JoinColumn } from 'typeorm';
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Offer } from 'src/offer/entities/offer.entity';
-import { TradeStatusEnum } from 'src/enums/enums';
+
+import { TradeStatusEnum } from '../../enums/enums';
+import { Offer } from '../../offer/entities/offer.entity';
 
 @Entity()
 export class Trade {
@@ -40,6 +41,6 @@ export class Trade {
   updated_at: Date;
 
   @OneToOne(() => Offer, { eager: true })
-  /* @JoinColumn({ name: 'id_offer' }) */
+  @JoinColumn()
   offer: Offer;
 }

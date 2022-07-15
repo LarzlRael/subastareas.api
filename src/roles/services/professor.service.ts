@@ -1,23 +1,24 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ProfessorRepository } from '../repositories/professor.repository';
 import { User } from '../../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleEnum } from '../../enums/enums';
-import { RolRepository } from '../repositories/rol.repository';
+import { Professor } from '../entities/professor.entity';
+import { Repository } from 'typeorm';
+import { RolsService } from './rols.service';
 
 @Injectable()
 export class ProfessorService {
   constructor(
-    private professorRepository: ProfessorRepository,
-    @InjectRepository(RolRepository)
-    private rolRepository: RolRepository,
+    @InjectRepository(Professor)
+    private professorRepository: Repository<Professor>,
+    private rolService: RolsService,
   ) {}
 
   async becomeProfessor(user: User) {
     if (user.professor) {
       throw new InternalServerErrorException('You are already a professor');
     }
-    this.rolRepository.assignRole(user, {
+    this.rolService.assignRole(user.id, {
       rolName: RoleEnum.PROFESSOR,
       id: user.id,
       active: true,

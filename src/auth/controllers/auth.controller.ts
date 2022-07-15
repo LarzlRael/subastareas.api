@@ -11,39 +11,36 @@ import {
   Render,
   Req,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthCredentialDTO, RegisterUserDTO } from './dto/AuthCredentialDTO ';
-import { User } from './entities/user.entity';
-import { GetUser } from './decorators/get-user..decorator';
+
+import { AuthCredentialDTO, RegisterUserDTO } from '../dto/AuthCredentialDTO ';
+import { User } from '../entities/user.entity';
+import { GetUser } from '../decorators/get-user..decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from '../utils/utils';
-import { ProfileEditDto } from './dto/ProfileEdit.dto';
+import { fileFilter } from '../../utils/utils';
+import { ProfileEditDto } from '../dto/ProfileEdit.dto';
 import { JwtService } from '@nestjs/jwt';
-import { JWtPayload } from '../interfaces/jwtPayload';
+import { JWtPayload } from '../../interfaces/jwtPayload';
 import { Request } from 'express';
-import { ChangePasswordDto } from './dto/ChangePassword.dto';
-import { GoogleCredentialDto } from './dto/GoogleCredential.dto';
+import { ChangePasswordDto } from '../dto/ChangePassword.dto';
+import { GoogleCredentialDto } from '../dto/GoogleCredential.dto';
+import { AuthService } from '../services/auth.service';
+import { VerifyUserDTO } from '../dto/VerifyUser.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private authService: AuthService) {}
   @Post('/signup')
   signup(@Body() registerUserDTO: RegisterUserDTO): Promise<User> {
     return this.authService.singUp(registerUserDTO);
   }
   @Post('/signin')
-  signin(
-    @Body() authCredentialDTO: AuthCredentialDTO,
-  ): Promise<{ accessToken: string } | { message: string }> {
-    return this.authService.singIn(authCredentialDTO);
+  signin(@Body() authCredentialDTO: AuthCredentialDTO) {
+    return this.authService.signIn(authCredentialDTO);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('/renewtoken')
-  renewToken(@GetUser() user: User): Promise<{ accessToken: string }> {
+  renewToken(@GetUser() user: User) {
     return this.authService.renewToken(user);
   }
 
@@ -67,10 +64,6 @@ export class AuthController {
     return this.authService.updateUserProfile(editProfile, imageProfile, user);
   }
 
-  @Post('email')
-  sendEmail() {
-    return this.authService.sendEmail();
-  }
   @Get('sendemailverification/:email')
   sendEmailVerification(
     @Req() request: Request,
@@ -79,14 +72,17 @@ export class AuthController {
     return this.authService.sendEmailTokenVerification(email, request);
   }
 
-  @Get('/verifyemail/:token')
-  async verifyEmail(@Param('token') token: string) {
-    const { username } = this.jwtService.verify(token) as JWtPayload;
-    const xd = await this.authService.verifyEmail(username);
-    return {
-      message: 'email verifified',
-    };
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/verifyuser/')
+  async verifyEmail(@Body() verifyUser: VerifyUserDTO, @GetUser() user: User) {
+    if (user.verify) {
+      return {
+        message: 'email already verify',
+      };
+    }
+    return await this.authService.verifyUser(user, verifyUser);
   }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('/signout/:idDevice')
   async signOutAndDeleteDevice(@Param('idDevice') idDevice: string) {
@@ -127,5 +123,10 @@ export class AuthController {
     @UploadedFile() homeWorkFile: Express.Multer.File,
   ) {
     return this.authService.uploadOrUpdateProfileImage(homeWorkFile, user, id);
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/verifytemporarytoken')
+  verifyTemporaryToken(@GetUser() user: User) {
+    return this.authService.renewTemporaryToken(user);
   }
 }

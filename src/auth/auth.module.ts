@@ -1,29 +1,36 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { Module, forwardRef } from '@nestjs/common';
+
+import { AuthController } from './controllers/auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersRepository } from './user.repository';
+
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
 import { DevicesService } from '../devices/devices.service';
-import { DeviceRepository } from '../devices/device.repository';
-import { WalletRepository } from '../wallet/wallet.repository';
 import { WalletService } from '../wallet/wallet.service';
-import { AdminService } from './admin.service';
-import { AdminController } from './admin.controller';
-import { RolRepository } from 'src/roles/repositories/rol.repository';
-import { RolesService } from 'src/roles/services/roles.service';
+import { AdminService } from './services/admin.service';
+
 import { RolesModule } from '../roles/roles.module';
 import { RolsService } from '../roles/services/rols.service';
+import { Wallet } from '../wallet/entities/wallet.entity';
+
+import { Device } from '../devices/entities/devices.entity';
+import { Rol } from '../roles/entities/rol.entity';
+import { User } from './entities/user.entity';
+import { AuthService } from './services/auth.service';
+import { AdminController } from './controllers/admin.controller';
+import { WalletModule } from '../wallet/wallet.module';
+import { DevicesModule } from '../devices/devices.module';
 
 @Module({
   imports: [
+    DevicesModule,
+    WalletModule,
     MailModule,
-    RolesModule,
+    forwardRef(() => RolesModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       envFilePath: '.env',
@@ -35,12 +42,7 @@ import { RolsService } from '../roles/services/rols.service';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([
-      UsersRepository,
-      RolRepository,
-      DeviceRepository,
-      WalletRepository,
-    ]),
+    TypeOrmModule.forFeature([User, Device, Wallet, Rol]),
   ],
   providers: [
     AuthService,
@@ -48,10 +50,9 @@ import { RolsService } from '../roles/services/rols.service';
     DevicesService,
     WalletService,
     AdminService,
-    RolesService,
     RolsService,
   ],
   controllers: [AuthController, AdminController],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, PassportModule, AuthService],
 })
 export class AuthModule {}

@@ -1,27 +1,44 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RolRepository } from '../repositories/rol.repository';
 import { Rol } from '../entities/rol.entity';
-
 import { RolDto } from '../dto/rol.dto';
-import { UsersRepository } from '../../auth/user.repository';
 import { User } from '../../auth/entities/user.entity';
+import { Repository } from 'typeorm';
+
+import { forwardRef } from '@nestjs/common';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
 export class RolsService {
   constructor(
-    @InjectRepository(RolRepository)
-    private rolRepository: RolRepository,
-    private userRepository: UsersRepository,
+    @InjectRepository(Rol)
+    private rolRepository: Repository<Rol>,
+
+    @Inject(forwardRef(() => AuthService))
+    private userService: AuthService,
   ) {}
-  createNewRol(user: User, rol: RolDto): Promise<Rol> {
-    return this.rolRepository.createRol(user, rol);
-  }
-  async assignRole(id: number, rol: RolDto): Promise<Rol> {
-    const findUser = await this.userRepository.findOne(id);
-    if (!findUser) {
-      throw new InternalServerErrorException('User not found');
+
+  async createNewRol(user: User, rol: RolDto): Promise<Rol> {
+    try {
+      return await this.rolRepository.save({ ...rol, user });
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        // duplicate user
+        throw new ConflictException('Rol already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
+  }
+  async assignRole(id: number, rol: RolDto) {
+    const findUser = await this.userService.getOneUser(id);
+
     const currentUserRol = findUser.rols.map((rol) => {
       return rol.rolName;
     });
@@ -29,20 +46,35 @@ export class RolsService {
       throw new InternalServerErrorException('Rol already exists');
     }
 
-    return this.rolRepository.assignRole(findUser, rol);
-  }
-  async assignStudenRole(user: User, rol: RolDto): Promise<Rol> {
-    return this.rolRepository.assignRole(user, rol);
-  }
-  async listUserRoles(idUser: number): Promise<Rol[]> {
-    const findUser = await this.userRepository.findOne(idUser);
-    if (!findUser) {
-      throw new InternalServerErrorException('User not found');
+    try {
+      await this.userService.saveUser({ ...rol, ...findUser });
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        // duplicate user
+        throw new ConflictException('Rol already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
-    return this.rolRepository.listUserRoles(findUser);
+  }
+  async assignStudenRole(user: User, rol: RolDto) {
+    return await this.assignRole(user.id, rol);
+  }
+  async listUserRoles(idUser: number) {
+    const findUser = await this.userService.getOneUser(idUser);
+    return await this.rolRepository.find({
+      where: {
+        user: {
+          id: findUser.id,
+        },
+      },
+    });
   }
   async removeRole(idRole: number) {
-    const getRole = await this.rolRepository.findOne(idRole);
+    const getRole = await this.rolRepository.findOne({
+      where: { id: idRole },
+    });
     if (!getRole) {
       throw new InternalServerErrorException('Rol not found not found');
     }

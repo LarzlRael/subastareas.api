@@ -10,15 +10,15 @@ import {
 } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { OfferDto } from './dto/offer.dot';
-import { GetUser } from 'src/auth/decorators/get-user..decorator';
+import { GetUser } from '../auth/decorators/get-user..decorator';
 import { User } from '../auth/entities/user.entity';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/decorators/get.rols.decorator';
+import { Roles } from '../auth/decorators/get.rols.decorator';
 import { RoleEnum } from '../enums/enums';
 
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('offer')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class OfferController {
   constructor(private offerService: OfferService) {}
 
@@ -27,7 +27,7 @@ export class OfferController {
   makeOffer(
     @GetUser() user: User,
     @Body() offerDot: OfferDto,
-    @Param('idHomework') idHomework: string,
+    @Param('idHomework') idHomework: number,
   ) {
     return this.offerService.makeOffer(idHomework, offerDot, user);
   }
@@ -35,21 +35,25 @@ export class OfferController {
   getOffersByUser(@GetUser() user: User) {
     return this.offerService.getOffersSentByUser(user);
   }
+  @Get('getUsersHomeworksPending')
+  getUsersHomeworksPending(@GetUser() user: User) {
+    return this.offerService.getUsersHomeworksPending(user);
+  }
   @Get(':idHomework')
-  getOfferByHomework(@Param('idHomework') idHomework: string) {
+  getOfferByHomework(@Param('idHomework') idHomework: number) {
     return this.offerService.getOffersByHomeworks(idHomework);
   }
 
   @Put('editOffer/:idOffer')
   editOffer(
     @GetUser() user: User,
-    @Param('idOffer') idOffer: string,
+    @Param('idOffer') idOffer: number,
     @Body() offerDot: OfferDto,
   ) {
     return this.offerService.editOffer(user, idOffer, offerDot);
   }
   @Delete(':idOffer')
-  deleteOffer(@GetUser() user: User, @Param('idOffer') idOffer: string) {
+  deleteOffer(@GetUser() user: User, @Param('idOffer') idOffer: number) {
     return this.offerService.deleteOffer(user, idOffer);
   }
 }

@@ -1,25 +1,22 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { HomeworkService } from './homework.service';
 import { HomeworkController } from './homework.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HomeworkRepository } from './homework.repository';
-import { AuthModule } from '../auth/auth.module';
+
 import { CloudinaryProvider } from './cloudinary.provider';
-import { RolesModule } from 'src/roles/roles.module';
-import { OfferRepository } from '../offer/offer.repository';
-import { CommentRepository } from '../comments/comment.repository';
-import { WalletRepository } from '../wallet/wallet.repository';
+import { CommentsModule } from '../comments/comments.module';
+import { OfferModule } from '../offer/offer.module';
+
+import { Homework } from './entities/Homework.entity';
+import { Offer } from '../offer/entities/offer.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      HomeworkRepository,
-      OfferRepository,
-      CommentRepository,
-      WalletRepository,
-    ]),
-    AuthModule,
-    RolesModule,
+    //circular dependency
+
+    forwardRef(() => OfferModule),
+    forwardRef(() => CommentsModule),
+    TypeOrmModule.forFeature([Homework, Offer]),
   ],
   controllers: [HomeworkController],
   providers: [HomeworkService, CloudinaryProvider],

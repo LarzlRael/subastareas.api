@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeviceRepository } from './device.repository';
 import { Device } from './entities/devices.entity';
 import { User } from '../auth/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class DevicesService {
   constructor(
-    @InjectRepository(DeviceRepository)
-    private deviceRepository: DeviceRepository,
+    @InjectRepository(Device)
+    private deviceRepository: Repository<Device>,
   ) {}
 
-  createDevice(user: User, idDevice: string): Promise<Device> {
+  async createDevice(user: User, idDevice: string): Promise<Device> {
     /* console.log(user.device.find((device) => device.idDevice === idDevice)); */
     /* console.log(user); */
     if (user.device.find((device) => device.idDevice === idDevice)) {
       return;
     } else {
-      return this.deviceRepository.newDevice(user, idDevice);
+      const device = this.deviceRepository.create({
+        user,
+        idDevice,
+      });
+      return await this.deviceRepository.save(device);
     }
   }
   async deleteDevice(idDevice: string) {
     return await this.deviceRepository.delete({ idDevice });
+  }
+  async getUserDevices(user: User): Promise<string[]> {
+    const gerUserDevices = await this.deviceRepository.find({
+      where: { user: { id: user.id } },
+    });
+    return gerUserDevices.map((device) => device.idDevice);
   }
 }

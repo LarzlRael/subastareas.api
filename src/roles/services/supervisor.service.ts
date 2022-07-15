@@ -1,59 +1,70 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { SupervisorRepository } from '../repositories/supervisor.repository';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  forwardRef,
+} from '@nestjs/common';
 import { User } from '../../auth/entities/user.entity';
 import { Supervisor } from '../entities/Supervisor.entity';
 import { RoleEnum } from '../../enums/enums';
-import { HomeworkRepository } from '../../homework/homework.repository';
+
 import { Homework } from '../../homework/entities/Homework.entity';
 import { ActionSupervisorDTO } from '../dto/action.dto';
-import { UsersRepository } from 'src/auth/user.repository';
-import { RolRepository } from '../repositories/rol.repository';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RolsService } from './rols.service';
+
+import { HomeworkService } from '../../homework/homework.service';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
 export class SupervisorService {
   constructor(
-    public supervisorRepository: SupervisorRepository,
-    public rolRepository: RolRepository,
-    public homeworkRepository: HomeworkRepository,
-    public usersRepository: UsersRepository,
+    @InjectRepository(Supervisor)
+    private supervisorRepository: Repository<Supervisor>,
+    private userService: AuthService,
+    private rolService: RolsService,
+    private homeworkService: HomeworkService,
   ) {}
-  createSupervisor(user: User): Promise<Supervisor> {
+  async createSupervisor(user: User): Promise<Supervisor> {
     if (user.supervisor) {
       throw new InternalServerErrorException('You are already a supervisor');
     }
-    this.rolRepository.assignRole(user, {
+    this.rolService.assignRole(user.id, {
       rolName: RoleEnum.SUPERVISOR,
       id: user.id,
       active: true,
     });
-    return this.supervisorRepository.createSupervisor(user);
+    const createNewSupervisor = this.supervisorRepository.create({ user });
+    return await this.supervisorRepository.save(createNewSupervisor);
   }
   async becomeSupervisor(idUser: number): Promise<Supervisor> {
-    const user = await this.usersRepository.findOne(idUser);
+    const user = await this.userService.getOneUser(idUser);
     if (!user) {
       throw new InternalServerErrorException('User not found');
     } else {
       if (user.supervisor) {
         throw new InternalServerErrorException('You are already a supervisor');
       }
-      this.rolRepository.assignRole(user, {
+      this.rolService.assignRole(user.id, {
         rolName: RoleEnum.SUPERVISOR,
         id: user.id,
         active: true,
       });
-      return this.supervisorRepository.createSupervisor(user);
+      /* return this.supervisorRepository.createSupervisor(user); */
+      const createNewSupervisor = this.supervisorRepository.create({ user });
+      return await this.supervisorRepository.save(createNewSupervisor);
     }
   }
   async getHomeworksToSupervise(): Promise<Homework[]> {
-    return await this.homeworkRepository.find({
-      where: [{ status: 'pending' }, { status: 'rejected' }],
-    });
+    return await this.homeworkService.getHomewokrTosupervisor();
   }
   async superviseHomework(
     user: User,
     actionSupervisorDTO: ActionSupervisorDTO,
   ): Promise<Homework> {
-    const homework = await this.homeworkRepository.findOne(
+    const homework = await this.homeworkService.getOneHomeworkAll(
       actionSupervisorDTO.idHomework,
     );
     if (!homework) {
@@ -62,11 +73,15 @@ export class SupervisorService {
     /* homework.status = actionSupervisorDTO.status; */
     homework.observation = actionSupervisorDTO.observation;
     homework.userSupervisor = user;
-    await this.homeworkRepository.save(homework);
+    await this.homeworkService.saveHomework(homework);
     homework.userSupervisor = user;
-    const getSuperisorid = await this.supervisorRepository.findOne(
-      user.supervisor.id,
-    );
+    const getSuperisorid = await this.supervisorRepository.findOne({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
     getSuperisorid.supervisedHomework += 1;
     await this.supervisorRepository.save(getSuperisorid);
     return homework;
