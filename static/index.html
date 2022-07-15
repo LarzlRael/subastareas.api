@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <!-- script with socket io -->
+    <script src="http://localhost:3002/websockets/socket.io.js"></script>
+</head>
+
+<body>
+    <div id="v-app">
+        Web Socket testing :D
+        <h1>{{title}}</h1>
+        <form action="">
+            <input type="text" name="input" id="input" v-model="text">
+            <button id="button" @click.prevent="sendMessage()">send</button>
+        </form>
+        <p>
+        <ul>
+            <li v-for="msg in messages">{{msg}}</li>
+        </ul>
+        </p>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#v-app',
+            data: {
+                title: 'Websockecos tester!',
+                text: '',
+                messages: ['Some message', 'Another message'],
+            },
+            methods: {
+                sendMessage: function () {
+                    console.log('send : ' + this.text);
+                    this.socket.emit('msgToServer', this.text);
+                    this.text = '';
+                },
+                receiveMessage(msg) {
+                    console.log('rec: ' + msg);
+                    this.messages.push(msg);
+                }
+            },
+            created: function () {
+                this.socket = io('http://localhost:3002', { path: '/websockets' });
+                this.socket.on('msgToClient', this.receiveMessage);
+            }
+
+        })
+    </script>
+</body>
+
+</html>
