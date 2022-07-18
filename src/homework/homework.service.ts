@@ -85,7 +85,7 @@ export class HomeworkService {
   async getOneHomework(id: number) {
     const homework = await this.getOneHomeworkComments(id);
     const comments = await this.commentService.getCommentsByHomework(id);
-    const offers = await this.offerService.getOffersByHomeworks(homework.id);
+    const offers = await this.offerService.getOffersSimpleData(homework.id);
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {

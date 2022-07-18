@@ -8,7 +8,7 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
     <!-- script with socket io -->
-    <script src="http://localhost:3002/websockets/socket.io.js"></script>
+    <script src="http://localhost:3002/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -37,7 +37,10 @@
             methods: {
                 sendMessage: function () {
                     console.log('send : ' + this.text);
-                    this.socket.emit('msgToServer', this.text);
+                    const xd = {
+                        "id": 35, "priceOffer": 22, "status": "pending", "user": { "id": 26, "username": "larzdosan", "profileImageUrl": null }
+                    }
+                    this.socket.emit('makeOfferToServer', JSON.stringify(xd));
                     this.text = '';
                 },
                 receiveMessage(msg) {
@@ -46,8 +49,8 @@
                 }
             },
             created: function () {
-                this.socket = io('http://localhost:3002', { path: '/websockets' });
-                this.socket.on('msgToClient', this.receiveMessage);
+                this.socket = io('http://localhost:3002');
+                this.socket.on('makeOffer', this.receiveMessage);
             }
 
         })

@@ -11,9 +11,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 @WebSocketGateway(3002, {
-  path: '/websockets',
-  serveClient: true,
-  namespace: '/',
   cors: true,
 })
 export class AppGateway
@@ -37,5 +34,12 @@ export class AppGateway
     /* client.emit() */
     /* return { event: 'msgToClient', data: 'Hello world!' }; */
     this.wss.emit('msgToClient', text);
+  }
+  @SubscribeMessage('makeOfferToServer')
+  handleMakeOffer(client: Socket, text: string): void {
+    /* client.emit() */
+    /* return { event: 'msgToClient', data: 'Hello world!' }; */
+    console.log('makeOffer', text);
+    this.wss.emit('makeOffer', text);
   }
 }

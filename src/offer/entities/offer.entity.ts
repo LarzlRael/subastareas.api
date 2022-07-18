@@ -49,7 +49,8 @@ export class Offer {
   homework!: Homework;
 
   /* eager en true  */
-  @ManyToOne(() => User, (user) => user.offers, { eager: true })
+  //TODO
+  @ManyToOne(() => User, (user) => user.offers, { eager: false })
   user!: User;
 
   /* @OneToOne(() => Trade, (trade) => trade.offer)
