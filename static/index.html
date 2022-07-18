@@ -24,6 +24,8 @@
             <li v-for="msg in messages">{{msg}}</li>
         </ul>
         </p>
+        <button @click.prevent="toggleRoomMembership()">Join room</button>
+
     </div>
 
     <script>
@@ -33,25 +35,55 @@
                 title: 'Websockecos tester!',
                 text: '',
                 messages: ['Some message', 'Another message'],
+                isMemberOfActiveRoom: false,
             },
             methods: {
                 sendMessage: function () {
                     console.log('send : ' + this.text);
                     const xd = {
-                        "id": 35, "priceOffer": 22, "status": "pending", "user": { "id": 26, "username": "larzdosan", "profileImageUrl": null }
+                        room: 'testingRoom',
+                        offer: {
+                            id: 35,
+                            priceOffer: 22,
+                            status: "pending",
+                            user: {
+                                id: 39,
+                                username: "larzdosan",
+                                profileImageUrl: null
+                            }
+                        }
                     }
-                    this.socket.emit('makeOfferToServer', JSON.stringify(xd));
+                    this.socket.emit('makeOfferToServer', xd);
                     this.text = '';
                 },
                 receiveMessage(msg) {
                     console.log('rec: ' + msg);
                     this.messages.push(msg);
+                },
+                toggleRoomMembership() {
+                    if (this.isMemberOfActiveRoom) {
+                        this.socket.emit('joinOfferRoom', 'testingRoom');
+                        this.isMemberOfActiveRoom = false;
+
+                    } else {
+                        this.isMemberOfActiveRoom = true;
+                        this.socket.emit('leaveOfferRoom', 'testingRoom');
+                    }
+                    console.log(this.isMemberOfActiveRoom)
+
                 }
             },
             created: function () {
                 this.socket = io('http://localhost:3002');
-                this.socket.on('makeOffer', this.receiveMessage);
-            }
+                this.socket.on('makeOfferToClient', this.receiveMessage);
+                this.socket.on('joinOfferRoom', (message) => {
+                    console.log('joinOfferRoom: ' + message);
+                });
+                this.socket.on('leaveOfferRoom', (message) => {
+                    console.log('leaveOfferRoom: ' + message);
+                });
+            },
+
 
         })
     </script>

@@ -36,10 +36,25 @@ export class AppGateway
     this.wss.emit('msgToClient', text);
   }
   @SubscribeMessage('makeOfferToServer')
-  handleMakeOffer(client: Socket, text: string): void {
+  handleMakeOffer(
+    client: Socket,
+    textoffer: { room: string; offer: string },
+  ): void {
     /* client.emit() */
     /* return { event: 'msgToClient', data: 'Hello world!' }; */
-    console.log('makeOffer', text);
-    this.wss.emit('makeOffer', text);
+    console.log('makeOffer', textoffer.offer);
+    console.log('makeOffer', textoffer.room);
+
+    this.wss.to(textoffer.room).emit('makeOfferToClient', textoffer.offer);
+  }
+  @SubscribeMessage('joinOfferRoom')
+  handleJoinOfferRoom(client: Socket, room: string): void {
+    client.join(room);
+    client.emit('joinOfferRoom', room);
+  }
+  @SubscribeMessage('leaveOfferRoom')
+  handleLeaveOfferRoom(client: Socket, room: string): void {
+    client.leave(room);
+    client.emit('leaveOfferRoom', room);
   }
 }
