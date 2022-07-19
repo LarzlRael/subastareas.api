@@ -46,12 +46,14 @@ export class AppGateway
   }
   @SubscribeMessage('joinOfferRoom')
   async handleJoinOfferRoom(client: Socket, room: string) {
+    client.join(room);
     this.wss
       .to(room)
       .emit('joinOfferRoom', await this.getClientActive(client, room));
   }
   @SubscribeMessage('leaveOfferRoom')
   async handleLeaveOfferRoom(client: Socket, room: string) {
+    client.leave(room);
     this.wss
       .to(room)
       .emit('leaveOfferRoom', await this.getClientActive(client, room));
