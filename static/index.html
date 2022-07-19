@@ -41,9 +41,9 @@
                 sendMessage: function () {
                     console.log('send : ' + this.text);
                     const xd = {
-                        room: 'testingRoom',
+                        room: 3,
                         offer: {
-                            id: 35,
+                            id: 2,
                             priceOffer: 22,
                             status: "pending",
                             user: {
@@ -62,12 +62,12 @@
                 },
                 toggleRoomMembership() {
                     if (this.isMemberOfActiveRoom) {
-                        this.socket.emit('joinOfferRoom', 'testingRoom');
+                        this.socket.emit('joinOfferRoom', 3);
                         this.isMemberOfActiveRoom = false;
 
                     } else {
                         this.isMemberOfActiveRoom = true;
-                        this.socket.emit('leaveOfferRoom', 'testingRoom');
+                        this.socket.emit('leaveOfferRoom', 3);
                     }
                     console.log(this.isMemberOfActiveRoom)
 

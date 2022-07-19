@@ -40,21 +40,24 @@ export class AppGateway
     client: Socket,
     textoffer: { room: string; offer: string },
   ): void {
-    /* client.emit() */
-    /* return { event: 'msgToClient', data: 'Hello world!' }; */
-    console.log('makeOffer', textoffer.offer);
-    console.log('makeOffer', textoffer.room);
-
-    this.wss.to(textoffer.room).emit('makeOfferToClient', textoffer.offer);
+    this.wss
+      .to(textoffer.room)
+      .emit('makeOfferToClient', JSON.stringify(textoffer.offer));
   }
   @SubscribeMessage('joinOfferRoom')
-  handleJoinOfferRoom(client: Socket, room: string): void {
-    client.join(room);
-    client.emit('joinOfferRoom', room);
+  async handleJoinOfferRoom(client: Socket, room: string) {
+    this.wss
+      .to(room)
+      .emit('joinOfferRoom', await this.getClientActive(client, room));
   }
   @SubscribeMessage('leaveOfferRoom')
-  handleLeaveOfferRoom(client: Socket, room: string): void {
-    client.leave(room);
-    client.emit('leaveOfferRoom', room);
+  async handleLeaveOfferRoom(client: Socket, room: string) {
+    this.wss
+      .to(room)
+      .emit('leaveOfferRoom', await this.getClientActive(client, room));
+  }
+  async getClientActive(client: Socket, room: string) {
+    const number = await client.in(room).allSockets();
+    return number.size;
   }
 }
