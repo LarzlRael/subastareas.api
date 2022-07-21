@@ -14,6 +14,7 @@ import { validateArray } from '../utils/validation';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HomeworkService } from '../homework/homework.service';
 import { Homework } from '../homework/entities/Homework.entity';
+import { OfferToSendI } from './interfaces/offerToSend.interface';
 
 @Injectable()
 export class OfferService {
@@ -50,7 +51,11 @@ export class OfferService {
       return await this.saveOfferAndNotify(user, offerDto, homework);
     }
   }
-  async saveOfferAndNotify(user: User, offerDto: OfferDto, homework: Homework) {
+  async saveOfferAndNotify(
+    user: User,
+    offerDto: OfferDto,
+    homework: Homework,
+  ): Promise<OfferToSendI> {
     const offer = this.offerRepository.create({
       user: user,
       homework: homework,
@@ -61,19 +66,20 @@ export class OfferService {
       offerDto.priceOffer,
       homework,
     );
-    const { id, priceOffer, status } = await this.offerRepository.save(offer);
-    const offerWithUserSimple = {
+    const { id, priceOffer, status, edited } = await this.offerRepository.save(
+      offer,
+    );
+    return {
       id,
       priceOffer,
       status,
+      edited,
       user: {
         id: user.id,
         username: user.username,
         profileImageUrl: user.profileImageUrl,
       },
     };
-
-    return offerWithUserSimple;
   }
 
   async getOffersSimpleData(idHomework: number) {
@@ -90,6 +96,7 @@ export class OfferService {
         'offer.id',
         'offer.priceOffer',
         'offer.status',
+        'offer.edited',
         /* 'offer.createdAt', */
         'user.id',
         'user.username',
@@ -113,6 +120,7 @@ export class OfferService {
         'offer.id',
         'offer.priceOffer',
         'offer.status',
+        'offer.edited',
         /* 'offer.createdAt', */
         'user.id',
         'user.username',
@@ -123,51 +131,54 @@ export class OfferService {
       .getMany();
     return { homework: getHomeWork, offers };
   }
-  async deleteOffer(user: User, idOffer: number): Promise<Offer> {
-    const getOffer = await this.getOfferWhere({
-      id: idOffer,
-    });
-    if (!getOffer) {
-      throw new InternalServerErrorException('Offer not found');
-    }
-    if (getOffer.user.id !== user.id) {
-      throw new InternalServerErrorException(
-        'You are not the owner of this offer',
-      );
-    }
-    const findOffer = await this.getOfferWhere({ id: idOffer });
-    if (findOffer.user.id === user.id) {
-      await this.offerRepository.delete(idOffer);
-      return findOffer;
-    } else {
-      throw new InternalServerErrorException(
-        'You are not the owner of this offer',
-      );
-    }
+  async deleteOffer(user: User, idOffer: number): Promise<OfferToSendI> {
+    const {
+      id,
+      priceOffer,
+      status,
+      edited,
+      user: { id: userId, username, profileImageUrl },
+    } = await this.verifyOfferAndOwner(idOffer, user);
+
+    await this.offerRepository.delete(idOffer);
+    return {
+      id: id,
+      priceOffer: priceOffer,
+      status: status,
+      edited: edited,
+      user: {
+        id: userId,
+        username: username,
+        profileImageUrl: profileImageUrl,
+      },
+    };
   }
 
   async editOffer(
     user: User,
     idOffer: number,
     offerDto: OfferDto,
-  ): Promise<Offer> {
-    const getOffer = await this.getOfferWhere({
-      id: idOffer,
-    });
-    if (!getOffer) {
-      throw new InternalServerErrorException('Homework not found');
-    }
-    if (getOffer.user.id !== user.id) {
-      throw new InternalServerErrorException(
-        'You are not the owner of this offer',
-      );
-    }
-    return await this.offerRepository.save({
+  ): Promise<OfferToSendI> {
+    const getOffer = await this.verifyOfferAndOwner(idOffer, user);
+
+    const { id, priceOffer, status, edited } = await this.offerRepository.save({
       ...getOffer,
       ...offerDto,
       edited: true,
     });
+    return {
+      id,
+      priceOffer,
+      status,
+      edited,
+      user: {
+        id: getOffer.user.id,
+        username: getOffer.user.username,
+        profileImageUrl: getOffer.user.profileImageUrl,
+      },
+    };
   }
+
   async getOffersSentByUser(user: User): Promise<Offer[]> {
     return this.offerRepository.find({
       where: {
@@ -247,6 +258,25 @@ export class OfferService {
       ])
       .leftJoin('offer.user', 'user') // bar is the joined table
       .getMany();
+  }
+
+  async verifyOfferAndOwner(idOffer: number, user: User) {
+    const getOffer = await this.getOfferWhere(
+      {
+        id: idOffer,
+      },
+      ['user'],
+    );
+
+    if (!getOffer) {
+      throw new InternalServerErrorException('Offer not found');
+    }
+    if (getOffer.user.id !== user.id) {
+      throw new InternalServerErrorException(
+        'You are not the owner of this offer',
+      );
+    }
+    return getOffer;
   }
 }
 //TODO usar esto
