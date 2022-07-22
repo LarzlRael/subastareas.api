@@ -10,6 +10,7 @@ import { DevicesModule } from '../devices/devices.module';
 import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
 import { WalletModule } from '../wallet/wallet.module';
+import { Notification } from './../devices/notification/entities/notification.entity';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { WalletModule } from '../wallet/wallet.module';
     WalletModule,
     OfferModule,
     DevicesModule,
-    TypeOrmModule.forFeature([Trade]),
+    TypeOrmModule.forFeature([Trade, Notification]),
   ],
   controllers: [TradeController],
   providers: [TradeService, NotificationService],

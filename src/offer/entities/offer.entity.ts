@@ -9,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Trade } from '../../trade/entities/trade.entity';
 import { TradeStatusEnum } from '../../enums/enums';
 
 @Entity()
@@ -45,7 +44,7 @@ export class Offer {
   })
   updated_at: Date;
 
-  @ManyToOne(() => Homework, (homework) => homework.offers)
+  @ManyToOne(() => Homework, (homework) => homework.offers, { eager: false })
   homework!: Homework;
 
   /* eager en true  */

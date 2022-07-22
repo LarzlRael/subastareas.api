@@ -153,8 +153,8 @@ export class HomeworkService {
     const homework = await this.getOneHomeworkWhere({ id }, ['offers', 'user']);
     return homework;
   }
-  async getOneHomeworkAll(id: number) {
-    return await this.getOneHomeworkWhere({ id });
+  async getOneHomeworkAll(id: number, getUser = false) {
+    return await this.getOneHomeworkWhere({ id }, getUser ? ['user'] : []);
   }
   async getOffersReceiveByUser(user: User) {
     return this.getOneHomeworkWhere(

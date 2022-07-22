@@ -12,7 +12,7 @@ import { Offer } from '../../offer/entities/offer.entity';
 @Entity()
 export class Trade {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   finalAmount: number;
@@ -40,7 +40,8 @@ export class Trade {
   })
   updated_at: Date;
 
-  @OneToOne(() => Offer, { eager: true })
+  // ver si causa problemas  a futuro
+  @OneToOne(() => Offer, { eager: false })
   @JoinColumn()
   offer: Offer;
 }

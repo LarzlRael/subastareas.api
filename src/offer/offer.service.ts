@@ -97,11 +97,10 @@ export class OfferService {
         'offer.priceOffer',
         'offer.status',
         'offer.edited',
-        /* 'offer.createdAt', */
+
         'user.id',
         'user.username',
         'user.profileImageUrl',
-        /* 'user.email', */
       ])
       .leftJoin('offer.user', 'user') // bar is the joined table
       .getMany();
@@ -121,11 +120,10 @@ export class OfferService {
         'offer.priceOffer',
         'offer.status',
         'offer.edited',
-        /* 'offer.createdAt', */
+
         'user.id',
         'user.username',
         'user.profileImageUrl',
-        /* 'user.email', */
       ])
       .leftJoin('offer.user', 'user') // bar is the joined table
       .getMany();
@@ -224,8 +222,10 @@ export class OfferService {
   async saveOffer(offer: Offer) {
     return await this.offerRepository.save(offer);
   }
-  async getOneOffer(idOffer: number) {
-    const offer = await this.getOfferWhere({ id: idOffer }, ['homework']);
+  async getOneOffer(idOffer: number, getUser?: boolean) {
+    const getHomeworkAndUser =
+      getUser != null && getUser ? ['homework', 'user'] : ['homework'];
+    const offer = await this.getOfferWhere({ id: idOffer }, getHomeworkAndUser);
     return offer;
   }
   async getOfferWhere(

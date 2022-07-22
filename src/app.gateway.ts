@@ -33,8 +33,6 @@ export class AppGateway
 
   @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, text: string): void {
-    /* client.emit() */
-    /* return { event: 'msgToClient', data: 'Hello world!' }; */
     this.wss.emit('msgToClient', text);
   }
 
@@ -51,10 +49,6 @@ export class AppGateway
     this.wss
       .to(room)
       .emit('leaveOfferRoom', await this.getClientActive(client, room));
-  }
-  async getClientActive(client: Socket, room: string) {
-    const number = await client.in(room).allSockets();
-    return number.size;
   }
 
   @SubscribeMessage('makeOfferToServer')
@@ -76,5 +70,9 @@ export class AppGateway
       type: type,
     };
     this.wss.to(room).emit(typeEmit, JSON.stringify(offerWithType));
+  }
+  async getClientActive(client: Socket, room: string) {
+    const number = await client.in(room).allSockets();
+    return number.size;
   }
 }

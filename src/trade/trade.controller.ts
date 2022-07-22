@@ -48,4 +48,15 @@ export class TradeController {
   newTrade(@Param('idOffer') idOffer: number) {
     return this.tradeService.newTrade(idOffer);
   }
+
+  @Get('offerAcceptedAndUrlResolved/:idOffer')
+  offerAcceptedAndUrlResolved(@Param('idOffer') idOffer: number) {
+    return this.tradeService.offerAcceptedAndUrlResolved(idOffer);
+  }
+
+  @Get('getTradingByuser')
+  getTradingByuser(@GetUser() user: User) {
+    const userOfferd = this.tradeService.userTradePending(user);
+    return userOfferd;
+  }
 }

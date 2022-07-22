@@ -9,8 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppGateway } from './app.gateway';
 import { OfferModule } from './offer/offer.module';
-import { OfferService } from './offer/offer.service';
-import { HomeworkService } from './homework/homework.service';
+import { TradeModule } from './trade/trade.module';
 
 @Module({
   imports: [
@@ -32,6 +31,7 @@ import { HomeworkService } from './homework/homework.service';
     AuthModule,
     RolesModule,
     OfferModule,
+    TradeModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../', 'static'),
     }),
