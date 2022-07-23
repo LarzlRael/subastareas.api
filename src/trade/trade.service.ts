@@ -128,10 +128,10 @@ export class TradeService {
     });
   }
 
-  async userTradePending(user: User) {
+  async userTradePending(user: User, status: string) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where o.userId = ?',
-      [user.id],
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = ?',
+      [user.id, status],
     );
     return offers;
   }

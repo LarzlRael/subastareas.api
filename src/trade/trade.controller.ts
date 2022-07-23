@@ -15,6 +15,7 @@ import { fileFilter } from '../utils/utils';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/decorators/get-user..decorator';
 import { User } from '../auth/entities/user.entity';
+import { TradeStatusEnum } from '../enums/enums';
 
 @Controller('trade')
 @UseGuards(AuthGuard('jwt'))
@@ -54,9 +55,12 @@ export class TradeController {
     return this.tradeService.offerAcceptedAndUrlResolved(idOffer);
   }
 
-  @Get('getTradingByuser')
-  getTradingByuser(@GetUser() user: User) {
-    const userOfferd = this.tradeService.userTradePending(user);
+  @Get('getTradingByuser/:tradestatus')
+  getTradingByuser(
+    @GetUser() user: User,
+    @Param('tradestatus') tradestatus: string,
+  ) {
+    const userOfferd = this.tradeService.userTradePending(user, tradestatus);
     return userOfferd;
   }
 }

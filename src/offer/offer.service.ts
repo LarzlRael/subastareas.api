@@ -279,10 +279,3 @@ export class OfferService {
     return getOffer;
   }
 }
-//TODO usar esto
-/* SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id
-from trade t inner join offer o on 
-t.offerId  = o.id 
-inner join homework h 
-on h.id = o.homeworkId 
-where t.id = 14 */
