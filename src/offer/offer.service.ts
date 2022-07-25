@@ -212,7 +212,6 @@ export class OfferService {
     const homeworks = await this.homeworkService.getHomeworksByCondition({
       id: In(idsHomeworks),
     });
-    console.log(homeworks);
     return homeworks.map((homework, i) => ({
       ...homework,
       offerId: offers[i].offerId,

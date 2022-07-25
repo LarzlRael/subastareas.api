@@ -45,9 +45,13 @@ export class TradeController {
     );
   }
 
-  @Post('/newTrade/:idOffer')
-  newTrade(@Param('idOffer') idOffer: number) {
-    return this.tradeService.newTrade(idOffer);
+  @Get('/acceptrade/:idTradeOffer')
+  acceptTrade(@Param('idTradeOffer') idTradeOffer: number) {
+    return this.tradeService.acceptTrade(idTradeOffer);
+  }
+  @Get('/declinetrade/:idOffer')
+  declineTrade(@Param('idOffer') idOffer: number) {
+    return this.tradeService.declineTrade(idOffer);
   }
 
   @Get('offerAcceptedAndUrlResolved/:idOffer')

@@ -18,7 +18,7 @@ import { TradeModule } from './trade/trade.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mariadb',
+      type: 'mysql',
       host: process.env.DATABASE_HOST,
       port: 3306,
       username: process.env.DATABASE_USER,
@@ -33,7 +33,7 @@ import { TradeModule } from './trade/trade.module';
     OfferModule,
     TradeModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../', 'static'),
+      rootPath: join(__dirname, '../../', 'client'),
     }),
   ],
   controllers: [AppController],

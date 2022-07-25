@@ -13,6 +13,7 @@ export enum HomeWorkStatusEnum {
   TRADED = 'traded',
 }
 export enum TradeStatusEnum {
+  // change to betters names
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',

@@ -54,19 +54,36 @@ export class TradeService {
     return await this.tradeRepository.save(newTrade);
   }
 
-  async newTrade(idOffer: number) {
-    const offer = await this.offerService.getOneOffer(idOffer);
-
+  async declineTrade(idOffer: number) {}
+  async acceptTrade(idOffer: number) {
+    const offer = await this.offerService.getOneOffer(idOffer, true);
+    /* console.log(offer); */
     if (!offer) {
       throw new Error('Offer not found');
     }
-
     const offerUserWallet = await this.walletService.getWalletByUserId(
       offer.user.wallet.id,
     );
-    const homeworkUserWallet = await this.walletService.getWalletByUserId(
-      offer.homework.user.wallet.id,
+    // ERROR hasta este punto
+    const getHomework = await this.homeworkService.getOneHomeworkUser(
+      offer.homework.id,
     );
+    const homeworkUserWallet = await this.walletService.getWalletByUserId(
+      getHomework.user.id,
+    );
+
+    //saving trade status
+    const trade = await this.tradeRepository.findOne({
+      where: { id: idOffer },
+    });
+    trade.status = TradeStatusEnum.ACCEPTED;
+    await this.tradeRepository.save(trade);
+    //Saving the offer status
+    offer.status = TradeStatusEnum.ACCEPTED;
+    this.offerService.saveOffer(offer);
+    //Saving the homework status
+    getHomework.status = HomeWorkStatusEnum.ACCEPTED;
+    this.homeworkService.saveHomework(getHomework);
 
     offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
     homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;
@@ -130,7 +147,7 @@ export class TradeService {
 
   async userTradePending(user: User, status: string) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = ?',
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
       [user.id, status],
     );
     return offers;
