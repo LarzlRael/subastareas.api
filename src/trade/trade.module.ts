@@ -11,6 +11,9 @@ import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
 import { WalletModule } from '../wallet/wallet.module';
 import { Notification } from './../devices/notification/entities/notification.entity';
+import { ProfessorService } from '../roles/services/professor.service';
+import { Professor } from '../roles/entities/professor.entity';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   imports: [
@@ -18,10 +21,11 @@ import { Notification } from './../devices/notification/entities/notification.en
     WalletModule,
     OfferModule,
     DevicesModule,
-    TypeOrmModule.forFeature([Trade, Notification]),
+    RolesModule,
+    TypeOrmModule.forFeature([Trade, Notification, Professor]),
   ],
   controllers: [TradeController],
-  providers: [TradeService, NotificationService],
+  providers: [TradeService, NotificationService, ProfessorService],
   exports: [TradeService],
 })
 export class TradeModule {}

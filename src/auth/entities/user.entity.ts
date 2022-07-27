@@ -76,6 +76,7 @@ export class User {
   })
   verify: boolean;
 
+  // Auxiliar fields
   userRols: string[];
   userDevices: string[];
 

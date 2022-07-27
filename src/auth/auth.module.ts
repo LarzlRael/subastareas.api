@@ -24,6 +24,7 @@ import { AuthService } from './services/auth.service';
 import { AdminController } from './controllers/admin.controller';
 import { WalletModule } from '../wallet/wallet.module';
 import { DevicesModule } from '../devices/devices.module';
+import { Professor } from '../roles/entities/professor.entity';
 
 @Module({
   imports: [

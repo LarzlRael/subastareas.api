@@ -10,6 +10,7 @@ import { Trade } from './entities/trade.entity';
 import { OfferService } from '../offer/offer.service';
 import { HomeworkService } from '../homework/homework.service';
 import { WalletService } from '../wallet/wallet.service';
+import { ProfessorService } from '../roles/services/professor.service';
 
 @Injectable()
 export class TradeService {
@@ -21,6 +22,7 @@ export class TradeService {
     private offerService: OfferService,
     private homeworkService: HomeworkService,
     private notificationService: NotificationService,
+    private readonly professorService: ProfessorService,
   ) {}
 
   async enterPendingTrade(idOffer: number) {
@@ -82,8 +84,11 @@ export class TradeService {
     offer.status = TradeStatusEnum.ACCEPTED;
     this.offerService.saveOffer(offer);
     //Saving the homework status
-    getHomework.status = HomeWorkStatusEnum.ACCEPTED;
+    getHomework.status = HomeWorkStatusEnum.TRADED;
     this.homeworkService.saveHomework(getHomework);
+
+    //Saving add reputation to the user
+    await this.professorService.addReputation(offer.user.id, 1);
 
     offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
     homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;

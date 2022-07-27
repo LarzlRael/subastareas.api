@@ -36,20 +36,31 @@ export class RolsService {
       }
     }
   }
-  async assignRole(id: number, rol: RolDto) {
-    const findUser = await this.userService.getOneUser(id);
+  async assignRole(idUser: number, rol: RolDto) {
+    const findUser = await this.userService.getOneUser(idUser);
 
+    if (!findUser) {
+      throw new InternalServerErrorException('User not found');
+    }
     const currentUserRol = findUser.rols.map((rol) => {
       return rol.rolName;
     });
     if (currentUserRol.includes(rol.rolName)) {
       throw new InternalServerErrorException('Rol already exists');
     }
-
+    console.log(findUser);
     try {
-      await this.userService.saveUser({ ...rol, ...findUser });
+      const newROl = await this.rolRepository.save({
+        ...rol,
+        user: findUser,
+      });
+      const newUser = await this.userService.saveUser({
+        ...findUser,
+        rols: [...findUser.rols, newROl],
+      });
+      /* console.log(newUser); */
+      return newUser;
     } catch (error) {
-      console.log(error);
       if (error.code === 'ER_DUP_ENTRY') {
         // duplicate user
         throw new ConflictException('Rol already exists');
@@ -59,7 +70,9 @@ export class RolsService {
     }
   }
   async assignStudenRole(user: User, rol: RolDto) {
-    return await this.assignRole(user.id, rol);
+    const assinedRoles = await this.assignRole(user.id, rol);
+    console.log(assinedRoles);
+    return assinedRoles;
   }
   async listUserRoles(idUser: number) {
     const findUser = await this.userService.getOneUser(idUser);

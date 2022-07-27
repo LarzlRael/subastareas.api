@@ -73,7 +73,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('/verifyuser/')
+  @Post('/verifyuser')
   async verifyEmail(@Body() verifyUser: VerifyUserDTO, @GetUser() user: User) {
     if (user.verify) {
       return {

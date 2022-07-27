@@ -72,11 +72,9 @@ export class HomeworkService {
   }
   async getHomeworkByCategory(category: string[]) {
     if (category[0] !== 'empty') {
-      return this.getHomeworksByCondition({ category: In(category) });
+      return await this.getHomeworksByCondition({ category: In(category) });
     }
-    return this.getHomeworksByCondition({
-      category: In(category),
-    });
+    return await this.getAprovedHomeWorks();
   }
   async getHomeworkByUser(user: User) {
     /* return this.getHomeworksByCondition('user', user); */

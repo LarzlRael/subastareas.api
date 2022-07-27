@@ -26,4 +26,14 @@ export class ProfessorService {
     const createProffesor = this.professorRepository.create({ user });
     return await this.professorRepository.save(createProffesor);
   }
+  async addReputation(id: number, reputation: number) {
+    const professor = await this.professorRepository.findOne({
+      where: { user: { id } },
+    });
+    if (!professor) {
+      throw new InternalServerErrorException('Professor not found');
+    }
+    professor.reputation += reputation;
+    return await this.professorRepository.save(professor);
+  }
 }
