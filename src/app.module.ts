@@ -8,6 +8,9 @@ import { RolesModule } from './roles/roles.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppGateway } from './app.gateway';
+import { OfferModule } from './offer/offer.module';
+import { TradeModule } from './trade/trade.module';
+import { PlanesSubscriber } from './trade/entities/planes.susbriber';
 
 @Module({
   imports: [
@@ -16,21 +19,23 @@ import { AppGateway } from './app.gateway';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mariadb',
+      type: 'mysql',
       host: process.env.DATABASE_HOST,
       port: 3306,
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       synchronize: true,
+      subscribers: [PlanesSubscriber],
       autoLoadEntities: true,
       /* ssl: {}, */
     }),
     AuthModule,
     RolesModule,
-
+    OfferModule,
+    TradeModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../', 'static'),
+      rootPath: join(__dirname, '../../', 'client'),
     }),
   ],
   controllers: [AppController],

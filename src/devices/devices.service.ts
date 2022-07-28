@@ -28,6 +28,7 @@ export class DevicesService {
     return await this.deviceRepository.delete({ idDevice });
   }
   async getUserDevices(user: User): Promise<string[]> {
+    console.log(user);
     const gerUserDevices = await this.deviceRepository.find({
       where: { user: { id: user.id } },
     });

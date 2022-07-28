@@ -21,5 +21,6 @@ import { HomeworkModule } from '../homework/homework.module';
   ],
   controllers: [ProfessorController, SupervisorController, RolsController],
   providers: [ProfessorService, SupervisorService, RolsService],
+  exports: [ProfessorService, SupervisorService, RolsService],
 })
 export class RolesModule {}

@@ -30,6 +30,7 @@ import { uploadFile } from '../../utils/utils';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { VerifyUserDTO } from '../dto/VerifyUser.dto';
 import { getHostName } from '../../utils/hostUtils';
+import { ProfessorService } from '../../roles/services/professor.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -43,6 +44,7 @@ export class AuthService {
     private devicesService: DevicesService,
     private walletService: WalletService,
     private jwtService: JwtService,
+    private professorService: ProfessorService,
   ) {}
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
@@ -179,7 +181,6 @@ export class AuthService {
   }
   async sendEmailTokenVerification(email: string, req: Request) {
     const getUser = await this.getUserWhere({ email });
-    console.log(getUser);
     if (getUser) {
       if (!getUser.verify) {
         //generate token
@@ -198,19 +199,24 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
   }
+
   async verifyUser(user: User, verifyUser: VerifyUserDTO): Promise<User> {
     const getUser = await this.getUserWhere({ username: user.username });
     if (getUser.verify) {
       return;
     }
 
-    await this.rolsService.assignStudenRole(user, {
+    await this.rolsService.assignStudentRole(user, {
       rolName: RoleEnum.STUDENT,
       active: true,
     });
-    /* const wallet = await this.walletService.createWallet(newUser);
-    newUser.wallet = wallet;
-    console.log(newUser); */
+    await this.rolsService.assignStudentRole(user, {
+      rolName: RoleEnum.PROFESSOR,
+      active: true,
+    });
+
+    await this.professorService.becomeProfessor(user);
+
     getUser.verify = true;
     const wallet = await this.walletService.createWallet(user);
     getUser.wallet = wallet;

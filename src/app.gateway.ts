@@ -10,10 +10,9 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { OfferRoomI } from './interfaces/common';
+
 @WebSocketGateway(3002, {
-  path: '/websockets',
-  serveClient: true,
-  namespace: '/',
   cors: true,
 })
 export class AppGateway
@@ -34,8 +33,46 @@ export class AppGateway
 
   @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, text: string): void {
-    /* client.emit() */
-    /* return { event: 'msgToClient', data: 'Hello world!' }; */
     this.wss.emit('msgToClient', text);
+  }
+
+  @SubscribeMessage('joinOfferRoom')
+  async handleJoinOfferRoom(client: Socket, room: string) {
+    client.join(room);
+    this.wss
+      .to(room)
+      .emit('joinOfferRoom', await this.getClientActive(client, room));
+  }
+  @SubscribeMessage('leaveOfferRoom')
+  async handleLeaveOfferRoom(client: Socket, room: string) {
+    client.leave(room);
+    this.wss
+      .to(room)
+      .emit('leaveOfferRoom', await this.getClientActive(client, room));
+  }
+
+  @SubscribeMessage('makeOfferToServer')
+  handleMakeOffer(client: Socket, { room, offer }: OfferRoomI): void {
+    this.emitAndSend({ offer, room }, 'add', 'makeOfferToClient');
+  }
+  @SubscribeMessage('editOffer')
+  async handleEditOffer(client: Socket, { room, offer }: OfferRoomI) {
+    this.emitAndSend({ offer, room }, 'edit', 'editOffer');
+  }
+  @SubscribeMessage('deleteOffer')
+  async handleDeleteOffer(client: Socket, { room, offer }: OfferRoomI) {
+    this.emitAndSend({ offer, room }, 'delete', 'deleteOffer');
+  }
+
+  emitAndSend({ offer, room }: OfferRoomI, type: string, typeEmit: string) {
+    const offerWithType = {
+      ...offer,
+      type: type,
+    };
+    this.wss.to(room).emit(typeEmit, JSON.stringify(offerWithType));
+  }
+  async getClientActive(client: Socket, room: string) {
+    const number = await client.in(room).allSockets();
+    return number.size;
   }
 }

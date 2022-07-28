@@ -8,7 +8,7 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
     <!-- script with socket io -->
-    <script src="http://localhost:3002/websockets/socket.io.js"></script>
+    <script src="http://localhost:3002/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -24,6 +24,8 @@
             <li v-for="msg in messages">{{msg}}</li>
         </ul>
         </p>
+        <button @click.prevent="toggleRoomMembership()">Join room</button>
+
     </div>
 
     <script>
@@ -33,22 +35,55 @@
                 title: 'Websockecos tester!',
                 text: '',
                 messages: ['Some message', 'Another message'],
+                isMemberOfActiveRoom: false,
             },
             methods: {
                 sendMessage: function () {
                     console.log('send : ' + this.text);
-                    this.socket.emit('msgToServer', this.text);
+                    const xd = {
+                        room: 3,
+                        offer: {
+                            id: 2,
+                            priceOffer: 22,
+                            status: "pending",
+                            user: {
+                                id: 39,
+                                username: "larzdosan",
+                                profileImageUrl: 'https://media.istockphoto.com/photos/side-view-of-maine-coon-sitting-and-looking-away-picture-id102716889?k=20&m=102716889&s=612x612&w=0&h=A4CvsPKg1CrrSp6b5Rnf8oc2RkIjaaQinUCJuBXYEL8='
+                            }
+                        }
+                    }
+                    this.socket.emit('makeOfferToServer', xd);
                     this.text = '';
                 },
                 receiveMessage(msg) {
                     console.log('rec: ' + msg);
                     this.messages.push(msg);
+                },
+                toggleRoomMembership() {
+                    if (this.isMemberOfActiveRoom) {
+                        this.socket.emit('joinOfferRoom', 3);
+                        this.isMemberOfActiveRoom = false;
+
+                    } else {
+                        this.isMemberOfActiveRoom = true;
+                        this.socket.emit('leaveOfferRoom', 3);
+                    }
+                    console.log(this.isMemberOfActiveRoom)
+
                 }
             },
             created: function () {
-                this.socket = io('http://localhost:3002', { path: '/websockets' });
-                this.socket.on('msgToClient', this.receiveMessage);
-            }
+                this.socket = io('http://localhost:3002');
+                this.socket.on('makeOfferToClient', this.receiveMessage);
+                this.socket.on('joinOfferRoom', (message) => {
+                    console.log('joinOfferRoom: ' + message);
+                });
+                this.socket.on('leaveOfferRoom', (message) => {
+                    console.log('leaveOfferRoom: ' + message);
+                });
+            },
+
 
         })
     </script>

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { TradeController } from './trade.controller';
-import { TradeService } from './trade.service';
+import { TradeController } from './controllers/trade.controller';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { NotificationService } from '../devices/notification/notification.service';
@@ -10,6 +10,14 @@ import { DevicesModule } from '../devices/devices.module';
 import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
 import { WalletModule } from '../wallet/wallet.module';
+import { Notification } from './../devices/notification/entities/notification.entity';
+import { ProfessorService } from '../roles/services/professor.service';
+import { Professor } from '../roles/entities/professor.entity';
+import { RolesModule } from '../roles/roles.module';
+import { TradeService } from './services/trade.service';
+import { PlanesServices } from './services/planes.service';
+import { PlanesController } from './controllers/planes.controller';
+import { Planes } from './entities/planes.entity';
 
 @Module({
   imports: [
@@ -17,10 +25,16 @@ import { WalletModule } from '../wallet/wallet.module';
     WalletModule,
     OfferModule,
     DevicesModule,
-    TypeOrmModule.forFeature([Trade]),
+    RolesModule,
+    TypeOrmModule.forFeature([Trade, Notification, Professor, Planes]),
   ],
-  controllers: [TradeController],
-  providers: [TradeService, NotificationService],
-  exports: [TradeService],
+  controllers: [TradeController, PlanesController],
+  providers: [
+    TradeService,
+    NotificationService,
+    ProfessorService,
+    PlanesServices,
+  ],
+  exports: [TradeService, PlanesServices],
 })
 export class TradeModule {}

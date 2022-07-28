@@ -9,7 +9,7 @@ import { Notification } from '../devices/notification/entities/notification.enti
 import { DevicesModule } from '../devices/devices.module';
 import { Comment } from './entities/comment.entity';
 import { HomeworkModule } from '../homework/homework.module';
-import { Homework } from 'src/homework/entities/Homework.entity';
+import { Homework } from '../homework/entities/Homework.entity';
 
 @Module({
   imports: [

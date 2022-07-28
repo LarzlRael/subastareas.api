@@ -73,7 +73,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('/verifyuser/')
+  @Post('/verifyuser')
   async verifyEmail(@Body() verifyUser: VerifyUserDTO, @GetUser() user: User) {
     if (user.verify) {
       return {
@@ -89,8 +89,6 @@ export class AuthController {
     return this.authService.signOut(idDevice);
   }
 
-  //TODO render page password change
-
   @Get('requestpasswordchange/:email')
   sendEmailRequestPasswordChange(
     @Req() req: Request,
@@ -99,7 +97,6 @@ export class AuthController {
     this.authService.sendEmailRequestPasswordChange(email, req);
   }
 
-  //TODO form to change password
   @UseGuards(AuthGuard('jwt'))
   @Post('/changepassword')
   changePassword(

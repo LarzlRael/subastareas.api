@@ -59,7 +59,7 @@ export class HomeworkService {
       return await this.homeworkRepository.save(createdHomework);
     }
   }
-  async getAprovedHomeWorks() {
+  async getApprovedHomeWorks() {
     return this.getHomeworksByCondition({
       status: HomeWorkStatusEnum.ACCEPTED,
     });
@@ -72,11 +72,9 @@ export class HomeworkService {
   }
   async getHomeworkByCategory(category: string[]) {
     if (category[0] !== 'empty') {
-      return this.getHomeworksByCondition({ category: In(category) });
+      return await this.getHomeworksByCondition({ category: In(category) });
     }
-    return this.getHomeworksByCondition({
-      category: In(category),
-    });
+    return await this.getApprovedHomeWorks();
   }
   async getHomeworkByUser(user: User) {
     /* return this.getHomeworksByCondition('user', user); */
@@ -85,7 +83,7 @@ export class HomeworkService {
   async getOneHomework(id: number) {
     const homework = await this.getOneHomeworkComments(id);
     const comments = await this.commentService.getCommentsByHomework(id);
-    const offers = await this.offerService.getOffersByHomeworks(homework.id);
+    const offers = await this.offerService.getOffersSimpleData(homework.id);
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
@@ -153,8 +151,8 @@ export class HomeworkService {
     const homework = await this.getOneHomeworkWhere({ id }, ['offers', 'user']);
     return homework;
   }
-  async getOneHomeworkAll(id: number) {
-    return await this.getOneHomeworkWhere({ id });
+  async getOneHomeworkAll(id: number, getUser = false) {
+    return await this.getOneHomeworkWhere({ id }, getUser ? ['user'] : []);
   }
   async getOffersReceiveByUser(user: User) {
     return this.getOneHomeworkWhere(
@@ -228,7 +226,7 @@ export class HomeworkService {
       ['user'],
     );
   }
-  async getHomewokrTosupervisor() {
+  async getHomeworkTosupervisor() {
     return await this.homeworkRepository.find({
       where: [
         { status: HomeWorkStatusEnum.ACCEPTED },

@@ -1,15 +1,16 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { HomeWorkStatusEnum, TradeStatusEnum } from '../enums/enums';
-import { NotificationService } from '../devices/notification/notification.service';
-import { uploadFile } from '../utils/utils';
-import { User } from '../auth/entities/user.entity';
+import { HomeWorkStatusEnum, TradeStatusEnum } from '../../enums/enums';
+import { NotificationService } from '../../devices/notification/notification.service';
+import { uploadFile } from '../../utils/utils';
+import { User } from '../../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { Trade } from './entities/trade.entity';
-import { OfferService } from '../offer/offer.service';
-import { HomeworkService } from '../homework/homework.service';
-import { WalletService } from '../wallet/wallet.service';
+import { Trade } from '../entities/trade.entity';
+import { OfferService } from '../../offer/offer.service';
+import { HomeworkService } from '../../homework/homework.service';
+import { WalletService } from '../../wallet/wallet.service';
+import { ProfessorService } from '../../roles/services/professor.service';
 
 @Injectable()
 export class TradeService {
@@ -21,11 +22,13 @@ export class TradeService {
     private offerService: OfferService,
     private homeworkService: HomeworkService,
     private notificationService: NotificationService,
+    private readonly professorService: ProfessorService,
   ) {}
 
   async enterPendingTrade(idOffer: number) {
-    const offer = await this.offerService.getOneOffer(idOffer);
-
+    //verificar si el oferta existe y si el usuario es el dueño de la oferta y la tarea
+    const offer = await this.offerService.getOneOffer(idOffer, true);
+    console.log(offer);
     if (!offer) {
       throw new Error('Offer not found');
     } else {
@@ -49,22 +52,43 @@ export class TradeService {
       offer.user,
       getHomework,
     );
+    //TODO Delete some properties, much information is not necessary
     return await this.tradeRepository.save(newTrade);
   }
 
-  async newTrade(idOffer: number) {
-    const offer = await this.offerService.getOneOffer(idOffer);
-
+  async declineTrade(idOffer: number) {}
+  async acceptTrade(idOffer: number) {
+    const offer = await this.offerService.getOneOffer(idOffer, true);
+    /* console.log(offer); */
     if (!offer) {
       throw new Error('Offer not found');
     }
-
     const offerUserWallet = await this.walletService.getWalletByUserId(
       offer.user.wallet.id,
     );
-    const homeworkUserWallet = await this.walletService.getWalletByUserId(
-      offer.homework.user.wallet.id,
+    // ERROR hasta este punto
+    const getHomework = await this.homeworkService.getOneHomeworkUser(
+      offer.homework.id,
     );
+    const homeworkUserWallet = await this.walletService.getWalletByUserId(
+      getHomework.user.id,
+    );
+
+    //saving trade status
+    const trade = await this.tradeRepository.findOne({
+      where: { id: idOffer },
+    });
+    trade.status = TradeStatusEnum.ACCEPTED;
+    await this.tradeRepository.save(trade);
+    //Saving the offer status
+    offer.status = TradeStatusEnum.ACCEPTED;
+    this.offerService.saveOffer(offer);
+    //Saving the homework status
+    getHomework.status = HomeWorkStatusEnum.TRADED;
+    this.homeworkService.saveHomework(getHomework);
+
+    //Saving add reputation to the user
+    await this.professorService.addReputation(offer.user.id, 1);
 
     offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
     homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;
@@ -89,6 +113,7 @@ export class TradeService {
           id: getOffer.id,
         },
       },
+      relations: ['offer', 'offer.user', 'offer.homework'],
     });
 
     if (!getTrade) {
@@ -103,9 +128,12 @@ export class TradeService {
     //get user owner of this homework
     const getuserHomework = await this.homeworkService.getOneHomeworkAll(
       getOffer.homework.id,
+      true,
     );
-    const homeworkHomeworkDestination =
-      await this.homeworkService.getOneHomeworkAll(getOffer.homework.id);
+    const homeworkHomeworkDestination = await this.homeworkService.getOneHomeworkAll(
+      getOffer.homework.id,
+      true,
+    );
 
     await this.notificationService.sendHomeworkResolveNotification(
       getuserHomework.user,
@@ -120,5 +148,31 @@ export class TradeService {
       });
       return getTrade;
     });
+  }
+
+  async userTradePending(user: User, status: string) {
+    const offers = await this.tradeRepository.query(
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
+      [user.id, status],
+    );
+    return offers;
+  }
+
+  async offerAcceptedAndUrlResolved(idTrade: number) {
+    const getTrade = await this.tradeRepository.findOne({
+      where: {
+        id: idTrade,
+      },
+    });
+    if (!getTrade) {
+      throw new InternalServerErrorException('Trade not found');
+    }
+
+    const offers = await this.tradeRepository.query(
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId,h.id, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where t.id = ?',
+      [idTrade],
+    );
+    console.log(offers);
+    return offers;
   }
 }

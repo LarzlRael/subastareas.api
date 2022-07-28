@@ -9,14 +9,14 @@ import {
   Put,
 } from '@nestjs/common';
 
-import { OfferService } from '../offer/offer.service';
+import { OfferService } from '../../offer/offer.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from '../utils/utils';
+import { fileFilter } from '../../utils/utils';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from '../auth/decorators/get-user..decorator';
-import { User } from '../auth/entities/user.entity';
-import { TradeStatusEnum } from '../enums/enums';
-import { TradeService } from './services/trade.service';
+import { GetUser } from '../../auth/decorators/get-user..decorator';
+import { User } from '../../auth/entities/user.entity';
+import { TradeStatusEnum } from '../../enums/enums';
+import { TradeService } from '../services/trade.service';
 
 @Controller('trade')
 @UseGuards(AuthGuard('jwt'))
