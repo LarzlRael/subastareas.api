@@ -28,7 +28,7 @@ export class HomeworkController {
 
   @Get()
   getAprovedHomeWorks(): Promise<Homework[]> {
-    return this.homeworkService.getAprovedHomeWorks();
+    return this.homeworkService.getApprovedHomeWorks();
   }
   @Get('/getsubjectslist')
   getSubjectsAndLevels() {
@@ -50,7 +50,7 @@ export class HomeworkController {
   }
 
   @Get('/homeworkstatus/:status')
-  getHomeworkspending(
+  getHomeworksPending(
     @Param('status') status: HomeWorkStatusEnum,
   ): Promise<Homework[]> {
     return this.homeworkService.getPendingHomework(status);
@@ -71,11 +71,11 @@ export class HomeworkController {
   async postHomeWork(
     @GetUser() user: User,
     @Body() homeworkDto: HomeworkDto,
-    @UploadedFile() homeworkfile: Express.Multer.File,
+    @UploadedFile() homeworkFile: Express.Multer.File,
   ): Promise<Homework> {
     return await this.homeworkService.createHomework(
       homeworkDto,
-      homeworkfile,
+      homeworkFile,
       user,
     );
   }

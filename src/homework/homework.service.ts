@@ -59,7 +59,7 @@ export class HomeworkService {
       return await this.homeworkRepository.save(createdHomework);
     }
   }
-  async getAprovedHomeWorks() {
+  async getApprovedHomeWorks() {
     return this.getHomeworksByCondition({
       status: HomeWorkStatusEnum.ACCEPTED,
     });
@@ -74,7 +74,7 @@ export class HomeworkService {
     if (category[0] !== 'empty') {
       return await this.getHomeworksByCondition({ category: In(category) });
     }
-    return await this.getAprovedHomeWorks();
+    return await this.getApprovedHomeWorks();
   }
   async getHomeworkByUser(user: User) {
     /* return this.getHomeworksByCondition('user', user); */
@@ -226,7 +226,7 @@ export class HomeworkService {
       ['user'],
     );
   }
-  async getHomewokrTosupervisor() {
+  async getHomeworkTosupervisor() {
     return await this.homeworkRepository.find({
       where: [
         { status: HomeWorkStatusEnum.ACCEPTED },

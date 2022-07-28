@@ -1,16 +1,16 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { HomeWorkStatusEnum, TradeStatusEnum } from '../enums/enums';
-import { NotificationService } from '../devices/notification/notification.service';
-import { uploadFile } from '../utils/utils';
-import { User } from '../auth/entities/user.entity';
+import { HomeWorkStatusEnum, TradeStatusEnum } from '../../enums/enums';
+import { NotificationService } from '../../devices/notification/notification.service';
+import { uploadFile } from '../../utils/utils';
+import { User } from '../../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { Trade } from './entities/trade.entity';
-import { OfferService } from '../offer/offer.service';
-import { HomeworkService } from '../homework/homework.service';
-import { WalletService } from '../wallet/wallet.service';
-import { ProfessorService } from '../roles/services/professor.service';
+import { Trade } from '../entities/trade.entity';
+import { OfferService } from '../../offer/offer.service';
+import { HomeworkService } from '../../homework/homework.service';
+import { WalletService } from '../../wallet/wallet.service';
+import { ProfessorService } from '../../roles/services/professor.service';
 
 @Injectable()
 export class TradeService {

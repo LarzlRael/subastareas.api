@@ -206,11 +206,11 @@ export class AuthService {
       return;
     }
 
-    await this.rolsService.assignStudenRole(user, {
+    await this.rolsService.assignStudentRole(user, {
       rolName: RoleEnum.STUDENT,
       active: true,
     });
-    await this.rolsService.assignStudenRole(user, {
+    await this.rolsService.assignStudentRole(user, {
       rolName: RoleEnum.PROFESSOR,
       active: true,
     });
