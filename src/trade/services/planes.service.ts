@@ -21,19 +21,12 @@ export class PlanesServices {
       'https://api.apilayer.com/exchangerates_data/latest&base=USD',
       {
         headers: {
-          apikey: 'bOKR76idZwBIcHKxPBm8IBjFfks3OYYq',
+          apiKey: process.env.APILAYER,
         },
       },
     );
-    console.log(response.data.rates['BOB']);
-    /*  this.planesRepository.create({
-      currencyType: 'BOB',
-      price: response.data.rates['BOB'] * this.ratio,
-      finalAmount: response.data.rates['BOB'] * this.ratio,
-    }); */
-    /* return response; */
+
     const bobToday = response.data.rates['BOB'];
-    const gemPrice = this.ratio / (this.dollarAmount * bobToday);
 
     const planes = this.planesRepository.create({
       dateQuery: response.data.date,

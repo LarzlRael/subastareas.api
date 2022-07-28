@@ -18,6 +18,7 @@ import { TradeService } from './services/trade.service';
 import { PlanesServices } from './services/planes.service';
 import { PlanesController } from './controllers/planes.controller';
 import { Planes } from './entities/planes.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -27,6 +28,10 @@ import { Planes } from './entities/planes.entity';
     DevicesModule,
     RolesModule,
     TypeOrmModule.forFeature([Trade, Notification, Professor, Planes]),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
   ],
   controllers: [TradeController, PlanesController],
   providers: [
