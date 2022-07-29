@@ -21,6 +21,7 @@ import { Wallet } from '../../wallet/entities/wallet.entity';
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { Rol } from '../../roles/entities/rol.entity';
 import { Notification } from '../../devices/notification/entities/notification.entity';
+import { Shopping } from '../../trade/entities/shopping.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()
@@ -129,4 +130,7 @@ export class User {
     eager: false,
   })
   notification: Notification[];
+
+  @OneToMany(() => Shopping, (shopping) => shopping.user, { eager: false })
+  shopping: Shopping[];
 }

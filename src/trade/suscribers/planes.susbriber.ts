@@ -4,7 +4,7 @@ import {
   InsertEvent,
   UpdateEvent,
 } from 'typeorm';
-import { Planes } from './planes.entity';
+import { Planes } from '../entities/planes.entity';
 @EventSubscriber()
 export class PlanesSubscriber implements EntitySubscriberInterface<Planes> {
   listenTo(): any {

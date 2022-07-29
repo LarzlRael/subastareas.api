@@ -20,15 +20,7 @@ export class PlanesController {
     return this.planesServices.getDollarPriceToday();
   }
   @Get('getPlanes')
-  async getPlanes() {
-    const planes = await this.planesServices.getPlanes();
-    const planeParse = Object.keys(planes).map((key) => {
-      return {
-        planeName: key,
-        price: planes[key],
-        amount: parseInt(key.substring(4, key.length)),
-      };
-    });
-    return planeParse.reverse();
+  getPlanes() {
+    return this.planesServices.getPlanes();
   }
 }

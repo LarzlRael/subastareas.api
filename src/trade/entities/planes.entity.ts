@@ -34,7 +34,7 @@ export class Planes {
   })
   rate: number;
 
-  @Column('decimal', { precision: 8, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2 })
   currencyPriceUSDToday: number;
 
   @Column('decimal', { precision: 10, scale: 2 })

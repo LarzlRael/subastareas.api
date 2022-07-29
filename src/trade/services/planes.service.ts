@@ -34,22 +34,11 @@ export class PlanesServices {
       currencyPriceUSDToday: bobToday,
       dollarAmount: this.dollarAmount,
       rate: this.ratio,
-      /* currencyPrice: gemPrice,
-      googleCommission: googleCommission, */
-      /* finalAmount: response.data.rates['BOB'] * this.ratio, */
-      /* gemPrice: gemPrice, */
-      /* plan200: (googleCommission + gemPrice) * 0.98 * 200,
-      plan100: (googleCommission + gemPrice) * 0.99 * 100,
-      plan50: (googleCommission + gemPrice) * 0.995 * 50,
-      plan25: (googleCommission + gemPrice) * 0.995 * 25,
-      plan10: (googleCommission + gemPrice) * 0.99 * 10,
-      plan5: (googleCommission + gemPrice) * 0.99 * 5,
-      plan1: (googleCommission + gemPrice) * 0.1 * 1, */
     });
     await this.planesRepository.save(planes);
   }
   async getPlanes() {
-    const entities = await this.planesRepository
+    const planes = await this.planesRepository
       .createQueryBuilder('planes')
       .select([
         'planes.plan1',
@@ -61,6 +50,24 @@ export class PlanesServices {
         'planes.plan200',
       ])
       .getOne();
-    return entities;
+    const planeParse = Object.keys(planes).map((key) => {
+      return {
+        planeName: key,
+        price: planes[key],
+        amount: parseInt(key.substring(4, key.length)),
+      };
+    });
+    return planeParse.reverse();
+  }
+  async getPlan(id: number) {
+    const plan = await this.planesRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!plan) {
+      throw new InternalServerErrorException('Plan not found');
+    }
+    return plan;
   }
 }

@@ -1,6 +1,6 @@
 import { Homework } from '../../homework/entities/Homework.entity';
 import { User } from '../../auth/entities/user.entity';
-import { OneToOne } from 'typeorm';
+
 import {
   Column,
   CreateDateColumn,
@@ -47,8 +47,6 @@ export class Offer {
   @ManyToOne(() => Homework, (homework) => homework.offers, { eager: false })
   homework!: Homework;
 
-  /* eager en true  */
-  //TODO
   @ManyToOne(() => User, (user) => user.offers, { eager: false })
   user!: User;
 

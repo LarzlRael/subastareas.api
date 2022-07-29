@@ -1,4 +1,4 @@
-import { OneToOne, CreateDateColumn, ManyToOne } from 'typeorm';
+import { CreateDateColumn, ManyToOne } from 'typeorm';
 import {
   Column,
   Entity,

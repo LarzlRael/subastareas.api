@@ -10,7 +10,7 @@ import { join } from 'path';
 import { AppGateway } from './app.gateway';
 import { OfferModule } from './offer/offer.module';
 import { TradeModule } from './trade/trade.module';
-import { PlanesSubscriber } from './trade/entities/planes.susbriber';
+import { PlanesSubscriber } from './trade/suscribers/planes.susbriber';
 
 @Module({
   imports: [

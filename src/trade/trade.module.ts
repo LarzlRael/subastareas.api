@@ -19,6 +19,9 @@ import { PlanesServices } from './services/planes.service';
 import { PlanesController } from './controllers/planes.controller';
 import { Planes } from './entities/planes.entity';
 import { ConfigModule } from '@nestjs/config';
+import { Shopping } from './entities/shopping.entity';
+import { ShoppingController } from './controllers/shopping.controller';
+import { ShoppingService } from './services/shopping.service';
 
 @Module({
   imports: [
@@ -27,19 +30,26 @@ import { ConfigModule } from '@nestjs/config';
     OfferModule,
     DevicesModule,
     RolesModule,
-    TypeOrmModule.forFeature([Trade, Notification, Professor, Planes]),
+    TypeOrmModule.forFeature([
+      Trade,
+      Notification,
+      Professor,
+      Planes,
+      Shopping,
+    ]),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
   ],
-  controllers: [TradeController, PlanesController],
+  controllers: [TradeController, PlanesController, ShoppingController],
   providers: [
     TradeService,
     NotificationService,
     ProfessorService,
     PlanesServices,
+    ShoppingService,
   ],
-  exports: [TradeService, PlanesServices],
+  exports: [TradeService, PlanesServices, ShoppingService],
 })
 export class TradeModule {}
