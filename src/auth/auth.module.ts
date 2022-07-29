@@ -10,7 +10,7 @@ import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
 import { DevicesService } from '../devices/devices.service';
-import { WalletService } from '../wallet/wallet.service';
+import { WalletService } from '../wallet/services/wallet.service';
 import { AdminService } from './services/admin.service';
 
 import { RolesModule } from '../roles/roles.module';

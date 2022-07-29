@@ -64,3 +64,11 @@ export enum TableNameEnum {
   WALLET = 'wallet',
   DEVICE = 'device',
 }
+
+export enum TransactionTypeEnum {
+  INGRESO = 'ingreso',
+  EGRESO = 'egreso',
+  ASEGURADO = 'asegurado',
+  RETENIDO = 'retenido',
+  TRASPASO = 'traspaso',
+}

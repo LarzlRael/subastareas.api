@@ -2,11 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
+import { Transaction } from './transaction.entity';
 
 @Entity()
 export class Wallet {
@@ -20,6 +22,11 @@ export class Wallet {
 
   @OneToOne(() => User, (user) => user.wallet)
   user: User;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.wallet, {
+    eager: false,
+  })
+  transaction: Transaction[];
 
   @CreateDateColumn({
     type: 'timestamp',

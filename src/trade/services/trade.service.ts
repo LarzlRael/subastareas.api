@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Trade } from '../entities/trade.entity';
 import { OfferService } from '../../offer/offer.service';
 import { HomeworkService } from '../../homework/homework.service';
-import { WalletService } from '../../wallet/wallet.service';
+import { WalletService } from '../../wallet/services/wallet.service';
 import { ProfessorService } from '../../roles/services/professor.service';
 
 @Injectable()

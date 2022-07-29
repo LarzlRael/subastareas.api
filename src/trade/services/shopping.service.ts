@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Shopping } from '../entities/shopping.entity';
 import { User } from '../../auth/entities/user.entity';
 import { PlanesServices } from './planes.service';
-import { WalletService } from '../../wallet/wallet.service';
+import { WalletService } from '../../wallet/services/wallet.service';
 
 @Injectable()
 export class ShoppingService {

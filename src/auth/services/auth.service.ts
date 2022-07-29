@@ -19,7 +19,7 @@ import { ProfileEditDto } from './../dto/ProfileEdit.dto';
 import { MailService } from '../../mail/mail.service';
 import { RoleEnum, TableNameEnum } from '../../enums/enums';
 import { DevicesService } from '../../devices/devices.service';
-import { WalletService } from '../../wallet/wallet.service';
+import { WalletService } from '../../wallet/services/wallet.service';
 import { Request } from 'express';
 import { ChangePasswordDto } from './../dto/ChangePassword.dto';
 import { RolsService } from '../../roles/services/rols.service';
