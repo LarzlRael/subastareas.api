@@ -4,12 +4,13 @@ import { CommentsService } from './comments.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { NotificationService } from '../devices/notification/notification.service';
-import { Notification } from '../devices/notification/entities/notification.entity';
 
 import { DevicesModule } from '../devices/devices.module';
 import { Comment } from './entities/comment.entity';
 import { HomeworkModule } from '../homework/homework.module';
 import { Homework } from '../homework/entities/Homework.entity';
+import { Notification } from '../devices/entities';
+
 
 @Module({
   imports: [

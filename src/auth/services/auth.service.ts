@@ -18,7 +18,7 @@ import { validateGoogleToken } from './../google/googleVerifyToken';
 import { ProfileEditDto } from './../dto/ProfileEdit.dto';
 import { MailService } from '../../mail/mail.service';
 import { RoleEnum, TableNameEnum } from '../../enums/enums';
-import { DevicesService } from '../../devices/devices.service';
+
 import { WalletService } from '../../wallet/services/wallet.service';
 import { Request } from 'express';
 import { ChangePasswordDto } from './../dto/ChangePassword.dto';
@@ -31,6 +31,7 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { VerifyUserDTO } from '../dto/VerifyUser.dto';
 import { getHostName } from '../../utils/hostUtils';
 import { ProfessorService } from '../../roles/services/professor.service';
+import { DevicesService } from '../../devices/notification/';
 @Injectable()
 export class AuthService {
   constructor(

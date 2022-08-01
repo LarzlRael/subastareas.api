@@ -3,16 +3,17 @@ import { OfferService } from './offer.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OfferController } from './offer.controller';
 
-import { NotificationService } from '../devices/notification/notification.service';
+import { NotificationService } from '../devices/notification/';
 
 import { HomeworkService } from '../homework/homework.service';
-import { Notification } from '../devices/notification/entities/notification.entity';
+
 import { DevicesModule } from '../devices/devices.module';
 import { CommentsService } from '../comments/comments.service';
 import { Comment } from '../comments/entities/comment.entity';
 import { Offer } from './entities/offer.entity';
 import { HomeworkModule } from '../homework/homework.module';
 import { Homework } from '../homework/entities/Homework.entity';
+import { Notification } from 'src/devices/entities';
 
 @Module({
   imports: [

@@ -9,7 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
-import { DevicesService } from '../devices/devices.service';
 import { WalletService } from '../wallet/services/wallet.service';
 import { AdminService } from './services/admin.service';
 
@@ -25,6 +24,7 @@ import { AdminController } from './controllers/admin.controller';
 import { WalletModule } from '../wallet/wallet.module';
 import { DevicesModule } from '../devices/devices.module';
 import { Professor } from '../roles/entities/professor.entity';
+import { DevicesService } from '../devices/notification/';
 
 @Module({
   imports: [

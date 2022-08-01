@@ -20,8 +20,9 @@ import { Wallet } from '../../wallet/entities/wallet.entity';
 
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { Rol } from '../../roles/entities/rol.entity';
-import { Notification } from '../../devices/notification/entities/notification.entity';
+
 import { Shopping } from '../../trade/entities/shopping.entity';
+import { Notification } from '../../devices/entities/notification.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()

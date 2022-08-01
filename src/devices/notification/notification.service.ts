@@ -6,11 +6,12 @@ import { capitalizeFirstLetter } from '../../utils/utilsText';
 import { User } from '../../auth/entities/user.entity';
 import { TypeNotificationEnum } from '../../enums/enums';
 import { Homework } from '../../homework/entities/Homework.entity';
-import { Notification } from './entities/notification.entity';
+
 import { NotificationTypeEnum } from '../../enums/enums';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
-import { DevicesService } from '../devices.service';
+import { DevicesService } from './devices.service';
+import { Notification } from '../entities';
 
 @Injectable()
 export class NotificationService {

@@ -10,7 +10,7 @@ import { DevicesModule } from '../devices/devices.module';
 import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
 import { WalletModule } from '../wallet/wallet.module';
-import { Notification } from './../devices/notification/entities/notification.entity';
+
 import { ProfessorService } from '../roles/services/professor.service';
 import { Professor } from '../roles/entities/professor.entity';
 import { RolesModule } from '../roles/roles.module';
@@ -22,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Shopping } from './entities/shopping.entity';
 import { ShoppingController } from './controllers/shopping.controller';
 import { ShoppingService } from './services/shopping.service';
+import { Notification } from 'src/devices/entities';
 
 @Module({
   imports: [
