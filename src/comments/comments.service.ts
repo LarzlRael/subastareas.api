@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/entities/user.entity';
 import { CommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
-import { NotificationService } from '../devices/notification/notification.service';
+import { NotificationService } from '../devices/services/notification.service';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { HomeworkService } from '../homework/homework.service';
 

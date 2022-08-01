@@ -31,7 +31,7 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { VerifyUserDTO } from '../dto/VerifyUser.dto';
 import { getHostName } from '../../utils/hostUtils';
 import { ProfessorService } from '../../roles/services/professor.service';
-import { DevicesService } from '../../devices/notification/';
+import { DevicesService } from '../../devices/services';
 @Injectable()
 export class AuthService {
   constructor(

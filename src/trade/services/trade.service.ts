@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { HomeWorkStatusEnum, TradeStatusEnum } from '../../enums/enums';
-import { NotificationService } from '../../devices/notification/notification.service';
+import { NotificationService } from '../../devices/services/notification.service';
 import { uploadFile } from '../../utils/utils';
 import { User } from '../../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';

@@ -3,7 +3,7 @@ import { Controller, UseGuards, Get, Param, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../../auth/decorators/get-user..decorator';
 import { User } from '../../auth/entities/user.entity';
-import { NotificationService } from '../notification/';
+import { NotificationService } from '../services';
 
 @Controller('devices')
 @UseGuards(AuthGuard('jwt'))

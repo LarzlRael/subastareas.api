@@ -7,7 +7,7 @@ import {
 import { User } from '../auth/entities/user.entity';
 import { Offer } from './entities/offer.entity';
 import { OfferDto } from './dto/offer.dot';
-import { NotificationService } from '../devices/notification/notification.service';
+import { NotificationService } from '../devices/services/notification.service';
 
 import { In, Repository, FindOptionsWhere } from 'typeorm';
 import { validateArray } from '../utils/validation';

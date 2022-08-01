@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { NotificationService } from '../devices/notification/';
+import { NotificationService } from '../devices/services';
 
 import { DevicesModule } from '../devices/devices.module';
 import { OfferModule } from '../offer/offer.module';

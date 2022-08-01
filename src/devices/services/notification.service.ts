@@ -10,8 +10,9 @@ import { Homework } from '../../homework/entities/Homework.entity';
 import { NotificationTypeEnum } from '../../enums/enums';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
-import { DevicesService } from './devices.service';
+
 import { Notification } from '../entities';
+import { DevicesService } from './devices.service';
 
 @Injectable()
 export class NotificationService {
