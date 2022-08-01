@@ -1,28 +1,28 @@
 import { Module } from '@nestjs/common';
-import { TradeController } from './controllers/trade.controller';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { NotificationService } from '../devices/notification/notification.service';
+import { NotificationService } from '../devices/notification/';
 
-import { Trade } from '../trade/entities/trade.entity';
 import { DevicesModule } from '../devices/devices.module';
 import { OfferModule } from '../offer/offer.module';
 import { HomeworkModule } from '../homework/homework.module';
 import { WalletModule } from '../wallet/wallet.module';
-
-import { ProfessorService } from '../roles/services/professor.service';
-import { Professor } from '../roles/entities/professor.entity';
 import { RolesModule } from '../roles/roles.module';
-import { TradeService } from './services/trade.service';
-import { PlanesServices } from './services/planes.service';
-import { PlanesController } from './controllers/planes.controller';
-import { Planes } from './entities/planes.entity';
+
+import { ProfessorService } from '../roles/services/';
+import { Professor } from '../roles/entities/';
+import { TradeService, PlanesServices, ShoppingService } from './services/';
+
+import {
+  PlanesController,
+  ShoppingController,
+  TradeController,
+} from './controllers/';
 import { ConfigModule } from '@nestjs/config';
-import { Shopping } from './entities/shopping.entity';
-import { ShoppingController } from './controllers/shopping.controller';
-import { ShoppingService } from './services/shopping.service';
-import { Notification } from 'src/devices/entities';
+
+import { Planes, Shopping, Trade } from './entities/';
+import { Notification } from '../devices/entities';
 
 @Module({
   imports: [
