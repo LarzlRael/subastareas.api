@@ -53,8 +53,11 @@ export class PlanesServices {
     const planeParse = Object.keys(planes).map((key) => {
       return {
         planeName: key,
-        price: planes[key],
+        priceUsd: parseFloat(planes[key]),
         amount: parseInt(key.substring(4, key.length)),
+        /* priceBob: Math.ceil(parseFloat((planes[key] * 6.96).toFixed(2))), */
+        priceBob: parseFloat((planes[key] * 6.96).toFixed(2)),
+        nameBobPrice: 'BOB',
       };
     });
     return planeParse.reverse();
