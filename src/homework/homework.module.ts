@@ -9,9 +9,11 @@ import { OfferModule } from '../offer/offer.module';
 
 import { Homework } from './entities/Homework.entity';
 import { Offer } from '../offer/entities/offer.entity';
+import { WalletModule } from '../wallet/wallet.module';
 
 @Module({
   imports: [
+    WalletModule,
     //circular dependency
 
     forwardRef(() => OfferModule),

@@ -5,11 +5,16 @@ import { Planes } from '../../trade/entities/planes.entity';
 import axios from 'axios';
 import { PriceDollarToday } from '../../interfaces/common';
 import { Transaction } from '../entities/transaction.entity';
+import { BankService } from '../../bank/bank.service';
 
 @Injectable()
 export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
+
+    /* private bankService: BankService, */
   ) {}
+
+  async retenerDinero() {}
 }

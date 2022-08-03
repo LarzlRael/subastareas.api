@@ -20,6 +20,7 @@ import {
 } from 'typeorm';
 import { uploadFile } from '../utils/utils';
 import { FindOptionsWhere } from 'typeorm';
+import { TransactionService } from '../wallet/services/transaction.service';
 
 @Injectable()
 export class HomeworkService {
@@ -31,6 +32,8 @@ export class HomeworkService {
     private offerService: OfferService,
     @Inject(forwardRef(() => CommentsService))
     private commentService: CommentsService,
+
+    private transactionService: TransactionService,
   ) {}
 
   async createHomework(
@@ -243,4 +246,9 @@ export class HomeworkService {
       relations: relations,
     });
   }
+
+  async retenerDinero() {
+    this.transactionService.retenerDinero();
+  }
+  
 }

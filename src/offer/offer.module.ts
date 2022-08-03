@@ -14,10 +14,12 @@ import { Offer } from './entities/offer.entity';
 import { HomeworkModule } from '../homework/homework.module';
 import { Homework } from '../homework/entities/Homework.entity';
 import { Notification } from 'src/devices/entities';
+import { WalletModule } from '../wallet/wallet.module';
 
 @Module({
   imports: [
     DevicesModule,
+    WalletModule,
     forwardRef(() => HomeworkModule),
     TypeOrmModule.forFeature([Offer, Notification, Comment, Homework]),
   ],
