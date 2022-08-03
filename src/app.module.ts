@@ -11,6 +11,7 @@ import { AppGateway } from './app.gateway';
 import { OfferModule } from './offer/offer.module';
 import { TradeModule } from './trade/trade.module';
 import { PlanesSubscriber } from './trade/suscribers/planes.susbriber';
+import { BankModule } from './bank/bank.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PlanesSubscriber } from './trade/suscribers/planes.susbriber';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../', 'client'),
     }),
+    BankModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],
