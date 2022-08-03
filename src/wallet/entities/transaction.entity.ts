@@ -13,10 +13,11 @@ export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    default: 1,
-  })
-  dollarAmount: number;
+  @Column()
+  dollarValue: number;
+
+  @Column()
+  currencyType: string;
 
   @Column({
     type: 'enum',
