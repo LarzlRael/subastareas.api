@@ -59,7 +59,11 @@ export class HomeworkService {
         fileType: 'only_text',
         status: HomeWorkStatusEnum.ACCEPTED,
       });
-      return await this.homeworkRepository.save(createdHomework);
+      const createHomework = await this.homeworkRepository.save(
+        createdHomework,
+      );
+      this.transactionService.retenerDinero(createHomework);
+      return createHomework;
     }
   }
   async getApprovedHomeWorks() {
@@ -246,9 +250,4 @@ export class HomeworkService {
       relations: relations,
     });
   }
-
-  async retenerDinero() {
-    this.transactionService.retenerDinero();
-  }
-  
 }
