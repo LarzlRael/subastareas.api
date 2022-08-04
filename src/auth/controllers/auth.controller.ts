@@ -34,15 +34,12 @@ export class AuthController {
   signup(@Body() registerUserDTO: RegisterUserDTO): Promise<User> {
     return this.authService.singUp(registerUserDTO);
   }
-  @Post('/signin')
-  async signin(@Body() authCredentialDTO: AuthCredentialDTO) {
-    const auth = await this.authService.signIn(authCredentialDTO);
-    console.log('esto es un authing');
-    console.log(auth);
-    return auth;
+  @Post('/signIn')
+  async signIn(@Body() authCredentialDTO: AuthCredentialDTO) {
+    return await this.authService.signIn(authCredentialDTO);
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get('/renewtoken')
+  @Get('/renewToken')
   renewToken(@GetUser() user: User) {
     return this.authService.renewToken(user);
   }
@@ -67,7 +64,7 @@ export class AuthController {
     return this.authService.updateUserProfile(editProfile, imageProfile, user);
   }
 
-  @Get('sendemailverification/:email')
+  @Get('sendEmailVerification/:email')
   sendEmailVerification(
     @Req() request: Request,
     @Param('email') email: string,
@@ -76,7 +73,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('/verifyuser')
+  @Post('/verifyUser')
   async verifyEmail(@Body() verifyUser: VerifyUserDTO, @GetUser() user: User) {
     if (user.verify) {
       return {

@@ -76,8 +76,8 @@ export class TransactionService {
     );
     this.bankService.newTransaction(transaction, TransactionTypeEnum.TRASPASO);
   }
-  async withdrawMoneyTransaction(wallet: Wallet, withDrawAmount: number) {
-    const getWalletUser = await this.walletService.getWalletByUserId(wallet.id);
+  async withdrawMoneyTransaction(walletid: number, withDrawAmount: number) {
+    const getWalletUser = await this.walletService.getWalletByUserId(walletid);
     if (getWalletUser.balance < withDrawAmount) {
       throw new InternalServerErrorException(
         'No hay suficiente saldo en tu cuenta',
@@ -85,15 +85,25 @@ export class TransactionService {
     } else {
       // TODO use the transactions service
       // request to exchange the money from the user wallet to the bank wallet
+      return 'your balance';
     }
   }
 
   async getUserBalance(user: User) {
-    //TODO query by transaction type and user id or wallet id
-    return 0;
+    const userBalance = await this.transactionRepository.query(
+      'select sum(balance) as balance from transaction where walletId = ?',
+      [user.id],
+    );
+    return userBalance[0];
   }
   async getTransactionsHistory(user: User) {
-    //get all transactions by user id or wallet id
-    return 0;
+    const userHistory = await this.transactionRepository.find({
+      where: {
+        wallet: {
+          user: { id: user.id },
+        },
+      },
+    });
+    return userHistory;
   }
 }

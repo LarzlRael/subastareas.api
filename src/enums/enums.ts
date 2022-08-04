@@ -60,7 +60,7 @@ export enum NotificationTypeEnum {
   HOMEWORK_RESOLVE = 'homework_resolve',
 }
 export enum TableNameEnum {
-  ROLS = 'rols',
+  ROLES = 'rols',
   WALLET = 'wallet',
   DEVICE = 'device',
 }

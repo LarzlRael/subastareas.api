@@ -76,20 +76,20 @@ export class AuthService {
   async signIn(authCredentialDTO: AuthCredentialDTO) {
     const { username, password, idDevice } = authCredentialDTO;
     const user = await this.getUserWhere({ username }, [
-      TableNameEnum.ROLS,
+      TableNameEnum.ROLES,
       TableNameEnum.WALLET,
       TableNameEnum.DEVICE,
     ]);
     /*  */
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.verify) {
-        throw new UnauthorizedException('Please verify your email');
+        throw new UnauthorizedException();
       } else {
         await this.devicesService.createDevice(user, idDevice);
         return this.getUserToReturn(user);
       }
     } else {
-      throw new UnauthorizedException('Please check your login credential');
+      throw new UnauthorizedException('check_your_credential');
     }
   }
 
@@ -102,7 +102,7 @@ export class AuthService {
       googleCredentialDto.googleToken,
     );
     if (!googleUser) {
-      throw new UnauthorizedException('Please check your login credential');
+      throw new UnauthorizedException('check_your_credential');
     }
 
     const user = await this.getUserWhere({ email: googleUser.email });

@@ -1,6 +1,6 @@
 import { TransactionService } from '../services/transaction.service';
 
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 
 import { User } from '../../auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -13,12 +13,19 @@ import { GetUser } from '../../auth/decorators/get-user..decorator';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Get('/getUserAmount')
+  @Get('/getUserBalance')
   async getUserBalance(@GetUser() user: User) {
     return this.transactionService.getUserBalance(user);
   }
-  @Get('/getTransactionsHistory')
-  async getUserTrasaction(@GetUser() user: User) {
+  @Get('/getUserTransactionsHistory')
+  async getUserTransaction(@GetUser() user: User) {
     return this.transactionService.getTransactionsHistory(user);
+  }
+  @Get('/withdrawMoneyTransaction/:amount')
+  async withdrawMoneyTransaction(
+    @GetUser() user: User,
+    @Param('amount') amount: number,
+  ) {
+    return this.transactionService.withdrawMoneyTransaction(user.id, amount);
   }
 }
