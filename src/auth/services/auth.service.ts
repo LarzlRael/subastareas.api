@@ -73,29 +73,23 @@ export class AuthService {
     }
   }
 
-  async signIn(
-    authCredentialDTO: AuthCredentialDTO,
-  ): Promise<{ accessToken: string } | any> {
-    try {
-      const { username, password, idDevice } = authCredentialDTO;
-      const user = await this.getUserWhere({ username }, [
-        TableNameEnum.ROLS,
-        TableNameEnum.WALLET,
-        TableNameEnum.DEVICE,
-      ]);
-      /*  */
-      if (user && (await bcrypt.compare(password, user.password))) {
-        if (!user.verify) {
-          throw new UnauthorizedException('Please verify your email');
-        } else {
-          await this.devicesService.createDevice(user, idDevice);
-          return this.getUserToReturn(user);
-        }
+  async signIn(authCredentialDTO: AuthCredentialDTO) {
+    const { username, password, idDevice } = authCredentialDTO;
+    const user = await this.getUserWhere({ username }, [
+      TableNameEnum.ROLS,
+      TableNameEnum.WALLET,
+      TableNameEnum.DEVICE,
+    ]);
+    /*  */
+    if (user && (await bcrypt.compare(password, user.password))) {
+      if (!user.verify) {
+        throw new UnauthorizedException('Please verify your email');
       } else {
-        throw new UnauthorizedException('Please check your login credential');
+        await this.devicesService.createDevice(user, idDevice);
+        return this.getUserToReturn(user);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      throw new UnauthorizedException('Please check your login credential');
     }
   }
 

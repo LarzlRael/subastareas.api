@@ -13,7 +13,7 @@ import { Comment } from '../comments/entities/comment.entity';
 import { Offer } from './entities/offer.entity';
 import { HomeworkModule } from '../homework/homework.module';
 import { Homework } from '../homework/entities/Homework.entity';
-import { Notification } from 'src/devices/entities';
+import { Notification } from '../devices/entities';
 import { WalletModule } from '../wallet/wallet.module';
 
 @Module({

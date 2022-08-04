@@ -5,11 +5,12 @@ import { Transaction } from '../entities/transaction.entity';
 import { BankService } from '../../bank/bank.service';
 import { Homework } from '../../homework/entities/Homework.entity';
 import { PlanesServices } from '../../trade/services/planes.service';
-import { TransactionTypeEnum } from 'src/enums/enums';
+
 import { WalletService } from './wallet.service';
 import { Wallet } from '../entities/wallet.entity';
 import { User } from '../../auth/entities/user.entity';
 import { Planes } from '../../trade/entities/planes.entity';
+import { TransactionTypeEnum } from '../../enums/enums';
 
 @Injectable()
 export class TransactionService {
@@ -89,6 +90,10 @@ export class TransactionService {
 
   async getUserBalance(user: User) {
     //TODO query by transaction type and user id or wallet id
+    return 0;
+  }
+  async getTransactionsHistory(user: User) {
+    //get all transactions by user id or wallet id
     return 0;
   }
 }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Bank } from './entities/bank.entity';
 import { Repository } from 'typeorm';
 import { Transaction } from '../wallet/entities/transaction.entity';
-import { TransactionTypeEnum } from 'src/enums/enums';
+import { TransactionTypeEnum } from '../enums/enums';
 
 @Injectable()
 export class BankService {

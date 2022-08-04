@@ -35,8 +35,11 @@ export class AuthController {
     return this.authService.singUp(registerUserDTO);
   }
   @Post('/signin')
-  signin(@Body() authCredentialDTO: AuthCredentialDTO) {
-    return this.authService.signIn(authCredentialDTO);
+  async signin(@Body() authCredentialDTO: AuthCredentialDTO) {
+    const auth = await this.authService.signIn(authCredentialDTO);
+    console.log('esto es un authing');
+    console.log(auth);
+    return auth;
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('/renewtoken')
