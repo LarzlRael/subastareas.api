@@ -7,6 +7,8 @@ import { Homework } from '../../homework/entities/Homework.entity';
 import { PlanesServices } from '../../trade/services/planes.service';
 import { TransactionTypeEnum } from 'src/enums/enums';
 import { WalletService } from './wallet.service';
+import { Wallet } from '../entities/wallet.entity';
+import { User } from '../../auth/entities/user.entity';
 
 @Injectable()
 export class TransactionService {
@@ -34,4 +36,25 @@ export class TransactionService {
     const newTransaction = await this.transactionRepository.save(transaction);
     this.bankService.newTransaction(newTransaction);
   }
+
+  async homeworkResolvdedTransaction(
+    offerUserWallet: Wallet,
+    homeworkUserWallet: Wallet,
+    homework: Homework,
+  ) {
+    // create two transactions for the user and the homework owner
+  }
+
+  /* private createTransaction(transaction: Transaction) {
+    const createNewTransaction = this.transactionRepository.create({
+      currencyType: 'BOB',
+      transactionType: TransactionTypeEnum.RETENIDO,
+      amount: homework.offered_amount,
+      balance: homework.offered_amount,
+      dollarValue: 6.86,
+      wallet: getUserWallet,
+    });
+  } */
+  async buyCoinsTransaction() {}
+  async withdrawMoneyTransaction() {}
 }

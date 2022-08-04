@@ -11,6 +11,7 @@ import { OfferService } from '../../offer/offer.service';
 import { HomeworkService } from '../../homework/homework.service';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { ProfessorService } from '../../roles/services/professor.service';
+import { TransactionService } from '../../wallet/services/transaction.service';
 
 @Injectable()
 export class TradeService {
@@ -18,11 +19,13 @@ export class TradeService {
     @InjectRepository(Trade)
     private tradeRepository: Repository<Trade>,
 
-    private walletService: WalletService,
-    private offerService: OfferService,
-    private homeworkService: HomeworkService,
-    private notificationService: NotificationService,
+    private readonly offerService: OfferService,
+    private readonly homeworkService: HomeworkService,
+    private readonly notificationService: NotificationService,
     private readonly professorService: ProfessorService,
+    //Wallet Module services
+    private readonly walletService: WalletService,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async enterPendingTrade(idOffer: number) {
@@ -90,11 +93,17 @@ export class TradeService {
     //Saving add reputation to the user
     await this.professorService.addReputation(offer.user.id, 1);
 
-    offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
+    /* offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
     homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;
 
     await this.walletService.saveWallet(offerUserWallet);
-    await this.walletService.saveWallet(homeworkUserWallet);
+    await this.walletService.saveWallet(homeworkUserWallet); */
+
+    this.transactionService.homeworkResolvdedTransaction(
+      offerUserWallet,
+      homeworkUserWallet,
+      getHomework,
+    );
     return null;
   }
   async uploadResolvedHomework(
