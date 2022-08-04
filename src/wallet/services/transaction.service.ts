@@ -9,6 +9,7 @@ import { TransactionTypeEnum } from 'src/enums/enums';
 import { WalletService } from './wallet.service';
 import { Wallet } from '../entities/wallet.entity';
 import { User } from '../../auth/entities/user.entity';
+import { Planes } from '../../trade/entities/planes.entity';
 
 @Injectable()
 export class TransactionService {
@@ -34,7 +35,10 @@ export class TransactionService {
       wallet: getUserWallet,
     });
     const newTransaction = await this.transactionRepository.save(transaction);
-    this.bankService.newTransaction(newTransaction);
+    this.bankService.newTransaction(
+      newTransaction,
+      TransactionTypeEnum.RETENIDO,
+    );
   }
 
   async homeworkResolvdedTransaction(
@@ -55,6 +59,36 @@ export class TransactionService {
       wallet: getUserWallet,
     });
   } */
-  async buyCoinsTransaction() {}
-  async withdrawMoneyTransaction() {}
+  async buyCoinsTransaction(
+    userWallet: Wallet,
+    pricePlan: number,
+    getPlan: Planes,
+  ) {
+    const createNewTransaction = this.transactionRepository.create({
+      currencyType: getPlan.currencyType,
+      transactionType: TransactionTypeEnum.TRASPASO,
+      amount: pricePlan,
+      wallet: userWallet.user,
+    });
+    const transaction = await this.transactionRepository.save(
+      createNewTransaction,
+    );
+    this.bankService.newTransaction(transaction, TransactionTypeEnum.TRASPASO);
+  }
+  async withdrawMoneyTransaction(wallet: Wallet, withDrawAmount: number) {
+    const getWalletUser = await this.walletService.getWalletByUserId(wallet.id);
+    if (getWalletUser.balance < withDrawAmount) {
+      throw new InternalServerErrorException(
+        'No hay suficiente saldo en tu cuenta',
+      );
+    } else {
+      // TODO use the transactions service
+      // request to exchange the money from the user wallet to the bank wallet
+    }
+  }
+
+  async getUserBalance(user: User) {
+    //TODO query by transaction type and user id or wallet id
+    return 0;
+  }
 }

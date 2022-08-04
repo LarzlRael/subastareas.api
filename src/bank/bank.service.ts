@@ -11,7 +11,10 @@ export class BankService {
     @InjectRepository(Bank)
     private bankRepository: Repository<Bank>,
   ) {}
-  async newTransaction(transaction: Transaction) {
+  async newTransaction(
+    transaction: Transaction,
+    transactionType: TransactionTypeEnum,
+  ) {
     const newTransaction = this.bankRepository.create({
       currencyType: transaction.currencyType,
       transaction,
@@ -19,7 +22,7 @@ export class BankService {
       balance: transaction.balance,
       dollarValue: transaction.dollarValue,
       //Question this line is not working correctly
-      transactionType: TransactionTypeEnum.INGRESO,
+      transactionType: transactionType,
     });
     const newTransactionSaved = await this.bankRepository.save(newTransaction);
     return newTransactionSaved;

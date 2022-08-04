@@ -139,6 +139,7 @@ export class TradeService {
       getOffer.homework.id,
       true,
     );
+    // eslint-disable-next-line prettier/prettier
     const homeworkHomeworkDestination = await this.homeworkService.getOneHomeworkAll(
       getOffer.homework.id,
       true,

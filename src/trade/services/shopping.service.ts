@@ -39,6 +39,11 @@ export class ShoppingService {
         walletUser.balance + parseInt(planName.substring(4, planName.length));
       this.walletServices.saveWallet(walletUser);
       /* TODO use the transactions service */
+      this.transactionService.buyCoinsTransaction(
+        walletUser,
+        pricePlan,
+        getPlan,
+      );
       return await this.shoppingRepository.save(shopping);
     } catch (error) {
       throw new InternalServerErrorException(error);
