@@ -17,11 +17,11 @@ export class Bank {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
+  /* @Column({
     default: 0,
   })
   balance: number;
-
+ */
   @Column()
   dollarValue: number;
 
@@ -34,6 +34,14 @@ export class Bank {
     default: TransactionTypeEnum.ASEGURADO,
   })
   transactionType: TransactionTypeEnum;
+
+  @OneToOne(() => Wallet)
+  @JoinColumn()
+  walletOrigin: Wallet;
+
+  @OneToOne(() => Wallet)
+  @JoinColumn()
+  walletDestiny: Wallet;
 
   @Column()
   amount: number;
@@ -54,4 +62,6 @@ export class Bank {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updated_at: Date;
+
+  balance: number;
 }

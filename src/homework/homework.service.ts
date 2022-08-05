@@ -62,7 +62,7 @@ export class HomeworkService {
       const createHomework = await this.homeworkRepository.save(
         createdHomework,
       );
-      this.transactionService.retenerDinero(createHomework);
+      this.transactionService.uploadHomeworkTransaction(createHomework);
       return createHomework;
     }
   }

@@ -29,8 +29,10 @@ export class Transaction {
   @Column()
   amount: number;
 
-  @Column()
-  balance: number;
+  @Column({
+    default: 1,
+  })
+  status: boolean;
 
   @ManyToOne(() => Wallet, (user) => user.transaction, { eager: false })
   /* @Exclude({ toPlainOnly: true }) */

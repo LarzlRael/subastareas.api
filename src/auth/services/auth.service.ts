@@ -32,6 +32,7 @@ import { VerifyUserDTO } from '../dto/VerifyUser.dto';
 import { getHostName } from '../../utils/hostUtils';
 import { ProfessorService } from '../../roles/services/professor.service';
 import { DevicesService } from '../../devices/services';
+import { TransactionService } from '../../wallet/services/transaction.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -39,13 +40,14 @@ export class AuthService {
     private usersRepository: Repository<User>,
 
     @Inject(forwardRef(() => RolsService))
-    private rolsService: RolsService,
+    private rolesService: RolsService,
 
     private mailService: MailService,
     private devicesService: DevicesService,
     private walletService: WalletService,
     private jwtService: JwtService,
     private professorService: ProfessorService,
+    private transactionService: TransactionService,
   ) {}
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
@@ -201,11 +203,11 @@ export class AuthService {
       return;
     }
 
-    await this.rolsService.assignStudentRole(user, {
+    await this.rolesService.assignStudentRole(user, {
       rolName: RoleEnum.STUDENT,
       active: true,
     });
-    await this.rolsService.assignStudentRole(user, {
+    await this.rolesService.assignStudentRole(user, {
       rolName: RoleEnum.PROFESSOR,
       active: true,
     });
@@ -296,6 +298,9 @@ export class AuthService {
     if (user.device) {
       user.userDevices = user.device.map((device) => device.idDevice);
       delete user.device;
+    }
+    if (user.wallet) {
+      user.wallet = await this.transactionService.getUserBalance(user);
     }
     delete user.password;
     return { ...user, accessToken };

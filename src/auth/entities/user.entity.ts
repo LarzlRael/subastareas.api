@@ -81,6 +81,7 @@ export class User {
   // Auxiliar fields
   userRols: string[];
   userDevices: string[];
+  balance: number;
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -35,9 +35,6 @@ export class ShoppingService {
           walletUser.balance + parseInt(planName.substring(4, planName.length)),
       });
 
-      walletUser.balance =
-        walletUser.balance + parseInt(planName.substring(4, planName.length));
-      this.walletServices.saveWallet(walletUser);
       /* TODO use the transactions service */
       this.transactionService.buyCoinsTransaction(
         walletUser,

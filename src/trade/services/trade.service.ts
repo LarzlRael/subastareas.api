@@ -93,13 +93,7 @@ export class TradeService {
     //Saving add reputation to the user
     await this.professorService.addReputation(offer.user.id, 1);
 
-    /* offerUserWallet.balance = offerUserWallet.balance + offer.priceOffer;
-    homeworkUserWallet.balance = homeworkUserWallet.balance - offer.priceOffer;
-
-    await this.walletService.saveWallet(offerUserWallet);
-    await this.walletService.saveWallet(homeworkUserWallet); */
-
-    this.transactionService.homeworkResolvdedTransaction(
+    this.transactionService.exchangeCoinsTransactionByHomeworkResolved(
       offerUserWallet,
       homeworkUserWallet,
       getHomework,
