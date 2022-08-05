@@ -83,7 +83,7 @@ export class AuthService {
     /*  */
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.verify) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException(`verify_your_email ${user.email}`);
       } else {
         await this.devicesService.createDevice(user, idDevice);
         return this.getUserToReturn(user);
@@ -227,7 +227,7 @@ export class AuthService {
     if (getUser) {
       //generate token
       const accessToken = await this.generateToken(getUser.username, '5M');
-      this.mailService.sendEmailRequestpasswordChange(
+      this.mailService.sendEmailRequestPasswordChange(
         { email: getUser.email, name: getUser.username },
         accessToken,
         getHostName(req),

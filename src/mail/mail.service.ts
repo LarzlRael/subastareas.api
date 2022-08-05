@@ -42,7 +42,7 @@ export class MailService {
       },
     });
   }
-  async sendEmailRequestpasswordChange(
+  async sendEmailRequestPasswordChange(
     user: UserEmailI,
     token: string,
     hostname,

@@ -94,7 +94,7 @@ export class AuthController {
     @Req() req: Request,
     @Param('email') email: string,
   ) {
-    this.authService.sendEmailRequestPasswordChange(email, req);
+    return this.authService.sendEmailRequestPasswordChange(email, req);
   }
 
   @UseGuards(AuthGuard('jwt'))
