@@ -41,19 +41,19 @@ export class TransactionService {
 
   async buyCoinsTransaction(
     userWallet: Wallet,
-    pricePlan: number,
+    amount: number,
     getPlan: Planes,
   ) {
     const createNewTransaction = this.transactionRepository.create({
       currencyType: getPlan.currencyType,
       transactionType: TransactionTypeEnum.TRASPASO,
-      amount: pricePlan,
-      wallet: userWallet.user,
+      amount: amount,
+      wallet: userWallet,
     });
     const transaction = await this.transactionRepository.save(
       createNewTransaction,
     );
-    this.bankService.buyCoinsTransaction(transaction);
+    await this.bankService.buyCoinsTransaction(transaction);
   }
   async withdrawMoneyTransaction(walletid: number, withDrawAmount: number) {
     const getWalletUser = await this.walletService.getWalletByUserId(walletid);
@@ -116,9 +116,11 @@ export class TransactionService {
   async getUserBalance(user: User) {
     const userBalance = await this.transactionRepository.query(
       'select sum(amount) as balance from transaction where walletId = ?',
-      [user.id],
+      [user.wallet.id],
     );
-    return userBalance.balance == null ? 0 : parseInt(userBalance.balance);
+    return userBalance[0].balance == null
+      ? 0
+      : parseInt(userBalance[0].balance);
   }
   async getTransactionsHistory(user: User) {
     const userHistory = await this.transactionRepository.find({

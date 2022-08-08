@@ -18,6 +18,7 @@ export class BankService {
       amount: -transaction.amount,
       dollarValue: transaction.dollarValue,
       //Question this line is not working correctly
+
       transactionType: TransactionTypeEnum.EGRESO,
     });
     const newTransactionSaved = await this.bankRepository.save(newTransaction);

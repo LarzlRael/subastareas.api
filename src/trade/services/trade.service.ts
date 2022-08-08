@@ -129,7 +129,7 @@ export class TradeService {
     getOffer.status = TradeStatusEnum.PENDINGTOACCEPT;
     await this.offerService.saveOffer(getOffer);
     //get user owner of this homework
-    const getuserHomework = await this.homeworkService.getOneHomeworkAll(
+    const getUserHomework = await this.homeworkService.getOneHomeworkAll(
       getOffer.homework.id,
       true,
     );
@@ -140,7 +140,7 @@ export class TradeService {
     );
 
     await this.notificationService.sendHomeworkResolveNotification(
-      getuserHomework.user,
+      getUserHomework.user,
       homeworkHomeworkDestination,
     );
 
@@ -176,7 +176,6 @@ export class TradeService {
       'SELECT t.solvedHomeworkUrl, t.id as tradeId,h.id, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where t.id = ?',
       [idTrade],
     );
-    console.log(offers);
     return offers;
   }
 }

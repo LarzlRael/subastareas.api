@@ -59,7 +59,6 @@ export class AuthService {
     });
     try {
       const newUser = await this.usersRepository.save(user);
-
       return await this.usersRepository.save(newUser);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
@@ -200,21 +199,23 @@ export class AuthService {
       return;
     }
 
-    await this.rolesService.assignStudentRole(user, {
-      rolName: RoleEnum.STUDENT,
-      active: true,
-    });
-    await this.rolesService.assignStudentRole(user, {
-      rolName: RoleEnum.PROFESSOR,
-      active: true,
-    });
-
-    await this.professorService.becomeProfessor(user);
-
     getUser.verify = true;
     const wallet = await this.walletService.createWallet(user);
     getUser.wallet = wallet;
-    return await this.usersRepository.save({ ...getUser, ...verifyUser });
+    const userSaved = await this.usersRepository.save({
+      ...getUser,
+    });
+
+    await this.professorService.becomeProfessor(user);
+    await this.rolesService.assignRole(user.id, {
+      rolName: RoleEnum.STUDENT,
+      active: true,
+    });
+    await this.rolesService.assignRole(user.id, {
+      rolName: RoleEnum.PROFESSOR,
+      active: true,
+    });
+    return userSaved;
   }
   async signOut(idDevice: string) {
     return await this.devicesService.deleteDevice(idDevice);
@@ -297,11 +298,10 @@ export class AuthService {
       delete user.device;
     }
     if (user.wallet) {
+      user.wallet.balance = await this.transactionService.getUserBalance(user);
       delete user.wallet.created_at;
       delete user.wallet.updated_at;
       delete user.wallet.id;
-
-      user.wallet.balance = await this.transactionService.getUserBalance(user);
     }
 
     delete user.password;

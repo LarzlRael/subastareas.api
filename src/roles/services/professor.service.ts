@@ -18,13 +18,9 @@ export class ProfessorService {
     if (user.professor) {
       throw new InternalServerErrorException('You are already a professor');
     }
-    this.rolService.assignRole(user.id, {
-      rolName: RoleEnum.PROFESSOR,
-      id: user.id,
-      active: true,
-    });
-    const createProffesor = this.professorRepository.create({ user });
-    return await this.professorRepository.save(createProffesor);
+
+    const createProfessor = this.professorRepository.create({ user });
+    return await this.professorRepository.save(createProfessor);
   }
   async addReputation(id: number, reputation: number) {
     const professor = await this.professorRepository.findOne({

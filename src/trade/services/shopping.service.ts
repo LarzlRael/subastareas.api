@@ -36,9 +36,9 @@ export class ShoppingService {
       });
 
       /* TODO use the transactions service */
-      this.transactionService.buyCoinsTransaction(
+      await this.transactionService.buyCoinsTransaction(
         walletUser,
-        pricePlan,
+        parseInt(planName.substring(4, planName.length)),
         getPlan,
       );
       return await this.shoppingRepository.save(shopping);
