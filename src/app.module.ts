@@ -13,13 +13,16 @@ import { TradeModule } from './trade/trade.module';
 import { PlanesSubscriber } from './trade/suscribers/planes.susbriber';
 import { BankModule } from './bank/bank.module';
 
+/* import typeOrmConfig, { typeOrmAsyncConfig } from './config/typeorm.config'; */
+import { typeOrmConfig, typeOrmAsyncConfig } from './config/typeorm.config';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
+    /* TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
       port: 3306,
@@ -29,8 +32,8 @@ import { BankModule } from './bank/bank.module';
       synchronize: true,
       subscribers: [PlanesSubscriber],
       autoLoadEntities: true,
-      /* ssl: {}, */
-    }),
+    }), */
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,
     RolesModule,
     OfferModule,

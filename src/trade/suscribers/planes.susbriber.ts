@@ -30,9 +30,9 @@ export class PlanesSubscriber implements EntitySubscriberInterface<Planes> {
     event.entity.plan5 = (googleCommission + gemPrice) * 0.99 * 5;
     event.entity.plan1 = (googleCommission + gemPrice) * 1 * 1;
   }
-  afterInsert(event: InsertEvent<Planes>): void | Promise<any> {
+  /* afterInsert(event: InsertEvent<Planes>): void | Promise<any> {
     console.log('afterInsert');
     console.log(event.entity);
   }
-  beforeUpdate(event: UpdateEvent<Planes>): void | Promise<any> {}
+  beforeUpdate(event: UpdateEvent<Planes>): void | Promise<any> {} */
 }

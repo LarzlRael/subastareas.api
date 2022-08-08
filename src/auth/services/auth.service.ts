@@ -52,13 +52,10 @@ export class AuthService {
   async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     const user = this.usersRepository.create({
       username,
-      password: hashedPassword,
-      email: email,
+      password,
+      email,
     });
     try {
       const newUser = await this.usersRepository.save(user);
@@ -300,8 +297,13 @@ export class AuthService {
       delete user.device;
     }
     if (user.wallet) {
-      user.wallet = await this.transactionService.getUserBalance(user);
+      delete user.wallet.created_at;
+      delete user.wallet.updated_at;
+      delete user.wallet.id;
+
+      user.wallet.balance = await this.transactionService.getUserBalance(user);
     }
+
     delete user.password;
     return { ...user, accessToken };
   }

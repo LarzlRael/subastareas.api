@@ -48,18 +48,18 @@ export class RolsService {
     if (currentUserRol.includes(rol.rolName)) {
       throw new InternalServerErrorException('Rol already exists');
     }
-    console.log(findUser);
+
     try {
       const newROl = await this.rolRepository.save({
         ...rol,
         user: findUser,
       });
-      const newUser = await this.userService.saveUser({
+      /* const newUser = await this.userService.saveUser({
         ...findUser,
         rols: [...findUser.rols, newROl],
-      });
+      }); */
       /* console.log(newUser); */
-      return newUser;
+      /* return newUser; */
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
         // duplicate user

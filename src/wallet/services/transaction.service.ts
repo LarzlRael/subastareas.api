@@ -115,10 +115,10 @@ export class TransactionService {
 
   async getUserBalance(user: User) {
     const userBalance = await this.transactionRepository.query(
-      'select sum(balance) as balance from transaction where walletId = ?',
+      'select sum(amount) as balance from transaction where walletId = ?',
       [user.id],
     );
-    return userBalance[0];
+    return userBalance.balance == null ? 0 : parseInt(userBalance.balance);
   }
   async getTransactionsHistory(user: User) {
     const userHistory = await this.transactionRepository.find({

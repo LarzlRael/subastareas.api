@@ -1,6 +1,7 @@
 import { Homework } from '../../homework/entities/Homework.entity';
 import { Comment } from '../../comments/entities/comment.entity';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -23,6 +24,7 @@ import { Rol } from '../../roles/entities/rol.entity';
 
 import { Shopping } from '../../trade/entities/shopping.entity';
 import { Notification } from '../../devices/entities/notification.entity';
+import * as bcrypt from 'bcrypt';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()
@@ -135,4 +137,10 @@ export class User {
 
   @OneToMany(() => Shopping, (shopping) => shopping.user, { eager: false })
   shopping: Shopping[];
+
+  @BeforeInsert()
+  async setPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(password || this.password, salt);
+  }
 }

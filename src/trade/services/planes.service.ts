@@ -21,7 +21,7 @@ export class PlanesServices {
       'https://api.apilayer.com/exchangerates_data/latest&base=USD',
       {
         headers: {
-          apiKey: process.env.APILAYER,
+          apiKey: process.env.API_LAYER,
         },
       },
     );
@@ -35,7 +35,7 @@ export class PlanesServices {
       dollarAmount: this.dollarAmount,
       rate: this.ratio,
     });
-    await this.planesRepository.save(planes);
+    return await this.planesRepository.save(planes);
   }
   async getPlanes() {
     const planes = await this.planesRepository
@@ -50,17 +50,21 @@ export class PlanesServices {
         'planes.plan200',
       ])
       .getOne();
-    const planeParse = Object.keys(planes).map((key) => {
-      return {
-        planeName: key,
-        priceUsd: parseFloat(planes[key]),
-        amount: parseInt(key.substring(4, key.length)),
-        /* priceBob: Math.ceil(parseFloat((planes[key] * 6.96).toFixed(2))), */
-        priceBob: parseFloat((planes[key] * 6.96).toFixed(2)),
-        nameBobPrice: 'BOB',
-      };
-    });
-    return planeParse.reverse();
+    if (!planes) {
+      this.getDollarPriceToday();
+    } else {
+      const planeParse = Object.keys(planes).map((key) => {
+        return {
+          planeName: key,
+          priceUsd: parseFloat(planes[key]),
+          amount: parseInt(key.substring(4, key.length)),
+          /* priceBob: Math.ceil(parseFloat((planes[key] * 6.96).toFixed(2))), */
+          priceBob: parseFloat((planes[key] * 6.96).toFixed(2)),
+          nameBobPrice: 'BOB',
+        };
+      });
+      return planeParse.reverse();
+    }
   }
   async getPlan(id: number) {
     const plan = await this.planesRepository.findOne({
