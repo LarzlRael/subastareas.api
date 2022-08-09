@@ -41,16 +41,18 @@ export class TradeService {
     const getHomework = await this.homeworkService.getOneHomeworkAll(
       offer.homework.id,
     );
+    //updating the homework status
     getHomework.status = HomeWorkStatusEnum.PENDING_TO_RESOLVE;
     await this.homeworkService.saveHomework({
       ...getHomework,
     });
-
+    //create the trade with pendint to resolve status
     const newTrade = this.tradeRepository.create({
       offer,
       finalAmount: offer.priceOffer,
-      status: TradeStatusEnum.PENDINGTOTRADE,
+      status: TradeStatusEnum.PENDING_TO_RESOLVE,
     });
+    // send notification to the user that the homework is pending to resolve
     this.notificationService.sendOfferAcceptedNotification(
       offer.user,
       getHomework,
@@ -162,6 +164,13 @@ export class TradeService {
     return offers;
   }
 
+  async userTradePendingToTrade(user: User) {
+    const offers = await this.tradeRepository.query(
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id  as homeworkId ,t.status, h.title,h.resolutionTime, h.description from trade t inner join offer o on t.offerId  = o.id  inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = "pending_to_trade";',
+      [user.id],
+    );
+    return offers;
+  }
   async offerAcceptedAndUrlResolved(idTrade: number) {
     const getTrade = await this.tradeRepository.findOne({
       where: {

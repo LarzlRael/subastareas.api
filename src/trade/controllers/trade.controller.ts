@@ -46,7 +46,7 @@ export class TradeController {
     );
   }
 
-  @Get('/acceptrade/:idTradeOffer')
+  @Get('/acceptTrade/:idTradeOffer')
   acceptTrade(@Param('idTradeOffer') idTradeOffer: number) {
     return this.tradeService.acceptTrade(idTradeOffer);
   }
@@ -66,5 +66,9 @@ export class TradeController {
     @Param('tradestatus') tradeStatus: string,
   ) {
     return this.tradeService.userTradePending(user, tradeStatus);
+  }
+  @Get('getTradePendingToTrade/:tradeStatus')
+  userTradePendingToTrade(@GetUser() user: User) {
+    return this.tradeService.userTradePendingToTrade(user);
   }
 }
