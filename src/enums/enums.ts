@@ -7,6 +7,7 @@ export enum RoleEnum {
 }
 export enum HomeWorkStatusEnum {
   PENDING_TO_APPROVED = 'pending_to_approved',
+  PENDING_TO_ACCEPT = 'pending_to_accept',
   PENDING_TO_RESOLVE = 'pending_to_resolve',
   ACCEPTED = 'accepted_to_offer',
   REJECTED = 'rejected',

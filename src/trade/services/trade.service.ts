@@ -90,7 +90,7 @@ export class TradeService {
     this.offerService.saveOffer(offer);
     //Saving the homework status
     getHomework.status = HomeWorkStatusEnum.TRADED;
-    this.homeworkService.saveHomework(getHomework);
+    await this.homeworkService.saveHomework(getHomework);
 
     //Saving add reputation to the user
     await this.professorService.addReputation(offer.user.id, 1);
@@ -98,7 +98,7 @@ export class TradeService {
     this.transactionService.exchangeCoinsTransactionByHomeworkResolved(
       offerUserWallet,
       homeworkUserWallet,
-      getHomework,
+      offer,
     );
     return null;
   }
@@ -140,6 +140,10 @@ export class TradeService {
       getOffer.homework.id,
       true,
     );
+    await this.homeworkService.saveHomework({
+      ...getUserHomework,
+      status: HomeWorkStatusEnum.PENDING_TO_ACCEPT,
+    });
 
     await this.notificationService.sendHomeworkResolveNotification(
       getUserHomework.user,
@@ -158,7 +162,7 @@ export class TradeService {
 
   async userTradePending(user: User, status: string) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description, o.id as offerId from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
       [user.id, status],
     );
     return offers;
@@ -166,7 +170,7 @@ export class TradeService {
 
   async userTradePendingToTrade(user: User) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id  as homeworkId ,t.status, h.title,h.resolutionTime, h.description from trade t inner join offer o on t.offerId  = o.id  inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = "pending_to_trade";',
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id  as homeworkId ,t.status, h.title,h.resolutionTime, h.description, o.id as offerId from trade t inner join offer o on t.offerId  = o.id  inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = "pending_to_trade";',
       [user.id],
     );
     return offers;

@@ -12,6 +12,7 @@ import { User } from '../../auth/entities/user.entity';
 import { Planes } from '../../trade/entities/planes.entity';
 import { TransactionTypeEnum } from '../../enums/enums';
 import { Shopping } from '../../trade/entities/shopping.entity';
+import { Offer } from '../../offer/entities/offer.entity';
 
 @Injectable()
 export class TransactionService {
@@ -82,12 +83,12 @@ export class TransactionService {
   async exchangeCoinsTransactionByHomeworkResolved(
     userOrigin: Wallet,
     userDestiny: Wallet,
-    homeWork: Homework,
+    offer: Offer,
   ) {
     const exchangeCoinsDestinyUser = this.transactionRepository.create({
       currencyType: 'BOB',
       transactionType: TransactionTypeEnum.INGRESO,
-      amount: homeWork.offered_amount,
+      amount: offer.priceOffer,
       dollarValue: 6.86,
       wallet: userDestiny,
     });
@@ -99,7 +100,7 @@ export class TransactionService {
     const exchangeCoinsOriginUser = this.transactionRepository.create({
       currencyType: 'BOB',
       transactionType: TransactionTypeEnum.INGRESO,
-      amount: -userOrigin.balance,
+      amount: -offer.priceOffer,
       dollarValue: 6.86,
       wallet: userOrigin,
     });
