@@ -32,7 +32,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('/signup')
   signup(@Body() registerUserDTO: RegisterUserDTO): Promise<User> {
-    return this.authService.singUp(registerUserDTO);
+    return this.authService.signUp(registerUserDTO);
   }
   @Post('/signIn')
   async signIn(@Body() authCredentialDTO: AuthCredentialDTO) {

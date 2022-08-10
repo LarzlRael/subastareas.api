@@ -4,14 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RoleEnum } from '../../enums/enums';
 import { Professor } from '../entities/professor.entity';
 import { Repository } from 'typeorm';
-import { RolsService } from './rols.service';
+import { RolesService } from './rols.service';
 
 @Injectable()
 export class ProfessorService {
   constructor(
     @InjectRepository(Professor)
     private professorRepository: Repository<Professor>,
-    private rolService: RolsService,
+    private rolService: RolesService,
   ) {}
 
   async becomeProfessor(user: User) {

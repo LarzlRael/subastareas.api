@@ -69,7 +69,7 @@ export class TradeService {
       throw new Error('Offer not found');
     }
     const offerUserWallet = await this.walletService.getWalletByUserId(
-      offer.user.wallet.id,
+      offer.user.id,
     );
     // ERROR hasta este punto
     const getHomework = await this.homeworkService.getOneHomeworkUser(

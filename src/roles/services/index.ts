@@ -1,4 +1,4 @@
 import { ProfessorService } from './professor.service';
-import { RolsService } from './rols.service';
+import { RolesService } from './rols.service';
 import { SupervisorService } from './supervisor.service';
-export { ProfessorService, RolsService, SupervisorService };
+export { ProfessorService, RolesService as RolsService, SupervisorService };

@@ -13,7 +13,7 @@ import { ActionSupervisorDTO } from '../dto/action.dto';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RolsService } from './rols.service';
+import { RolesService } from './rols.service';
 
 import { HomeworkService } from '../../homework/homework.service';
 import { AuthService } from '../../auth/services/auth.service';
@@ -24,7 +24,7 @@ export class SupervisorService {
     @InjectRepository(Supervisor)
     private supervisorRepository: Repository<Supervisor>,
     private userService: AuthService,
-    private rolService: RolsService,
+    private rolService: RolesService,
     private homeworkService: HomeworkService,
   ) {}
   async createSupervisor(user: User): Promise<Supervisor> {

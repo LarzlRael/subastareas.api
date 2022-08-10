@@ -1,6 +1,6 @@
 import { Controller, Post, UseGuards, Body, Param, Get } from '@nestjs/common';
 
-import { RolsService } from '../services/rols.service';
+import { RolesService } from '../services/rols.service';
 import { AuthGuard } from '@nestjs/passport';
 
 import { RolDto } from '../dto/rol.dto';
@@ -15,7 +15,7 @@ import { User } from '../../auth/entities/user.entity';
 @Controller('rols')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class RolsController {
-  constructor(private rolService: RolsService) {}
+  constructor(private rolService: RolesService) {}
   @Roles(RoleEnum.ADMIN, RoleEnum.SUPERVISOR)
   @Post('/createRol')
   createNewRole(@GetUser() user: User, @Body() rol: RolDto): Promise<Rol> {

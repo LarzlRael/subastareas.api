@@ -22,7 +22,7 @@ import { RoleEnum, TableNameEnum } from '../../enums/enums';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { Request } from 'express';
 import { ChangePasswordDto } from './../dto/ChangePassword.dto';
-import { RolsService } from '../../roles/services/rols.service';
+import { RolesService } from '../../roles/services/rols.service';
 import { GoogleCredentialDto } from './../dto/GoogleCredential.dto';
 
 import { forwardRef, UnauthorizedException } from '@nestjs/common';
@@ -39,8 +39,8 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
 
-    @Inject(forwardRef(() => RolsService))
-    private rolesService: RolsService,
+    @Inject(forwardRef(() => RolesService))
+    private rolesService: RolesService,
 
     private mailService: MailService,
     private devicesService: DevicesService,
@@ -49,7 +49,7 @@ export class AuthService {
     private professorService: ProfessorService,
     private transactionService: TransactionService,
   ) {}
-  async singUp(registerUserDTO: RegisterUserDTO): Promise<User> {
+  async signUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
 
     const user = this.usersRepository.create({
@@ -73,12 +73,10 @@ export class AuthService {
 
   async signIn(authCredentialDTO: AuthCredentialDTO) {
     const { username, password, idDevice } = authCredentialDTO;
-    const user = await this.getUserWhere({ username }, [
-      TableNameEnum.ROLES,
-      TableNameEnum.WALLET,
-      TableNameEnum.DEVICE,
-    ]);
-    /*  */
+    const user = await this.getUserWhere(
+      [{ username }, { email: username }],
+      [TableNameEnum.ROLES, TableNameEnum.WALLET, TableNameEnum.DEVICE],
+    );
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.verify) {
         throw new UnauthorizedException(`verify_your_email ${user.email}`);
@@ -317,7 +315,7 @@ export class AuthService {
       relations: relations,
     });
   }
-  async generateToken(username, period: string): Promise<string> {
+  async generateToken(username: string, period: string): Promise<string> {
     const payload: JWtPayload = { username };
 
     const accessToken = await this.jwtService.sign(payload, {

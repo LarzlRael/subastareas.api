@@ -13,7 +13,7 @@ import { WalletService } from '../wallet/services/wallet.service';
 import { AdminService } from './services/admin.service';
 
 import { RolesModule } from '../roles/roles.module';
-import { RolsService } from '../roles/services/rols.service';
+import { RolesService } from '../roles/services/rols.service';
 import { Wallet } from '../wallet/entities/wallet.entity';
 
 import { Device } from '../devices/entities/devices.entity';
@@ -51,7 +51,7 @@ import { DevicesService } from '../devices/services';
     DevicesService,
     WalletService,
     AdminService,
-    RolsService,
+    RolesService,
   ],
   controllers: [AuthController, AdminController],
   exports: [JwtStrategy, PassportModule, AuthService],

@@ -14,7 +14,7 @@ import { forwardRef } from '@nestjs/common';
 import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
-export class RolsService {
+export class RolesService {
   constructor(
     @InjectRepository(Rol)
     private rolRepository: Repository<Rol>,
@@ -46,7 +46,7 @@ export class RolsService {
     const currentUserRol = findUser.rols.map((rol) => {
       return rol.rolName;
     });
-    console.log(currentUserRol)
+
     if (currentUserRol.includes(rolDto.rolName)) {
       throw new InternalServerErrorException('Rol already exists');
     }
