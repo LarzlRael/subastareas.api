@@ -18,7 +18,11 @@ export class Wallet {
   @Column({
     default: 0,
   })
-  balance: number;
+  balanceTotal: number;
+  @Column({
+    default: 0,
+  })
+  balanceWithDrawable: number;
 
   @OneToOne(() => User, (user) => user.wallet)
   user: User;

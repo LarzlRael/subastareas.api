@@ -28,4 +28,8 @@ export class TransactionController {
   ) {
     return this.transactionService.withdrawMoneyTransaction(user.id, amount);
   }
+  @Get('/getWithdrawableBalance/')
+  async obtainWithdrawableBalance(@GetUser() user: User) {
+    return this.transactionService.getUserWithdrawableBalance(user);
+  }
 }

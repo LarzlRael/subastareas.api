@@ -58,7 +58,7 @@ export class TransactionService {
   }
   async withdrawMoneyTransaction(walletid: number, withDrawAmount: number) {
     const getWalletUser = await this.walletService.getWalletByUserId(walletid);
-    if (getWalletUser.balance < withDrawAmount) {
+    if (getWalletUser.balanceWithDrawable < withDrawAmount) {
       throw new InternalServerErrorException(
         'No hay suficiente saldo en tu cuenta',
       );
@@ -67,7 +67,7 @@ export class TransactionService {
       // request to exchange the money from the user wallet to the bank wallet
       const withdrawMoneyTransaction = this.transactionRepository.create({
         currencyType: 'BOB',
-        transactionType: TransactionTypeEnum.RETENIDO,
+        transactionType: TransactionTypeEnum.SOLICITUD_RETIRO,
         amount: -withDrawAmount,
         dollarValue: 6.86,
         wallet: getWalletUser,
@@ -132,5 +132,16 @@ export class TransactionService {
       },
     });
     return userHistory;
+  }
+
+  async getUserWithdrawableBalance(user: User) {
+    const userBalanceWithDrawable = await this.transactionRepository.query(
+      'select sum(amount) as balanceWithDrawable from transaction where  walletId = ? and transactionType ="ingreso"',
+      [user.wallet.id],
+    );
+
+    return userBalanceWithDrawable[0].balanceWithDrawable == null
+      ? 0
+      : parseInt(userBalanceWithDrawable[0].balanceWithDrawable);
   }
 }

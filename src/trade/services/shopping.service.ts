@@ -30,9 +30,10 @@ export class ShoppingService {
         planName: planName,
         amount: parseInt(planName.substring(4, planName.length)),
         price: pricePlan,
-        previousBalance: walletUser.balance,
+        previousBalance: walletUser.balanceTotal,
         currentBalance:
-          walletUser.balance + parseInt(planName.substring(4, planName.length)),
+          walletUser.balanceTotal +
+          parseInt(planName.substring(4, planName.length)),
       });
 
       /* TODO use the transactions service */

@@ -72,4 +72,6 @@ export enum TransactionTypeEnum {
   ASEGURADO = 'asegurado',
   RETENIDO = 'retenido',
   TRASPASO = 'traspaso',
+  SOLICITUD_RETIRO = 'solicutud_retiro',
+  SOLICITUD_RETIRO_COMPLETADO = 'solicitud_retiro_completado',
 }

@@ -12,10 +12,10 @@ export class UserCreateSeed implements Seeder {
       .createQueryBuilder()
       .insert()
       .into(Wallet)
-      .values([{ user, balance: 0 }])
+      .values([{ user, balanceTotal: 0 }])
       .execute();
 
-    const createRol = await connection
+    await connection
       .createQueryBuilder()
       .insert()
       .into(Rol)
