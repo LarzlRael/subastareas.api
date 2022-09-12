@@ -26,7 +26,7 @@ export class TransactionController {
     @GetUser() user: User,
     @Param('amount') amount: number,
   ) {
-    return this.transactionService.withdrawMoneyTransaction(user.id, amount);
+    return this.transactionService.withdrawMoneyTransactionRequest(user.id, amount);
   }
   @Get('/getWithdrawableBalance/')
   async obtainWithdrawableBalance(@GetUser() user: User) {

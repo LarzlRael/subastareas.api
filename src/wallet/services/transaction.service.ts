@@ -56,7 +56,10 @@ export class TransactionService {
     );
     await this.bankService.buyCoinsTransaction(transaction);
   }
-  async withdrawMoneyTransaction(walletid: number, withDrawAmount: number) {
+  async withdrawMoneyTransactionRequest(
+    walletid: number,
+    withDrawAmount: number,
+  ) {
     const getWalletUser = await this.walletService.getWalletByUserId(walletid);
     if (getWalletUser.balanceWithDrawable < withDrawAmount) {
       throw new InternalServerErrorException(
