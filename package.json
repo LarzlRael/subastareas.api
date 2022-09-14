@@ -22,7 +22,7 @@
     "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config -n src/config/typeorm.config-migrations.ts",
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm.config-migrations.ts"
   },
-  "engine": {
+  "engines": {
     "node": "v18.8.0",
     "npm": "8.19.1"
   },
