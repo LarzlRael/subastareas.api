@@ -12,7 +12,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { OfferRoomI } from './interfaces/common';
 
-@WebSocketGateway(3002, {
+@WebSocketGateway(parseInt(process.env.PORT), {
   cors: true,
 })
 export class AppGateway

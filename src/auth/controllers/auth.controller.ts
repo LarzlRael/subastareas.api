@@ -44,7 +44,7 @@ export class AuthController {
     return this.authService.renewToken(user);
   }
 
-  @Post('/google')
+  @Post('/googleAuth')
   googleAuth(@Body() googleCredentialDto: GoogleCredentialDto) {
     return this.authService.googleAuth(googleCredentialDto);
   }
