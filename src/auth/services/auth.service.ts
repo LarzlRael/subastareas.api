@@ -114,24 +114,13 @@ export class AuthService {
       });
       await this.usersRepository.save(newUser);
 
-      const accessToken = await this.generateToken(googleUser.name, '24h');
-
       const user = await this.getUserWhere({ email: googleUser.email });
       await this.devicesService.createDevice(
         user,
         googleCredentialDto.idDevice,
       );
-
-      if (user.rols) {
-        user.userRols = user.rols.map((rol) => rol.rolName);
-        delete user.rols;
-      }
-      if (user.device) {
-        user.userDevices = user.device.map((device) => device.idDevice);
-        delete user.device;
-      }
-
-      return { accessToken, ...user };
+      console.log(user);
+      return this.getUserToReturn(user);
     } else {
       const accessToken = await this.generateToken(googleUser.name, '24h');
       return { accessToken, ...user };
@@ -299,8 +288,9 @@ export class AuthService {
       user.wallet.balanceTotal = await this.transactionService.getUserBalance(
         user,
       );
-      user.wallet.balanceWithDrawable =
-        await this.transactionService.getUserWithdrawableBalance(user);
+      user.wallet.balanceWithDrawable = await this.transactionService.getUserWithdrawableBalance(
+        user,
+      );
       delete user.wallet.created_at;
       delete user.wallet.updated_at;
       delete user.wallet.id;
