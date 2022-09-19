@@ -14,8 +14,11 @@ export class DevicesService {
 
   async createDevice(user: User, idDevice: string): Promise<Device> {
     /* console.log(user.device.find((device) => device.idDevice === idDevice)); */
-    /* console.log(user); */
-    if (user.device.find((device) => device.idDevice === idDevice)) {
+    console.log(user);
+    if (
+      user.device &&
+      user.device.find((device) => device.idDevice === idDevice)
+    ) {
       return;
     } else {
       const device = this.deviceRepository.create({

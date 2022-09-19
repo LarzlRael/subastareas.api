@@ -105,11 +105,12 @@ export class AuthService {
     if (!user) {
       const newUser = await this.usersRepository.create({
         username: googleUser.name,
+        name: googleUser.name,
         lastName: googleUser.lastName,
         email: googleUser.email,
         profileImageUrl: googleUser.picture,
         password: 'xD',
-        verify: true,
+        verify: false,
         google: true,
       });
       const googleUserCreated = await this.usersRepository.save(newUser);
