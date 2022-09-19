@@ -113,7 +113,7 @@ export class AuthService {
         google: true,
       });
       await this.usersRepository.save(newUser);
-
+      this.verifyUser(newUser);
       const user = await this.getUserWhere({ email: googleUser.email });
       await this.devicesService.createDevice(
         user,
@@ -180,7 +180,7 @@ export class AuthService {
     }
   }
 
-  async verifyUser(user: User, verifyUser: VerifyUserDTO): Promise<User> {
+  async verifyUser(user: User): Promise<User> {
     const getUser = await this.getUserWhere({ username: user.username });
     if (getUser.verify) {
       return;
