@@ -113,7 +113,7 @@ export class AuthService {
         google: true,
       });
       await this.usersRepository.save(newUser);
-      this.verifyUser(newUser);
+      await this.verifyUser(newUser);
       const user = await this.getUserWhere({ email: googleUser.email });
       await this.devicesService.createDevice(
         user,
