@@ -120,11 +120,10 @@ export class AuthService {
         user,
         googleCredentialDto.idDevice,
       );
-      console.log(user);
+      /* console.log(user); */
       return this.getUserToReturn(user);
     } else {
-      const accessToken = await this.generateToken(googleUser.name, '24h');
-      return { accessToken, ...user };
+      return this.getUserToReturn(user);
     }
   }
   async updateUserProfile(
@@ -277,6 +276,7 @@ export class AuthService {
 
   async getUserToReturn(user: User) {
     const accessToken = await this.generateToken(user.username, '24h');
+    console.log(user);
     if (user.rols) {
       user.userRols = user.rols.map((rol) => rol.rolName);
       delete user.rols;
