@@ -27,15 +27,15 @@ export class HomeworkController {
   constructor(private homeworkService: HomeworkService) {}
 
   @Get()
-  getAprovedHomeWorks(): Promise<Homework[]> {
+  getApprovedHomeWorks(): Promise<Homework[]> {
     return this.homeworkService.getApprovedHomeWorks();
   }
-  @Get('/getsubjectslist')
+  @Get('/getSubjectsList')
   getSubjectsAndLevels() {
     return this.homeworkService.getSubjectsAndLevels();
   }
   @Get('/category/:category')
-  getAprovedHomeWorksByCategory(@Param('category') category: string) {
+  getApprovedHomeWorksByCategory(@Param('category') category: string) {
     return this.homeworkService.getHomeworkByCategory(category.split(','));
   }
   @UseGuards(AuthGuard('jwt'))
@@ -86,7 +86,7 @@ export class HomeworkController {
       fileFilter: fileFilter,
     }),
   )
-  @Put('/updatehomework/:id')
+  @Put('/updateHomework/:id')
   updateHomework(
     @GetUser() user: User,
     @Body() homeworkDto: HomeworkDto,

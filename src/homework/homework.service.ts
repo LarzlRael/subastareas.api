@@ -79,7 +79,10 @@ export class HomeworkService {
   }
   async getHomeworkByCategory(category: string[]) {
     if (category[0] !== 'empty') {
-      return await this.getHomeworksByCondition({ category: In(category) });
+      return await this.getHomeworksByCondition({
+        category: In(category),
+        status: HomeWorkStatusEnum.ACCEPTED,
+      });
     }
     return await this.getApprovedHomeWorks();
   }
@@ -216,7 +219,6 @@ export class HomeworkService {
       .leftJoin('homework.user', 'user')
       .getOne();
 
-    /* console.log(querybuilder[0]); */
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
     }
@@ -233,7 +235,7 @@ export class HomeworkService {
       ['user'],
     );
   }
-  async getHomeworkTosupervisor() {
+  async getHomeworkToSupervisor() {
     return await this.homeworkRepository.find({
       where: [
         { status: HomeWorkStatusEnum.ACCEPTED },

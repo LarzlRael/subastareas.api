@@ -58,7 +58,7 @@ export class SupervisorService {
     }
   }
   async getHomeworksToSupervise(): Promise<Homework[]> {
-    return await this.homeworkService.getHomeworkTosupervisor();
+    return await this.homeworkService.getHomeworkToSupervisor();
   }
   async superviseHomework(
     user: User,
