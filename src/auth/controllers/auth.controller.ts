@@ -113,7 +113,7 @@ export class AuthController {
       fileFilter: fileFilter,
     }),
   )
-  @Put('/updateprofileimage/:idUser')
+  @Put('/updateProfileImage/:idUser')
   updateHomework(
     @GetUser() user: User,
     @Param('idUser') id: number,
@@ -122,8 +122,13 @@ export class AuthController {
     return this.authService.uploadOrUpdateProfileImage(homeWorkFile, user, id);
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get('/verifytemporarytoken')
+  @Get('/verifyTemporaryToken')
   verifyTemporaryToken(@GetUser() user: User) {
     return this.authService.renewTemporaryToken(user);
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/viewPublicProfile/:idUser')
+  getUserPublicInformation(@GetUser() user: User, @Param('idUser') id: number) {
+    return this.authService.getUsePublicProfile(id);
   }
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Injectable } from '@nestjs/common';
-import { IpushNotification } from '../../interfaces/pushNotication';
+import { IpushNotification as IPushNotification } from '../../interfaces/pushNotication';
 import { capitalizeFirstLetter } from '../../utils/utilsText';
 
 import { User } from '../../auth/entities/user.entity';
@@ -67,7 +67,7 @@ export class NotificationService {
     comment: string,
     homework: Homework,
   ) {
-    const sendData: IpushNotification = {
+    const sendData: IPushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {
         type_notification: NotificationTypeEnum.COMMENT,
@@ -93,7 +93,7 @@ export class NotificationService {
   }
 
   async sendOfferAcceptedNotification(user: User, homework: Homework) {
-    const sendData: IpushNotification = {
+    const sendData: IPushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {
         type_notification: NotificationTypeEnum.OFFER_ACCEPTED,
@@ -118,7 +118,7 @@ export class NotificationService {
     await this.sendNotification(sendData);
   }
   async sendHomeworkResolveNotification(user: User, homework: Homework) {
-    const sendData: IpushNotification = {
+    const sendData: IPushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {
         type_notification: NotificationTypeEnum.HOMEWORK_RESOLVE,
@@ -150,7 +150,7 @@ export class NotificationService {
   ) {
     const currency = 'Neo coins';
     const content = `${user.username} hizo una nueva oferta`;
-    const sendData: IpushNotification = {
+    const sendData: IPushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {
         type_notification: TypeNotificationEnum.NEW_OFFER,
@@ -176,7 +176,7 @@ export class NotificationService {
     await this.sendNotification(sendData);
   }
 
-  async sendNotification(sendData: IpushNotification) {
+  async sendNotification(sendData: IPushNotification) {
     try {
       await axios({
         method: 'POST',
@@ -191,7 +191,7 @@ export class NotificationService {
     }
   }
 
-  async clearNotificated(user: User) {
+  async clearNotifications(user: User) {
     await this.notificationRepository
       .createQueryBuilder()
       .update(Notification)

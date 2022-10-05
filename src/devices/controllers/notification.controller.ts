@@ -30,6 +30,6 @@ export class NotificationController {
   }
   @Get('/clearnotificated')
   clearNotificated(@GetUser() user: User) {
-    return this.notificationService.clearNotificated(user);
+    return this.notificationService.clearNotifications(user);
   }
 }

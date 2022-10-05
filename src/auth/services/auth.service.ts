@@ -322,4 +322,13 @@ export class AuthService {
     const token = await this.generateToken(user.username, '5m');
     return { token };
   }
+
+  async getUsePublicProfile(idUser: number) {
+    const findUser = await this.usersRepository.query(
+      'select id,name,lastName, nickName, profileImageUrl from user where id = ? limit 1',
+      [idUser],
+    );
+
+    return findUser[0];
+  }
 }
