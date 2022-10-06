@@ -44,7 +44,7 @@ export class HomeworkController {
     return this.homeworkService.getHomeworkByUser(user);
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get('/getuserpendingofferaccept')
+  @Get('/getUserPendingOfferAccept')
   getUserPendingOfferAccept(@GetUser() user: User): Promise<Homework[]> {
     return this.homeworkService.getUserPendingOfferAccept(user);
   }

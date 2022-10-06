@@ -17,6 +17,7 @@ import {
   SelectQueryBuilder,
   In,
   Repository,
+  MoreThan,
 } from 'typeorm';
 import { uploadFile } from '../utils/utils';
 import { FindOptionsWhere } from 'typeorm';
@@ -69,6 +70,7 @@ export class HomeworkService {
   async getApprovedHomeWorks() {
     return this.getHomeworksByCondition({
       status: HomeWorkStatusEnum.ACCEPTED,
+      resolutionTime: MoreThan(new Date()),
     });
   }
   async getUserPendingOfferAccept(user: User) {
