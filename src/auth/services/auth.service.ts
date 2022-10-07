@@ -33,6 +33,8 @@ import { getHostName } from '../../utils/hostUtils';
 import { ProfessorService } from '../../roles/services/professor.service';
 import { DevicesService } from '../../devices/services';
 import { TransactionService } from '../../wallet/services/transaction.service';
+import { UserProfile } from '../entities/userProfile.entity';
+import { UserProfileService } from './userProfile.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -48,6 +50,7 @@ export class AuthService {
     private jwtService: JwtService,
     private professorService: ProfessorService,
     private transactionService: TransactionService,
+    private userProfileService: UserProfileService,
   ) {}
   async signUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
@@ -200,6 +203,13 @@ export class AuthService {
     await this.rolesService.assignRole(user.id, {
       rolName: RoleEnum.PROFESSOR,
       active: true,
+    });
+    const userProfile = await this.userProfileService.createNewUserProfile(
+      user.id,
+    );
+    getUser.userProfile = userProfile;
+    await this.usersRepository.save({
+      ...getUser,
     });
     return userSaved;
   }

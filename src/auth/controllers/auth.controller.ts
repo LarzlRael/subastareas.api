@@ -98,7 +98,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('/changepassword')
+  @Post('/changePassword')
   changePassword(
     @GetUser() user: User,
     @Body() changePasswordDto: ChangePasswordDto,

@@ -25,6 +25,7 @@ import { Rol } from '../../roles/entities/rol.entity';
 import { Shopping } from '../../trade/entities/shopping.entity';
 import { Notification } from '../../devices/entities/notification.entity';
 import * as bcrypt from 'bcrypt';
+import { UserProfile } from './userProfile.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Entity()
@@ -124,6 +125,10 @@ export class User {
   @OneToOne(() => Professor, { eager: false })
   @JoinColumn({ name: 'id_professor' })
   professor: Professor;
+
+  @OneToOne(() => UserProfile, { eager: true })
+  @JoinColumn({ name: 'id_user_profile' })
+  userProfile: UserProfile;
 
   @OneToMany(() => Offer, (offer) => offer.user, { eager: false })
   offers: Offer[];

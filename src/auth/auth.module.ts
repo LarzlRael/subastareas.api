@@ -23,8 +23,9 @@ import { AuthService } from './services/auth.service';
 import { AdminController } from './controllers/admin.controller';
 import { WalletModule } from '../wallet/wallet.module';
 import { DevicesModule } from '../devices/devices.module';
-import { Professor } from '../roles/entities/professor.entity';
 import { DevicesService } from '../devices/services';
+import { UserProfile } from './entities/userProfile.entity';
+import { UserProfileService } from './services/userProfile.service';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { DevicesService } from '../devices/services';
         expiresIn: 86400,
       },
     }),
-    TypeOrmModule.forFeature([User, Device, Wallet, Rol]),
+    TypeOrmModule.forFeature([User, Device, Wallet, Rol, UserProfile]),
   ],
   providers: [
     AuthService,
@@ -52,6 +53,7 @@ import { DevicesService } from '../devices/services';
     WalletService,
     AdminService,
     RolesService,
+    UserProfileService,
   ],
   controllers: [AuthController, AdminController],
   exports: [JwtStrategy, PassportModule, AuthService],

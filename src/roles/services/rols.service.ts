@@ -39,7 +39,6 @@ export class RolesService {
   async assignRole(idUser: number, rolDto: RolDto) {
     const findUser = await this.userService.getOneUser(idUser);
 
-    console.log(findUser);
     if (!findUser) {
       throw new InternalServerErrorException('User not found');
     }
