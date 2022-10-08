@@ -15,8 +15,7 @@ export class UserProfile {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.userProfile, { eager: false })
-  @JoinColumn({ name: 'id_user_profile' })
+  @OneToOne(() => User, (user) => user.userProfile)
   userProfile: User;
 
   @Column({

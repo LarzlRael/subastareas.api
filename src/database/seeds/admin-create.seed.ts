@@ -3,6 +3,7 @@ import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../auth/entities/user.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
 import { Rol } from '../../roles/entities/rol.entity';
+import { UserProfile } from '../../auth/entities/userProfile.entity';
 
 export class UserCreateSeed implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -13,6 +14,13 @@ export class UserCreateSeed implements Seeder {
       .insert()
       .into(Wallet)
       .values([{ user, balanceTotal: 0 }])
+      .execute();
+
+    const userProfile = await connection
+      .createQueryBuilder()
+      .insert()
+      .into(UserProfile)
+      .values([{ userProfile: user }])
       .execute();
 
     await connection
@@ -33,6 +41,9 @@ export class UserCreateSeed implements Seeder {
       .set({
         wallet: {
           id: wallet.identifiers[0].id,
+        },
+        userProfile: {
+          id: userProfile.identifiers[0].id,
         },
       })
       .where('id = :id', { id: user.id })

@@ -335,7 +335,7 @@ export class AuthService {
 
   async getUsePublicProfile(idUser: number) {
     const findUser = await this.usersRepository.query(
-      'select id,name,lastName, nickName, profileImageUrl from user where id = ? limit 1',
+      'select u.id, u.name,u.lastName, u.nickName, u.profileImageUrl,up.bio, p.solvedHomeworks ,p.reputation from user u inner join user_profile up on up.id = u.id inner join professor p on u.id = p.id where u.id = ?',
       [idUser],
     );
 
