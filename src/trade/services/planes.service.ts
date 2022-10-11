@@ -63,7 +63,18 @@ export class PlanesServices {
           nameBobPrice: 'BOB',
         };
       });
-      return planeParse.reverse();
+      const planId = await this.planesRepository
+        .createQueryBuilder('planes')
+        .select(['planes.id'])
+        .getOne();
+      return planeParse
+        .map((plane) => {
+          return {
+            ...plane,
+            planId: planId.id,
+          };
+        })
+        .reverse();
     }
   }
   async getPlan(id: number) {

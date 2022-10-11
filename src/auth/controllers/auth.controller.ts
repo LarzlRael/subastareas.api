@@ -55,7 +55,7 @@ export class AuthController {
       fileFilter: fileFilter,
     }),
   )
-  @Put('/updateuser')
+  @Put('/updateUser')
   updateUser(
     @Body() editProfile: ProfileEditDto,
     @GetUser() user: User,
@@ -89,7 +89,7 @@ export class AuthController {
     return this.authService.signOut(idDevice);
   }
 
-  @Get('requestpasswordchange/:email')
+  @Get('requestPasswordChange/:email')
   sendEmailRequestPasswordChange(
     @Req() req: Request,
     @Param('email') email: string,

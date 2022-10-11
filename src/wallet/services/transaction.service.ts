@@ -50,6 +50,7 @@ export class TransactionService {
       transactionType: TransactionTypeEnum.TRASPASO,
       amount: amount,
       wallet: userWallet,
+      dollarValue: getPlan.currencyPriceUSDToday,
     });
     const transaction = await this.transactionRepository.save(
       createNewTransaction,
@@ -57,10 +58,10 @@ export class TransactionService {
     await this.bankService.buyCoinsTransaction(transaction);
   }
   async withdrawMoneyTransactionRequest(
-    walletid: number,
+    walletId: number,
     withDrawAmount: number,
   ) {
-    const getWalletUser = await this.walletService.getWalletByUserId(walletid);
+    const getWalletUser = await this.walletService.getWalletByUserId(walletId);
     if (getWalletUser.balanceWithDrawable < withDrawAmount) {
       throw new InternalServerErrorException(
         'No hay suficiente saldo en tu cuenta',

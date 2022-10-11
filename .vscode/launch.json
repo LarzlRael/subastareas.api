@@ -8,7 +8,7 @@
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
       "args": ["${workspaceFolder}/src/main.ts"],
       "autoAttachChildProcesses": true,
-      "runtimeExecutable": "/home/larz/.nvm/versions/node/v18.1.0/bin/node"
+      "runtimeExecutable": "/home/larz/.nvm/versions/node/v18.8.0/bin/node"
     }
   ]
 }

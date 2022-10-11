@@ -5,8 +5,10 @@ import { Wallet } from '../../wallet/entities/wallet.entity';
 define(User, () => {
   const user = new User();
   user.name = 'administra';
-  user.username = 'administra';
   user.password = '123456';
+  user.username = 'administra';
+  user.lastName = 'administra';
+  user.nickName = 'administra';
   user.email = 'admin@subastareas.com';
   user.verify = true;
   user.profileImageUrl =

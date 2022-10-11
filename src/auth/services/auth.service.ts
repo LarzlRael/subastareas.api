@@ -33,7 +33,6 @@ import { getHostName } from '../../utils/hostUtils';
 import { ProfessorService } from '../../roles/services/professor.service';
 import { DevicesService } from '../../devices/services';
 import { TransactionService } from '../../wallet/services/transaction.service';
-import { UserProfile } from '../entities/userProfile.entity';
 import { UserProfileService } from './userProfile.service';
 @Injectable()
 export class AuthService {
