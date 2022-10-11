@@ -6,34 +6,34 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  AuthCredentialDTO,
-  RegisterUserDTO,
-} from './../dto/AuthCredentialDTO ';
 
 import * as bcrypt from 'bcrypt';
 import { JWtPayload } from '../../interfaces/jwtPayload';
 import { User } from './../entities/user.entity';
 import { validateGoogleToken } from './../google/googleVerifyToken';
-import { ProfileEditDto } from './../dto/ProfileEdit.dto';
+import {
+  ProfileEditDto,
+  ChangePasswordDto,
+  GoogleCredentialDto,
+  AuthCredentialDTO,
+  RegisterUserDTO,
+} from './../dto';
 import { MailService } from '../../mail/mail.service';
 import { RoleEnum, TableNameEnum } from '../../enums/enums';
 
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService } from '../../wallet/services';
 import { Request } from 'express';
-import { ChangePasswordDto } from './../dto/ChangePassword.dto';
-import { RolesService } from '../../roles/services/rols.service';
-import { GoogleCredentialDto } from './../dto/GoogleCredential.dto';
 
 import { forwardRef, UnauthorizedException } from '@nestjs/common';
 import { uploadFile } from '../../utils/utils';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { VerifyUserDTO } from '../dto/VerifyUser.dto';
+
 import { getHostName } from '../../utils/hostUtils';
+import { RolesService } from '../../roles/services/rols.service';
 import { ProfessorService } from '../../roles/services/professor.service';
 import { DevicesService } from '../../devices/services';
-import { TransactionService } from '../../wallet/services/transaction.service';
-import { UserProfileService } from './userProfile.service';
+import { TransactionService } from '../../wallet/services';
+import { UserProfileService } from './';
 @Injectable()
 export class AuthService {
   constructor(
