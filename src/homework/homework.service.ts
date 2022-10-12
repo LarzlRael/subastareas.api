@@ -240,8 +240,8 @@ export class HomeworkService {
   async getHomeworkToSupervisor() {
     return await this.homeworkRepository.find({
       where: [
-        { status: HomeWorkStatusEnum.ACCEPTED },
         { status: HomeWorkStatusEnum.REJECTED },
+        { status: HomeWorkStatusEnum.PENDING_TO_ACCEPT },
       ],
     });
   }

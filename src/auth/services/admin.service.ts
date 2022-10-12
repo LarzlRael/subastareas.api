@@ -8,7 +8,6 @@ export class AdminService {
   constructor(private userServices: AuthService) {}
   async getUsers(): Promise<User[]> {
     //TODO add pagination and filters
-
     const users = await this.userServices.getAllUsers();
 
     const deleteFields = users.map((user) => {

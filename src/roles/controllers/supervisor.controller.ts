@@ -29,7 +29,7 @@ export class SupervisorController {
   @Roles(RoleEnum.ADMIN, RoleEnum.SUPERVISOR)
   @Get('/homeworkstosupervise')
   @Roles(RoleEnum.ADMIN, RoleEnum.SUPERVISOR)
-  getHomeworkTosupervisor() {
+  getHomeworkToSupervise() {
     return this.supervisorService.getHomeworksToSupervise();
   }
   @Roles(RoleEnum.ADMIN, RoleEnum.SUPERVISOR)
