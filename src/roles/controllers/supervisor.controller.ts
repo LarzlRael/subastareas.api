@@ -33,8 +33,8 @@ export class SupervisorController {
     return this.supervisorService.getHomeworksToSupervise();
   }
   @Roles(RoleEnum.ADMIN, RoleEnum.SUPERVISOR)
-  @Post('/supervisehomework')
-  supervisehomework(
+  @Post('/superviseHomework')
+  superviseHomework(
     @GetUser() user: User,
     @Body() actionSupervisorDTO: ActionSupervisorDTO,
   ) {

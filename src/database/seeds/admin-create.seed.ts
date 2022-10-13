@@ -4,6 +4,7 @@ import { User } from '../../auth/entities/user.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
 import { Rol } from '../../roles/entities/rol.entity';
 import { UserProfile } from '../../auth/entities/userProfile.entity';
+import { Supervisor } from 'src/roles/entities';
 
 export class UserCreateSeed implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -22,7 +23,12 @@ export class UserCreateSeed implements Seeder {
       .into(UserProfile)
       .values([{ userProfile: user }])
       .execute();
-
+    const supervisor = await connection
+      .createQueryBuilder()
+      .insert()
+      .into(Supervisor)
+      .values([{ user: user }])
+      .execute();
     await connection
       .createQueryBuilder()
       .insert()
@@ -44,6 +50,9 @@ export class UserCreateSeed implements Seeder {
         },
         userProfile: {
           id: userProfile.identifiers[0].id,
+        },
+        supervisor: {
+          id: supervisor.identifiers[0].id,
         },
       })
       .where('id = :id', { id: user.id })

@@ -238,12 +238,29 @@ export class HomeworkService {
     );
   }
   async getHomeworkToSupervisor() {
-    return await this.homeworkRepository.find({
+    /*  return await this.homeworkRepository.find({
       where: [
         { status: HomeWorkStatusEnum.REJECTED },
         { status: HomeWorkStatusEnum.PENDING_TO_ACCEPT },
       ],
-    });
+    }); */
+    return await this.homeworkRepository
+      .createQueryBuilder('homework')
+      .where([
+        { status: HomeWorkStatusEnum.REJECTED },
+        { status: HomeWorkStatusEnum.PENDING_TO_ACCEPT },
+      ])
+      .select([
+        'homework',
+        /* 'comment.user', */
+        'user.id',
+        'user.username',
+        'user.profileImageUrl',
+        /* 'offer.id', */
+      ])
+      .leftJoin('homework.comments', 'comment')
+      .leftJoin('homework.user', 'user')
+      .getMany();
   }
   async getOneHomeworkWhere(
     where: FindOptionsWhere<Homework> | FindOptionsWhere<Homework>[],

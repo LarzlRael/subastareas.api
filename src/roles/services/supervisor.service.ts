@@ -70,11 +70,10 @@ export class SupervisorService {
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
     }
-    /* homework.status = actionSupervisorDTO.status; */
     homework.observation = actionSupervisorDTO.observation;
     homework.userSupervisor = user;
+    homework.status = actionSupervisorDTO.status;
     await this.homeworkService.saveHomework(homework);
-    homework.userSupervisor = user;
     const getSupervisorId = await this.supervisorRepository.findOne({
       where: {
         user: {
