@@ -63,10 +63,16 @@ export class HomeworkService {
       const createHomework = await this.homeworkRepository.save(
         createdHomework,
       );
-      this.transactionService.uploadHomeworkTransaction(createHomework);
+      await this.transactionService.uploadHomeworkTransaction(createHomework);
       return createHomework;
     }
   }
+  /* async updateHomeworkTransaction(pay: boolean, homework: Homework) {
+    if (pay) {
+      await this.transactionService.updateHomeworkTransaction(homework);
+    }
+  } */
+
   async getApprovedHomeWorks() {
     return this.getHomeworksByCondition({
       status: HomeWorkStatusEnum.ACCEPTED,
@@ -122,32 +128,42 @@ export class HomeworkService {
 
     if (!homework) {
       throw new InternalServerErrorException('Homework not found');
-    } else {
-      if (homework.user.id !== user.id) {
-        throw new InternalServerErrorException(
-          'No permission to update this homework',
-        );
-      } else {
-        if (file) {
-          uploadFile(file, 'HOMEWORK').then(async (url) => {
-            await this.homeworkRepository.update(id, {
-              ...homework,
-              ...homeWorkDto,
-              fileUrl: url,
-            });
-            return homework;
-          });
-        } else {
-          await this.homeworkRepository.update(id, {
-            ...homework,
-            ...homeWorkDto,
-          });
-          return this.getOneHomeworkWhere({
-            id,
-          });
-        }
-      }
     }
+    if (homework.user.id !== user.id) {
+      throw new InternalServerErrorException(
+        'No permission to update this homework',
+      );
+    }
+    const { pay, diff } = await this.getDiff(
+      homework.offered_amount,
+      homeWorkDto.offered_amount,
+    );
+    let homeworkUpdate;
+    if (file) {
+      uploadFile(file, 'HOMEWORK').then(async (url) => {
+        homeworkUpdate = await this.homeworkRepository.save({
+          id,
+          ...homework,
+          ...homeWorkDto,
+          fileUrl: url,
+        });
+      });
+    } else {
+      homeworkUpdate = await this.homeworkRepository.save({
+        id,
+        ...homework,
+        ...homeWorkDto,
+      });
+    }
+    if (diff === 0) {
+      return homeworkUpdate;
+    }
+    await this.transactionService.updateHomeworkTransaction(
+      pay,
+      diff,
+      homeworkUpdate,
+    );
+    return homeworkUpdate;
   }
   async getPendingHomework(
     homeWorkStatusEnum: HomeWorkStatusEnum,
@@ -270,5 +286,15 @@ export class HomeworkService {
       where,
       relations: relations,
     });
+  }
+
+  getDiff(
+    currentAmount: number,
+    newAmount: number,
+  ): { diff: number; pay: boolean } {
+    return {
+      diff: Math.abs(currentAmount - newAmount),
+      pay: currentAmount > newAmount,
+    };
   }
 }

@@ -37,9 +37,18 @@ export class TransactionService {
       wallet: getUserWallet,
     });
     const newTransaction = await this.transactionRepository.save(transaction);
-    this.bankService.uploadHomeworkTransaction(newTransaction);
+    await this.bankService.uploadHomeworkTransaction(newTransaction);
   }
 
+  async updateHomeworkTransaction(
+    pay: boolean,
+    amount: number,
+    homework: Homework,
+  ) {
+    if (!pay) {
+      this.uploadHomeworkTransaction(homework);
+    }
+  }
   async buyCoinsTransaction(
     userWallet: Wallet,
     amount: number,
@@ -133,6 +142,9 @@ export class TransactionService {
         wallet: {
           user: { id: user.id },
         },
+      },
+      order: {
+        id: 'DESC',
       },
     });
     return userHistory;
