@@ -34,6 +34,7 @@ import { ProfessorService } from '../../roles/services/professor.service';
 import { DevicesService } from '../../devices/services';
 import { TransactionService } from '../../wallet/services';
 import { UserProfileService } from './';
+import { VerifyUserDTO } from '../dto/VerifyUser.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -181,7 +182,7 @@ export class AuthService {
     }
   }
 
-  async verifyUser(user: User): Promise<User> {
+  async verifyUser(user: User, verifyUserDto?: VerifyUserDTO) {
     const getUser = await this.getUserWhere({ username: user.username });
     if (getUser.verify) {
       return;
@@ -193,7 +194,7 @@ export class AuthService {
     const userSaved = await this.usersRepository.save({
       ...getUser,
     });
-
+    console.log(userSaved);
     await this.professorService.becomeProfessor(user);
     await this.rolesService.assignRole(user.id, {
       rolName: RoleEnum.STUDENT,
@@ -209,9 +210,12 @@ export class AuthService {
     getUser.userProfile = userProfile;
     await this.usersRepository.save({
       ...getUser,
+      ...verifyUserDto,
     });
+    console.log(userSaved);
     return userSaved;
   }
+
   async signOut(idDevice: string) {
     return await this.devicesService.deleteDevice(idDevice);
   }

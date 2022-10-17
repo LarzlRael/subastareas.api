@@ -80,7 +80,7 @@ export class AuthController {
         message: 'email already verify',
       };
     }
-    return await this.authService.verifyUser(user);
+    return await this.authService.verifyUser(user, verifyUser);
   }
 
   @UseGuards(AuthGuard('jwt'))

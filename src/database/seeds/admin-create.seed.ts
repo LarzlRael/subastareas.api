@@ -2,9 +2,8 @@ import { Connection } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../auth/entities/user.entity';
 import { Wallet } from '../../wallet/entities/wallet.entity';
-import { Rol } from '../../roles/entities/rol.entity';
+import { Rol, Supervisor } from '../../roles/entities';
 import { UserProfile } from '../../auth/entities/userProfile.entity';
-import { Supervisor } from 'src/roles/entities';
 
 export class UserCreateSeed implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {

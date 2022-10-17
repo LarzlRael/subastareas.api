@@ -90,6 +90,7 @@ export class HomeworkService {
       return await this.getHomeworksByCondition({
         category: In(category),
         status: HomeWorkStatusEnum.ACCEPTED,
+        resolutionTime: MoreThan(new Date()),
       });
     }
     return await this.getApprovedHomeWorks();
@@ -200,6 +201,7 @@ export class HomeworkService {
       | ObjectLiteral
       | ObjectLiteral[]
       | ((qb: SelectQueryBuilder<Homework>) => string),
+    /* //TODO esend parameters to order by */
   ) {
     const homeworks = await this.homeworkRepository
       .createQueryBuilder('homework')
@@ -216,6 +218,7 @@ export class HomeworkService {
       ])
       .leftJoin('homework.offers', 'offers')
       .leftJoin('homework.user', 'user')
+      .orderBy({ 'homework.id': 'DESC' })
       .getMany();
 
     return homeworks;

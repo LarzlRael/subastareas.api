@@ -163,7 +163,7 @@ export class TradeService {
 
   async userTradePending(user: User, status: string) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description, h.fileUrl, h.fileType,o.id as offerId from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status,t.solvedFileType, h.title,h.resolutionTime,h.description, h.fileUrl, h.fileType,o.id as offerId from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
       [user.id, status],
     );
     return offers;
