@@ -60,10 +60,10 @@ export class TradeController {
     return this.tradeService.offerAcceptedAndUrlResolved(idOffer);
   }
 
-  @Get('getTradingByUser/:tradestatus')
+  @Get('getTradingByUser/:tradeStatus')
   getTradingByUser(
     @GetUser() user: User,
-    @Param('tradestatus') tradeStatus: string,
+    @Param('tradeStatus') tradeStatus: string,
   ) {
     return this.tradeService.userTradePending(user, tradeStatus);
   }

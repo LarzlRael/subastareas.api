@@ -154,6 +154,7 @@ export class TradeService {
       await this.tradeRepository.update(getTrade.id, {
         ...getTrade,
         solvedHomeworkUrl: url,
+        solvedFileType: file.mimetype,
         status: TradeStatusEnum.PENDINGTOACCEPT,
       });
       return getTrade;
@@ -162,7 +163,7 @@ export class TradeService {
 
   async userTradePending(user: User, status: string) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description, o.id as offerId from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status, h.title,h.resolutionTime,h.description, h.fileUrl, h.fileType,o.id as offerId from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
       [user.id, status],
     );
     return offers;
@@ -170,7 +171,7 @@ export class TradeService {
 
   async userTradePendingToTrade(user: User) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id  as homeworkId ,t.status, h.title,h.resolutionTime, h.description, o.id as offerId from trade t inner join offer o on t.offerId  = o.id  inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = "pending_to_trade";',
+      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id  as homeworkId ,t.status, h.title,h.resolutionTime, h.description ,h.fileUrl, h.fileType, o.id as offerId from trade t inner join offer o on t.offerId  = o.id  inner join homework h on h.id = o.homeworkId where o.userId = ? and t.status = "pending_to_trade";',
       [user.id],
     );
     return offers;

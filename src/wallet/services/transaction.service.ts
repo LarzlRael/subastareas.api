@@ -45,6 +45,9 @@ export class TransactionService {
     amount: number,
     homework: Homework,
   ) {
+    if (amount == 0) {
+      return;
+    }
     if (!pay) {
       this.uploadHomeworkTransaction(homework);
     }

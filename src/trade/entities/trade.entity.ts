@@ -20,6 +20,9 @@ export class Trade {
   @Column({ nullable: true })
   solvedHomeworkUrl: string;
 
+  @Column({ nullable: true })
+  solvedFileType: string;
+
   @Column({
     type: 'enum',
     enum: TradeStatusEnum,
