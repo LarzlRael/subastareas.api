@@ -81,7 +81,11 @@ export class TradeService {
 
     //saving trade status
     const trade = await this.tradeRepository.findOne({
-      where: { id: idOffer },
+      where: {
+        offer: {
+          id: offer.id,
+        },
+      },
     });
     trade.status = TradeStatusEnum.ACCEPTED;
     await this.tradeRepository.save(trade);

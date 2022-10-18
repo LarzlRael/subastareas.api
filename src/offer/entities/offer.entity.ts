@@ -6,10 +6,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { TradeStatusEnum } from '../../enums/enums';
+import { Trade } from '../../trade/entities';
 
 @Entity()
 export class Offer {
@@ -50,6 +52,6 @@ export class Offer {
   @ManyToOne(() => User, (user) => user.offers, { eager: false })
   user!: User;
 
-  /* @OneToOne(() => Trade, (trade) => trade.offer)
-  offer!: Offer; */
+  @OneToOne(() => Trade, (trade) => trade.offer, { eager: false })
+  offer!: Offer;
 }

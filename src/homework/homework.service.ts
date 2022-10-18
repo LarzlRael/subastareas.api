@@ -97,7 +97,10 @@ export class HomeworkService {
   }
   async getHomeworkByUser(user: User) {
     /* return this.getHomeworksByCondition('user', user); */
-    return this.getHomeworksByCondition({ user: user });
+    return this.getHomeworksByCondition({
+      user: user,
+      status: 'accepted_to_offer',
+    });
   }
   async getOneHomework(id: number) {
     const homework = await this.getOneHomeworkComments(id);

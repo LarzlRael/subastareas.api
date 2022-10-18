@@ -29,7 +29,7 @@ export class UserCreateSeed implements Seeder {
       .into(Supervisor)
       .values([{ user: user }])
       .execute();
-    const proffesor = await connection
+    const professor = await connection
       .createQueryBuilder()
       .insert()
       .into(Professor)
@@ -61,7 +61,7 @@ export class UserCreateSeed implements Seeder {
           id: supervisor.identifiers[0].id,
         },
         professor: {
-          id: proffesor.identifiers[0].id,
+          id: professor.identifiers[0].id,
         },
       })
       .where('id = :id', { id: user.id })
