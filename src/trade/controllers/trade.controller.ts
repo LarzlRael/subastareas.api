@@ -37,12 +37,12 @@ export class TradeController {
   uploadResolvedHomework(
     @GetUser() user: User,
     @Param('idOffer') idOffer: number,
-    @UploadedFile() homeworkfile: Express.Multer.File,
+    @UploadedFile() homeworkFile: Express.Multer.File,
   ) {
     return this.tradeService.uploadResolvedHomework(
       user,
       idOffer,
-      homeworkfile,
+      homeworkFile,
     );
   }
 

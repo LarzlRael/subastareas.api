@@ -127,7 +127,8 @@ export class TradeService {
 
     if (!getTrade) {
       throw new Error('Trade not found');
-    } else if (getTrade.offer.user.id !== user.id) {
+    }
+    if (getTrade.offer.user.id !== user.id) {
       throw new InternalServerErrorException(
         'You are not the owner of this offer',
       );
@@ -167,7 +168,19 @@ export class TradeService {
 
   async userTradePending(user: User, status: string) {
     const offers = await this.tradeRepository.query(
-      'SELECT t.solvedHomeworkUrl, t.id as tradeId, h.id as homeworkId ,t.status,t.solvedFileType, h.title,h.resolutionTime,h.description, h.fileUrl, h.fileType,o.id as offerId from trade t inner join offer o on t.offerId  = o.id inner join homework h on h.id = o.homeworkId where h.userId = ? and t.status = ?',
+      `SELECT t.solvedHomeworkUrl,
+      t.id as tradeId, h.id as homeworkId,
+      t.status,t.solvedFileType,
+      h.title,h.resolutionTime,h.description,
+      h.category,
+      h.fileUrl, h.fileType,o.id as offerId,
+      u.username, u.id ,u.profileImageUrl
+      from trade t
+      inner join offer o on t.offerId  = o.id
+      inner join homework h on h.id = o.homeworkId
+      inner join user u on u.id = o.userId
+      where h.userId = ? and t.status = ?
+      `,
       [user.id, status],
     );
     return offers;
