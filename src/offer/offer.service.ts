@@ -233,6 +233,22 @@ export class OfferService {
       id: In(idsHomeworks),
     });
   }
+  async getOfferReceived(idUser: number) {
+    const offers = await this.offerRepository.query(
+      `select o.userId, h.id  as homeworkId
+      from offer o  inner join homework h
+      on o.homeworkId  = h.id
+      where h.userId = ?`,
+      [idUser],
+    );
+    /* [ { homeworkId: 11, offerId: 7 }, { homeworkId: 17, offerId: 8 } ] */
+
+    const idsHomeworks = offers.map((offer) => offer.homeworkId);
+
+    return await this.homeworkService.getHomeworksByCondition({
+      id: In(idsHomeworks),
+    });
+  }
   async saveOffer(offer: Offer) {
     return await this.offerRepository.save(offer);
   }

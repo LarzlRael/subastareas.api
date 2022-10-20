@@ -31,10 +31,6 @@ export class OfferController {
   ) {
     return this.offerService.makeOffer(idHomework, offerDot, user);
   }
-  @Get('getoffers/offerssent')
-  getOffersByUser(@GetUser() user: User) {
-    return this.offerService.getOffersSentByUser(user);
-  }
   @Get('getUsersHomeworksPending')
   getUsersHomeworksPending(@GetUser() user: User) {
     return this.offerService.getUsersHomeworksPending(user);
@@ -42,6 +38,10 @@ export class OfferController {
   @Get('getOfferSentByUser')
   getOfferSentByUser(@GetUser() user: User) {
     return this.offerService.getOfferSentByUser(user.id);
+  }
+  @Get('getOfferReceivedByUser')
+  getOfferReceived(@GetUser() user: User) {
+    return this.offerService.getOfferReceived(user.id);
   }
   @Get(':idHomework')
   getOfferByHomework(@Param('idHomework') idHomework: number) {
