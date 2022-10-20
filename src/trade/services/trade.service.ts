@@ -46,7 +46,7 @@ export class TradeService {
     await this.homeworkService.saveHomework({
       ...getHomework,
     });
-    //create the trade with pendint to resolve status
+    //create the trade with pending to resolve status
     const newTrade = this.tradeRepository.create({
       offer,
       finalAmount: offer.priceOffer,

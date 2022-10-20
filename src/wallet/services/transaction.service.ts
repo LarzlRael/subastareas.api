@@ -78,22 +78,20 @@ export class TransactionService {
       throw new InternalServerErrorException(
         'No hay suficiente saldo en tu cuenta',
       );
-    } else {
-      // TODO use the transactions service
-      // request to exchange the money from the user wallet to the bank wallet
-      const withdrawMoneyTransaction = this.transactionRepository.create({
-        currencyType: 'BOB',
-        transactionType: TransactionTypeEnum.SOLICITUD_RETIRO,
-        amount: -withDrawAmount,
-        dollarValue: 6.86,
-        wallet: getWalletUser,
-      });
-      const transaction = await this.transactionRepository.save(
-        withdrawMoneyTransaction,
-      );
-      this.bankService.withdrawMoneyTransaction(transaction);
-      return 'your balance';
-    }
+    } // TODO use the transactions service
+    // request to exchange the money from the user wallet to the bank wallet
+    const withdrawMoneyTransaction = this.transactionRepository.create({
+      currencyType: 'BOB',
+      transactionType: TransactionTypeEnum.SOLICITUD_RETIRO,
+      amount: -withDrawAmount,
+      dollarValue: 6.86,
+      wallet: getWalletUser,
+    });
+    const transaction = await this.transactionRepository.save(
+      withdrawMoneyTransaction,
+    );
+    this.bankService.withdrawMoneyTransaction(transaction);
+    return 'your balance';
   }
 
   async exchangeCoinsTransactionByHomeworkResolved(

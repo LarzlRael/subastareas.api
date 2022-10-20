@@ -67,10 +67,9 @@ export class AuthService {
       if (error.code === 'ER_DUP_ENTRY') {
         // duplicate user
         throw new ConflictException('Username or email already exists');
-      } else {
-        console.log(error);
-        throw new InternalServerErrorException();
       }
+      console.log(error);
+      throw new InternalServerErrorException();
     }
   }
 

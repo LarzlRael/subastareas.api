@@ -43,19 +43,18 @@ export class SupervisorService {
     const user = await this.userService.getOneUser(idUser);
     if (!user) {
       throw new InternalServerErrorException('User not found');
-    } else {
-      if (user.supervisor) {
-        throw new InternalServerErrorException('You are already a supervisor');
-      }
-      this.rolService.assignRole(user.id, {
-        rolName: RoleEnum.SUPERVISOR,
-        id: user.id,
-        active: true,
-      });
-      /* return this.supervisorRepository.createSupervisor(user); */
-      const createNewSupervisor = this.supervisorRepository.create({ user });
-      return await this.supervisorRepository.save(createNewSupervisor);
     }
+    if (user.supervisor) {
+      throw new InternalServerErrorException('You are already a supervisor');
+    }
+    this.rolService.assignRole(user.id, {
+      rolName: RoleEnum.SUPERVISOR,
+      id: user.id,
+      active: true,
+    });
+    /* return this.supervisorRepository.createSupervisor(user); */
+    const createNewSupervisor = this.supervisorRepository.create({ user });
+    return await this.supervisorRepository.save(createNewSupervisor);
   }
   async getHomeworksToSupervise(): Promise<Homework[]> {
     return await this.homeworkService.getHomeworkToSupervisor();

@@ -115,12 +115,11 @@ export class HomeworkService {
       throw new InternalServerErrorException(
         'No permission to delete this homework',
       );
-    } else {
-      if (!homework) {
-        throw new InternalServerErrorException('Homework not found');
-      }
-      await this.homeworkRepository.delete(id);
     }
+    if (!homework) {
+      throw new InternalServerErrorException('Homework not found');
+    }
+    await this.homeworkRepository.delete(id);
   }
   async updateHomework(
     homeWorkDto: HomeworkDto,
