@@ -203,7 +203,7 @@ export class HomeworkService {
       | ObjectLiteral
       | ObjectLiteral[]
       | ((qb: SelectQueryBuilder<Homework>) => string),
-    /* //TODO esend parameters to order by */
+    /* //TODO send parameters to order by */
   ) {
     const homeworks = await this.homeworkRepository
       .createQueryBuilder('homework')
