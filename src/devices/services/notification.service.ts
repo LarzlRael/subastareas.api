@@ -13,6 +13,7 @@ import { Repository, FindOptionsWhere } from 'typeorm';
 
 import { Notification } from '../entities';
 import { DevicesService } from './devices.service';
+import { Offer } from '../../offer/entities/offer.entity';
 
 @Injectable()
 export class NotificationService {
@@ -22,7 +23,7 @@ export class NotificationService {
     private devicesService: DevicesService,
   ) {}
 
-  async getUserNotification(user: User) {
+  async getUserNotifications(user: User) {
     const homeworks = await this.notificationRepository
       .createQueryBuilder('notification')
       .where({ userDestiny: user })
@@ -92,12 +93,12 @@ export class NotificationService {
     await this.sendNotification(sendData);
   }
 
-  async sendOfferAcceptedNotification(user: User, homework: Homework) {
+  async sendOfferAcceptedNotification(user: User, offer: Offer) {
     const sendData: IPushNotification = {
       registration_ids: await this.devicesService.getUserDevices(user),
       data: {
         type_notification: NotificationTypeEnum.OFFER_ACCEPTED,
-        content: `El usuario user ha aceptado tu oferta`,
+        content: `El usuario ${user.name} ha aceptado tu oferta`,
       },
       notification: {
         title: `Oferta aceptada`,
@@ -109,10 +110,10 @@ export class NotificationService {
 
     const createNotification = this.notificationRepository.create({
       type: TypeNotificationEnum.OFFER_ACCEPTED,
-      content: `Nueva oferta`,
+      content: `Oferta aceptada`,
       userOrigin: user,
-      userDestiny: homework.user,
-      idHomeworkOrOffer: homework.id,
+      userDestiny: offer.user,
+      idHomeworkOrOffer: offer.id,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -138,6 +139,31 @@ export class NotificationService {
       userOrigin: user,
       userDestiny: homework.user,
       idHomeworkOrOffer: homework.id,
+    });
+    await this.notificationRepository.save(createNotification);
+    await this.sendNotification(sendData);
+  }
+  async sendTradeCompleteSuccessNotification(user: User, offer: Offer) {
+    const sendData: IPushNotification = {
+      registration_ids: await this.devicesService.getUserDevices(user),
+      data: {
+        type_notification: NotificationTypeEnum.HOMEWORK_RESOLVE,
+        content: `Tu tarea ha sido aprobada satisfactoriamente`,
+      },
+      notification: {
+        title: `Tarea finalizada con éxito`,
+        body: `Hechale un vistazo a tu billetera`,
+        /* icon:
+          'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png', */
+      },
+    };
+
+    const createNotification = this.notificationRepository.create({
+      type: TypeNotificationEnum.HOMEWORK_FINISHED,
+      content: `Tarea aceptada e intercambio completada satisfactoriamente`,
+      userOrigin: user,
+      userDestiny: offer.user,
+      idHomeworkOrOffer: offer.id,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);

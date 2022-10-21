@@ -64,6 +64,8 @@ export enum TableNameEnum {
   ROLES = 'rols',
   WALLET = 'wallet',
   DEVICE = 'device',
+  SUPERVISOR = 'supervisor',
+  PROFESSOR = 'Professor',
 }
 
 export enum TransactionTypeEnum {

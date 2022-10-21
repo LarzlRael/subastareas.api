@@ -31,13 +31,11 @@ export class TradeService {
   async enterPendingTrade(idOffer: number) {
     //verificar si el oferta existe y si el usuario es el dueño de la oferta y la tarea
     const offer = await this.offerService.getOneOffer(idOffer, true);
-    console.log(offer);
     if (!offer) {
       throw new Error('Offer not found');
-    } else {
-      offer.status = TradeStatusEnum.PENDING_TO_RESOLVE;
-      await this.offerService.saveOffer(offer);
     }
+    offer.status = TradeStatusEnum.PENDING_TO_RESOLVE;
+    await this.offerService.saveOffer(offer);
     const getHomework = await this.homeworkService.getOneHomeworkAll(
       offer.homework.id,
     );
@@ -53,9 +51,9 @@ export class TradeService {
       status: TradeStatusEnum.PENDING_TO_RESOLVE,
     });
     // send notification to the user that the homework is pending to resolve
-    this.notificationService.sendOfferAcceptedNotification(
-      offer.user,
-      getHomework,
+    await this.notificationService.sendOfferAcceptedNotification(
+      getHomework.user,
+      offer,
     );
     //TODO Delete some properties, much information is not necessary
     return await this.tradeRepository.save(newTrade);
@@ -64,7 +62,6 @@ export class TradeService {
   async declineTrade(idOffer: number) {}
   async acceptTrade(idOffer: number) {
     const offer = await this.offerService.getOneOffer(idOffer, true);
-    /* console.log(offer); */
     if (!offer) {
       throw new Error('Offer not found');
     }
@@ -104,7 +101,10 @@ export class TradeService {
       homeworkUserWallet,
       offer,
     );
-    return null;
+    await this.notificationService.sendTradeCompleteSuccessNotification(
+      getHomework.user,
+      offer,
+    );
   }
   async uploadResolvedHomework(
     user: User,

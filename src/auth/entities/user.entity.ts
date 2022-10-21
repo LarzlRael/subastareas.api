@@ -122,7 +122,7 @@ export class User {
   @JoinColumn({ name: 'id_wallet' })
   wallet: Wallet;
 
-  @OneToOne(() => Professor, { eager: false })
+  @OneToOne(() => Professor, { eager: true })
   @JoinColumn({ name: 'id_professor' })
   professor: Professor;
 

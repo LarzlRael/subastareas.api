@@ -12,7 +12,7 @@ export class NotificationController {
 
   @Get('/getUserNotifications')
   getUserNotification(@GetUser() user: User) {
-    return this.notificationService.getUserNotification(user);
+    return this.notificationService.getUserNotifications(user);
   }
   @Get('/deleteNotification/:idNotification')
   deleteNotification(

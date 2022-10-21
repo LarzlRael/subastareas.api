@@ -35,6 +35,7 @@ import { DevicesService } from '../../devices/services';
 import { TransactionService } from '../../wallet/services';
 import { UserProfileService } from './';
 import { VerifyUserDTO } from '../dto/VerifyUser.dto';
+import { NotificationService } from '../../devices/services/notification.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -51,6 +52,7 @@ export class AuthService {
     private professorService: ProfessorService,
     private transactionService: TransactionService,
     private userProfileService: UserProfileService,
+    private notificationService: NotificationService,
   ) {}
   async signUp(registerUserDTO: RegisterUserDTO): Promise<User> {
     const { username, password, email } = registerUserDTO;
@@ -287,7 +289,6 @@ export class AuthService {
 
   async getUserToReturn(user: User) {
     const accessToken = await this.generateToken(user.username, '24h');
-    console.log(user);
     if (user.rols) {
       user.userRols = user.rols.map((rol) => rol.rolName);
       delete user.rols;
@@ -307,7 +308,7 @@ export class AuthService {
       delete user.wallet.updated_at;
       delete user.wallet.id;
     }
-
+    /* const userNotif = await this.notificationService.getUserNotifications(user); */
     delete user.password;
     return { ...user, accessToken };
   }
@@ -340,7 +341,7 @@ export class AuthService {
       'select u.id, u.name,u.lastName, u.nickName, u.profileImageUrl,up.bio, p.solvedHomeworks ,p.reputation from user u inner join user_profile up on up.id = u.id inner join professor p on u.id = p.id where u.id = ?',
       [idUser],
     );
-        console.log(findUser[0]);
+    console.log(findUser[0]);
     return findUser[0];
   }
 }
