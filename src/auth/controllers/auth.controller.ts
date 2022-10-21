@@ -39,9 +39,9 @@ export class AuthController {
     return await this.authService.signIn(authCredentialDTO);
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get('/renewToken')
-  renewToken(@GetUser() user: User) {
-    return this.authService.renewToken(user);
+  @Get('/renewToken/:idDevice')
+  renewToken(@GetUser() user: User, @Param('idDevice') idDevice: string) {
+    return this.authService.renewToken(user, idDevice);
   }
 
   @Post('/googleAuth')

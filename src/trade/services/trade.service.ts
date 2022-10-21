@@ -39,6 +39,9 @@ export class TradeService {
     const getHomework = await this.homeworkService.getOneHomeworkAll(
       offer.homework.id,
     );
+    /* const queryRunner = this.tradeRepository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.manager.save */
     //updating the homework status
     getHomework.status = HomeWorkStatusEnum.PENDING_TO_RESOLVE;
     await this.homeworkService.saveHomework({
@@ -51,10 +54,10 @@ export class TradeService {
       status: TradeStatusEnum.PENDING_TO_RESOLVE,
     });
     // send notification to the user that the homework is pending to resolve
-    await this.notificationService.sendOfferAcceptedNotification(
+    /* await this.notificationService.sendOfferAcceptedNotification(
       getHomework.user,
       offer,
-    );
+    ); */
     //TODO Delete some properties, much information is not necessary
     return await this.tradeRepository.save(newTrade);
   }

@@ -37,7 +37,10 @@ export class Notification {
   seen: boolean;
 
   @Column()
-  idHomeworkOrOffer: number;
+  idHomework: number;
+
+  @Column()
+  idOffer: number;
 
   @Column()
   content: string;

@@ -86,15 +86,18 @@ export class AuthService {
         throw new UnauthorizedException(`verify_your_email ${user.email}`);
       } else {
         await this.devicesService.createDevice(user, idDevice);
-        return this.getUserToReturn(user);
+        return this.getUserToReturn(user, idDevice);
       }
     } else {
       throw new UnauthorizedException('check_your_credential');
     }
   }
 
-  async renewToken(user: User): Promise<{ accessToken: string }> {
-    return this.getUserToReturn(user);
+  async renewToken(
+    user: User,
+    idDevice: string,
+  ): Promise<{ accessToken: string }> {
+    return this.getUserToReturn(user, idDevice);
   }
 
   async googleAuth(googleCredentialDto: GoogleCredentialDto) {
@@ -124,9 +127,9 @@ export class AuthService {
         googleCredentialDto.idDevice,
       );
       /* console.log(user); */
-      return this.getUserToReturn(user);
+      return this.getUserToReturn(user, googleCredentialDto.idDevice);
     } else {
-      return this.getUserToReturn(user);
+      return this.getUserToReturn(user, googleCredentialDto.idDevice);
     }
   }
   async updateUserProfile(
@@ -195,8 +198,7 @@ export class AuthService {
     const userSaved = await this.usersRepository.save({
       ...getUser,
     });
-    console.log(userSaved);
-    await this.professorService.becomeProfessor(user);
+    const idProfessor = await this.professorService.becomeProfessor(user);
     await this.rolesService.assignRole(user.id, {
       rolName: RoleEnum.STUDENT,
       active: true,
@@ -212,6 +214,7 @@ export class AuthService {
     await this.usersRepository.save({
       ...getUser,
       ...verifyUserDto,
+      professor: idProfessor,
     });
     console.log(userSaved);
     return userSaved;
@@ -287,14 +290,15 @@ export class AuthService {
     return await this.usersRepository.find();
   }
 
-  async getUserToReturn(user: User) {
+  async getUserToReturn(user: User, idDevice: string) {
     const accessToken = await this.generateToken(user.username, '24h');
     if (user.rols) {
       user.userRols = user.rols.map((rol) => rol.rolName);
       delete user.rols;
     }
     if (user.device) {
-      user.userDevices = user.device.map((device) => device.idDevice);
+      const userDevices = user.device.map((device) => device.idDevice);
+      user.userDevices = [...userDevices, idDevice];
       delete user.device;
     }
     if (user.wallet) {

@@ -26,7 +26,7 @@ export class NotificationService {
   async getUserNotifications(user: User) {
     const homeworks = await this.notificationRepository
       .createQueryBuilder('notification')
-      .where({ userDestiny: user })
+      .where({ userDestiny: user, visible: true })
       .orderBy('notification.created_at', 'DESC')
       .select([
         'notification',
@@ -39,6 +39,7 @@ export class NotificationService {
       .getMany();
     return homeworks;
   }
+
   async deleteNotification(idNotification: string) {
     const notification = await this.getOneNotificationWhere({
       id: idNotification,
@@ -49,6 +50,7 @@ export class NotificationService {
     notification.visible = false;
     await this.notificationRepository.save(notification);
   }
+
   async seeNotification(idNotification: string) {
     const notification = await this.getOneNotificationWhere(
       {
@@ -56,10 +58,11 @@ export class NotificationService {
       },
       ['user'],
     );
-    notification.seen = true;
+    console.log(notification);
     if (!notification) {
       throw new Error('Notification not found');
     }
+    notification.seen = true;
     await this.notificationRepository.save(notification);
   }
 
@@ -87,7 +90,8 @@ export class NotificationService {
       content: `${capitalizeFirstLetter(comment)}`,
       userOrigin: user,
       userDestiny: homework.user,
-      idHomeworkOrOffer: homework.id,
+      idHomework: homework.id,
+      idOffer: 0,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -113,7 +117,8 @@ export class NotificationService {
       content: `Oferta aceptada`,
       userOrigin: user,
       userDestiny: offer.user,
-      idHomeworkOrOffer: offer.id,
+      idOffer: offer.id,
+      idHomework: 0,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -138,7 +143,8 @@ export class NotificationService {
       content: `Tarea resuelta`,
       userOrigin: user,
       userDestiny: homework.user,
-      idHomeworkOrOffer: homework.id,
+      idHomework: homework.id,
+      idOffer: 0,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -163,7 +169,8 @@ export class NotificationService {
       content: `Tarea aceptada e intercambio completada satisfactoriamente`,
       userOrigin: user,
       userDestiny: offer.user,
-      idHomeworkOrOffer: offer.id,
+      idOffer: offer.id,
+      idHomework: 0,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -196,7 +203,8 @@ export class NotificationService {
       content: content,
       userOrigin: user,
       userDestiny: homework.user,
-      idHomeworkOrOffer: homework.id,
+      idHomework: homework.id,
+      idOffer: offer,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
@@ -229,10 +237,10 @@ export class NotificationService {
     where: FindOptionsWhere<Notification> | FindOptionsWhere<Notification>[],
     relations?: string[],
   ) {
-    return await this.notificationRepository.findOne({
+    const res = await this.notificationRepository.findOne({
       where: where,
-      relations: relations,
     });
+    return res;
   }
 }
 
