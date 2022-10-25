@@ -41,6 +41,7 @@ export class TradeService {
     await this.offerService.saveOffer(offer);
     const getHomework = await this.homeworkService.getOneHomeworkAll(
       offer.homework.id,
+      true,
     );
     /* const queryRunner = this.tradeRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
@@ -56,13 +57,13 @@ export class TradeService {
       finalAmount: offer.priceOffer,
       status: TradeStatusEnum.PENDING_TO_RESOLVE,
     });
+    //TODO Delete some properties, much information is not necessary
+    await this.tradeRepository.save(newTrade);
     // send notification to the user that the homework is pending to resolve
-    /* await this.notificationService.sendOfferAcceptedNotification(
+    await this.notificationService.sendOfferAcceptedNotification(
       getHomework.user,
       offer,
-    ); */
-    //TODO Delete some properties, much information is not necessary
-    return await this.tradeRepository.save(newTrade);
+    );
   }
 
   async declineTrade(idOffer: number) {}
@@ -112,6 +113,7 @@ export class TradeService {
       offer,
     );
   }
+
   async uploadResolvedHomework(
     user: User,
     id: number,

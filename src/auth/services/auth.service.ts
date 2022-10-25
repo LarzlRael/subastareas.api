@@ -345,7 +345,6 @@ export class AuthService {
       'select u.id, u.name,u.lastName, u.nickName, u.profileImageUrl,up.bio, p.solvedHomeworks ,p.reputation from user u inner join user_profile up on up.id = u.id inner join professor p on u.id_professor = p.id where u.id = ?',
       [idUser],
     );
-    console.log(findUser[0]);
     return findUser[0];
   }
 }
