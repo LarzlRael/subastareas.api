@@ -342,7 +342,7 @@ export class AuthService {
 
   async getUsePublicProfile(idUser: number) {
     const findUser = await this.usersRepository.query(
-      'select u.id, u.name,u.lastName, u.nickName, u.profileImageUrl,up.bio, p.solvedHomeworks ,p.reputation from user u inner join user_profile up on up.id = u.id inner join professor p on u.id = p.id where u.id = ?',
+      'select u.id, u.name,u.lastName, u.nickName, u.profileImageUrl,up.bio, p.solvedHomeworks ,p.reputation from user u inner join user_profile up on up.id = u.id inner join professor p on u.id_professor = p.id where u.id = ?',
       [idUser],
     );
     console.log(findUser[0]);

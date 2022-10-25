@@ -3,9 +3,9 @@ import { HomeWorkStatusEnum, TradeStatusEnum } from '../../enums/enums';
 import { NotificationService } from '../../devices/services/notification.service';
 import { uploadFile } from '../../utils/utils';
 import { User } from '../../auth/entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Trade } from '../entities/trade.entity';
 import { OfferService } from '../../offer/offer.service';
 import { HomeworkService } from '../../homework/homework.service';
@@ -26,6 +26,9 @@ export class TradeService {
     //Wallet Module services
     private readonly walletService: WalletService,
     private readonly transactionService: TransactionService,
+
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
   ) {}
 
   async enterPendingTrade(idOffer: number) {

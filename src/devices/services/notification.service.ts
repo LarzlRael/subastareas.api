@@ -36,6 +36,7 @@ export class NotificationService {
         'user.profileImageUrl',
       ])
       .leftJoin('notification.userOrigin', 'user')
+      .take(20)
       .getMany();
     return homeworks;
   }
@@ -174,6 +175,7 @@ export class NotificationService {
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);
+    /*database Transaction with multiples entities */
   }
 
   async sendNewOfferNotification(
