@@ -59,7 +59,6 @@ export class NotificationService {
       },
       ['user'],
     );
-    console.log(notification);
     if (!notification) {
       throw new Error('Notification not found');
     }
@@ -180,8 +179,9 @@ export class NotificationService {
 
   async sendNewOfferNotification(
     user: User,
-    offer: number,
+    offerId: number,
     homework: Homework,
+    offerAmount: number,
   ) {
     const currency = 'Neo coins';
     const content = `${user.username} hizo una nueva oferta`;
@@ -195,7 +195,7 @@ export class NotificationService {
       },
       notification: {
         title: `Nueva oferta`,
-        body: `${user.username} Hizo una oferta de ${offer} ${currency}`,
+        body: `${user.username} Hizo una oferta de ${offerId} ${currency}`,
         /* icon:
           'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png', */
       },
@@ -206,7 +206,8 @@ export class NotificationService {
       userOrigin: user,
       userDestiny: homework.user,
       idHomework: homework.id,
-      idOffer: offer,
+      idOffer: offerId,
+      offerAmount: offerAmount,
     });
     await this.notificationRepository.save(createNotification);
     await this.sendNotification(sendData);

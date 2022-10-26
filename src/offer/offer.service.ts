@@ -63,8 +63,9 @@ export class OfferService {
     });
     await this.notificationService.sendNewOfferNotification(
       user,
-      offerDto.priceOffer,
+      offer.id,
       homework,
+      offerDto.priceOffer,
     );
     const { id, priceOffer, status, edited } = await this.offerRepository.save(
       offer,

@@ -27,6 +27,11 @@ export class Notification {
   visible: boolean;
 
   @Column({
+    default: 0,
+  })
+  offerAmount: number;
+
+  @Column({
     default: true,
   })
   notified: boolean;
