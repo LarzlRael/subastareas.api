@@ -42,14 +42,12 @@ export class OfferService {
       const verifyOffer = getOfferAndUser.offers.some(
         (offer) => offer.user.id === user.id,
       );
-      if (!verifyOffer) {
-        return await this.saveOfferAndNotify(user, offerDto, homework);
-      } else {
+      if (verifyOffer) {
         throw new InternalServerErrorException('You already have an offer');
       }
-    } else {
       return await this.saveOfferAndNotify(user, offerDto, homework);
     }
+    return await this.saveOfferAndNotify(user, offerDto, homework);
   }
   async saveOfferAndNotify(
     user: User,
@@ -61,15 +59,16 @@ export class OfferService {
       homework: homework,
       priceOffer: offerDto.priceOffer,
     });
+    const { id, priceOffer, status, edited } = await this.offerRepository.save(
+      offer,
+    );
     await this.notificationService.sendNewOfferNotification(
       user,
       offer.id,
       homework,
       offerDto.priceOffer,
     );
-    const { id, priceOffer, status, edited } = await this.offerRepository.save(
-      offer,
-    );
+
     return {
       id,
       priceOffer,

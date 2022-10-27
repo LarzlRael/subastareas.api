@@ -30,7 +30,7 @@ export class NotificationService {
       .orderBy('notification.created_at', 'DESC')
       .select([
         'notification',
-        /* 'comment.user', */
+
         'user.id',
         'user.username',
         'user.profileImageUrl',
