@@ -9,10 +9,12 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { HomeWorkTypeEnum } from '../../enums/enums';
+import { Transaction } from '../../wallet/entities/transaction.entity';
 
 @Entity()
 export class Homework {
@@ -98,4 +100,7 @@ export class Homework {
   @ManyToOne(() => User, (user) => user.homeworkSupervisor, { eager: false })
   @Exclude({ toPlainOnly: true })
   userSupervisor: User;
+
+  @OneToOne(() => Transaction, (transaction) => transaction.homework)
+  transaction: Transaction;
 }

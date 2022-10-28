@@ -26,6 +26,7 @@ export class TransactionService {
 
   async uploadHomeworkTransaction(homework: Homework) {
     // TODO resolve this issue with the get planes services (circular dependency)
+
     const getUserWallet = await this.walletService.getWalletByUserId(
       homework.user.id,
     );
@@ -35,6 +36,7 @@ export class TransactionService {
       amount: -homework.offered_amount,
       dollarValue: 6.86,
       wallet: getUserWallet,
+      homework: homework,
     });
     const newTransaction = await this.transactionRepository.save(transaction);
     await this.bankService.uploadHomeworkTransaction(newTransaction);
@@ -45,11 +47,35 @@ export class TransactionService {
     amount: number,
     homework: Homework,
   ) {
+    const getTransaction = await this.transactionRepository.findOne({
+      where: {
+        homework: { id: homework.id },
+      },
+    });
+    if (getTransaction) {
+      throw new InternalServerErrorException();
+    }
     if (amount == 0) {
       return;
     }
     if (!pay) {
-      this.uploadHomeworkTransaction(homework);
+      const createNewTransaction = this.transactionRepository.create({
+        ...getTransaction,
+        amount: -amount,
+      });
+      const transaction = await this.transactionRepository.save(
+        createNewTransaction,
+      );
+      await this.bankService.uploadHomeworkTransaction(transaction);
+    } else {
+      const createNewTransaction = this.transactionRepository.create({
+        ...getTransaction,
+        amount: amount,
+      });
+      const transaction = await this.transactionRepository.save(
+        createNewTransaction,
+      );
+      await this.bankService.uploadHomeworkTransaction(transaction);
     }
   }
   async buyCoinsTransaction(

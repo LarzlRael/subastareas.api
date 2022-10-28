@@ -1,11 +1,14 @@
 import { CreateDateColumn, ManyToOne } from 'typeorm';
 import { TransactionTypeEnum } from '../../enums/enums';
 import { Wallet } from './wallet.entity';
+import { Homework } from '../../homework/entities/Homework.entity';
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -50,4 +53,8 @@ export class Transaction {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updated_at: Date;
+
+  @OneToOne(() => Homework, { eager: true })
+  @JoinColumn()
+  homework: Homework;
 }
