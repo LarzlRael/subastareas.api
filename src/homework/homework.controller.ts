@@ -102,7 +102,7 @@ export class HomeworkController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Delete('/delete/:id')
+  @Delete('/deleteHomework/:id')
   deleteHomeWork(
     @GetUser() user: User,
     @Param('id') id: number,

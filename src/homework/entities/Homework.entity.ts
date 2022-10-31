@@ -62,6 +62,10 @@ export class Homework {
     nullable: true,
   })
   observation: string;
+  @Column({
+    default: true,
+  })
+  visible: boolean;
 
   @Column({
     type: 'enum',

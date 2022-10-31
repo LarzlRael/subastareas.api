@@ -22,6 +22,7 @@ import {
 import { uploadFile } from '../utils/utils';
 import { FindOptionsWhere } from 'typeorm';
 import { TransactionService } from '../wallet/services/transaction.service';
+import { validateArray } from '../utils/validation';
 
 @Injectable()
 export class HomeworkService {
@@ -77,6 +78,7 @@ export class HomeworkService {
     return this.getHomeworksByCondition({
       status: HomeWorkStatusEnum.ACCEPTED,
       resolutionTime: MoreThan(new Date()),
+      visible: true,
     });
   }
   async getUserPendingOfferAccept(user: User) {
@@ -109,17 +111,19 @@ export class HomeworkService {
     return { homework, comments, offers };
   }
   async deleteHomework(user: User, id: number): Promise<void> {
-    const homework = await this.getOneHomeworkWhere({ id });
-
-    if (homework.user.id !== user.id) {
-      throw new InternalServerErrorException(
-        'No permission to delete this homework',
-      );
+    const verifyHomework = await this.verifyUserHomeworkBear(id, user);
+    if (
+      verifyHomework.status !==
+      (HomeWorkStatusEnum.TRADED ||
+        HomeWorkStatusEnum.PENDING_TO_RESOLVE ||
+        HomeWorkStatusEnum.PENDING_TO_ACCEPT)
+    ) {
+      await this.homeworkRepository.save({
+        ...verifyHomework,
+        visible: false,
+      });
+      /* Service to return the points */
     }
-    if (!homework) {
-      throw new InternalServerErrorException('Homework not found');
-    }
-    await this.homeworkRepository.delete(id);
   }
   async updateHomework(
     homeWorkDto: HomeworkDto,
@@ -127,14 +131,10 @@ export class HomeworkService {
     user: User,
     id: number,
   ) {
-    const homework = await this.getOneHomeworkWhere({ id }, ['user']);
-
-    if (!homework) {
-      throw new InternalServerErrorException('Homework not found');
-    }
-    if (homework.user.id !== user.id) {
+    const homework = await this.verifyUserHomeworkBear(id, user);
+    if (validateArray(homework.offers)) {
       throw new InternalServerErrorException(
-        'No permission to update this homework',
+        'You can not update this homework',
       );
     }
     const { pay, diff } = await this.getDiff(
@@ -301,5 +301,24 @@ export class HomeworkService {
       diff: Math.abs(currentAmount - newAmount),
       pay: currentAmount > newAmount,
     };
+  }
+
+  async verifyUserHomeworkBear(
+    homeworkId: number,
+    user: User,
+  ): Promise<Homework> {
+    const homework = await this.getOneHomeworkWhere({ id: homeworkId }, [
+      'user',
+    ]);
+    if (!homework) {
+      throw new InternalServerErrorException('Homework not found');
+    }
+    if (homework.user.id !== user.id) {
+      throw new InternalServerErrorException(
+        'No permission to delete this homework',
+      );
+    }
+
+    return homework;
   }
 }
