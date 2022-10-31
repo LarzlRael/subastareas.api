@@ -37,6 +37,19 @@ export class BankService {
     const newTransactionSaved = await this.bankRepository.save(newTransaction);
     return newTransactionSaved;
   }
+  async deleteHomeworkTransaction(transaction: Transaction) {
+    const newTransaction = this.bankRepository.create({
+      currencyType: transaction.currencyType,
+      transaction,
+      amount: transaction.amount,
+      dollarValue: transaction.dollarValue,
+      transactionType: TransactionTypeEnum.ASEGURADO,
+      //wallet del banco
+      /* wallet: transaction.wallet, */
+    });
+    const newTransactionSaved = await this.bankRepository.save(newTransaction);
+    return newTransactionSaved;
+  }
   async withdrawMoneyTransaction(transaction: Transaction) {
     const newTransaction = this.bankRepository.create({
       currencyType: transaction.currencyType,

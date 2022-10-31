@@ -81,6 +81,7 @@ export class HomeworkService {
       visible: true,
     });
   }
+
   async getUserPendingOfferAccept(user: User) {
     return this.getHomeworksByCondition({
       status: HomeWorkStatusEnum.PENDING_TO_RESOLVE,
@@ -102,6 +103,7 @@ export class HomeworkService {
     return this.getHomeworksByCondition({
       user: user,
       status: 'accepted_to_offer',
+      visible: true,
     });
   }
   async getOneHomework(id: number) {
@@ -115,7 +117,7 @@ export class HomeworkService {
     if (
       verifyHomework.status !==
       (HomeWorkStatusEnum.TRADED ||
-        HomeWorkStatusEnum.PENDING_TO_RESOLVE ||
+        verifyHomework.status !== HomeWorkStatusEnum.PENDING_TO_RESOLVE ||
         HomeWorkStatusEnum.PENDING_TO_ACCEPT)
     ) {
       await this.homeworkRepository.save({
@@ -123,6 +125,7 @@ export class HomeworkService {
         visible: false,
       });
       /* Service to return the points */
+      this.transactionService.deleteHomeworkTransaction(verifyHomework);
     }
   }
   async updateHomework(

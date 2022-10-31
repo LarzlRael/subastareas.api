@@ -36,7 +36,7 @@ export class TransactionService {
       amount: -homework.offered_amount,
       dollarValue: 6.86,
       wallet: getUserWallet,
-      homework: homework,
+      /* homework: homework, */
     });
     const newTransaction = await this.transactionRepository.save(transaction);
     await this.bankService.uploadHomeworkTransaction(newTransaction);
@@ -95,6 +95,27 @@ export class TransactionService {
     );
     await this.bankService.buyCoinsTransaction(transaction);
   }
+  async deleteHomeworkTransaction(homework: Homework) {
+    if (!homework.visible) {
+      return new InternalServerErrorException(
+        "You can't delete a homework that is not visible",
+      );
+    }
+    const userWallet = await this.walletService.getWalletByUserId(
+      homework.user.id,
+    );
+    const transaction = this.transactionRepository.create({
+      currencyType: 'BOB',
+      transactionType: TransactionTypeEnum.ASEGURADO,
+      amount: homework.offered_amount,
+      dollarValue: 6.86,
+      wallet: userWallet,
+      homework: homework,
+    });
+    const newTransaction = await this.transactionRepository.save(transaction);
+    await this.bankService.uploadHomeworkTransaction(newTransaction);
+  }
+
   async withdrawMoneyTransactionRequest(
     walletId: number,
     withDrawAmount: number,
