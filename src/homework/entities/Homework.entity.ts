@@ -105,6 +105,8 @@ export class Homework {
   @Exclude({ toPlainOnly: true })
   userSupervisor: User;
 
-  @OneToOne(() => Transaction, (transaction) => transaction.homework)
-  transaction: Transaction;
+  @OneToMany(() => Transaction, (transaction) => transaction.homework, {
+    eager: false,
+  })
+  transactions: Transaction[];
 }

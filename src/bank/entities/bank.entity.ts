@@ -46,9 +46,9 @@ export class Bank {
   @Column()
   amount: number;
 
-  @OneToOne(() => Transaction)
+  /* @OneToOne(() => Transaction)
   @JoinColumn()
-  transaction: Transaction;
+  transaction: Transaction; */
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -64,4 +64,9 @@ export class Bank {
   updated_at: Date;
 
   balance: number;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.bank, {
+    eager: false,
+  })
+  transactions: Transaction[];
 }

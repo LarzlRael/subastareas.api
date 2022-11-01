@@ -142,7 +142,7 @@ export class HomeworkService {
     }
     const { pay, diff } = await this.getDiff(
       homework.offered_amount,
-      homeWorkDto.offered_amount,
+      homeWorkDto.offered_amount.toString(),
     );
     let homeworkUpdate;
     if (file) {
@@ -298,11 +298,12 @@ export class HomeworkService {
 
   getDiff(
     currentAmount: number,
-    newAmount: number,
+    newAmount: string,
   ): { diff: number; pay: boolean } {
+    const parsedNewAmount = parseInt(newAmount);
     return {
-      diff: Math.abs(currentAmount - newAmount),
-      pay: currentAmount > newAmount,
+      diff: Math.abs(currentAmount - parsedNewAmount),
+      pay: currentAmount > parsedNewAmount,
     };
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Bank } from './entities/bank.entity';
 import { Repository } from 'typeorm';
+import { Bank } from './entities/bank.entity';
 import { Transaction } from '../wallet/entities/transaction.entity';
 import { TransactionTypeEnum } from '../enums/enums';
 
@@ -13,8 +13,8 @@ export class BankService {
   ) {}
   async buyCoinsTransaction(transaction: Transaction) {
     const newTransaction = this.bankRepository.create({
+      ...transaction,
       currencyType: transaction.currencyType,
-      transaction,
       amount: -transaction.amount,
       dollarValue: transaction.dollarValue,
       //Question this line is not working correctly
@@ -26,8 +26,8 @@ export class BankService {
   }
   async uploadHomeworkTransaction(transaction: Transaction) {
     const newTransaction = this.bankRepository.create({
+      ...transaction,
       currencyType: transaction.currencyType,
-      transaction,
       amount: transaction.amount,
       dollarValue: transaction.dollarValue,
       transactionType: TransactionTypeEnum.RETENIDO,
@@ -39,8 +39,8 @@ export class BankService {
   }
   async deleteHomeworkTransaction(transaction: Transaction) {
     const newTransaction = this.bankRepository.create({
+      ...transaction,
       currencyType: transaction.currencyType,
-      transaction,
       amount: transaction.amount,
       dollarValue: transaction.dollarValue,
       transactionType: TransactionTypeEnum.ASEGURADO,
@@ -52,8 +52,8 @@ export class BankService {
   }
   async withdrawMoneyTransaction(transaction: Transaction) {
     const newTransaction = this.bankRepository.create({
+      ...transaction,
       currencyType: transaction.currencyType,
-      transaction,
       amount: transaction.amount,
       dollarValue: transaction.dollarValue,
       transactionType: TransactionTypeEnum.TRASPASO,
@@ -65,8 +65,8 @@ export class BankService {
   }
   async exchangeCoinsTransactionByHomeworkResolved(transaction: Transaction) {
     const newTransaction = this.bankRepository.create({
+      ...transaction,
       currencyType: transaction.currencyType,
-      transaction,
       amount: transaction.amount,
       dollarValue: transaction.dollarValue,
       transactionType: TransactionTypeEnum.TRASPASO,

@@ -2,6 +2,7 @@ import { CreateDateColumn, ManyToOne } from 'typeorm';
 import { TransactionTypeEnum } from '../../enums/enums';
 import { Wallet } from './wallet.entity';
 import { Homework } from '../../homework/entities/Homework.entity';
+import { Bank } from '../../bank/entities/bank.entity';
 import {
   Column,
   Entity,
@@ -38,7 +39,6 @@ export class Transaction {
   status: boolean;
 
   @ManyToOne(() => Wallet, (user) => user.transaction, { eager: false })
-  /* @Exclude({ toPlainOnly: true }) */
   wallet: Wallet;
 
   @CreateDateColumn({
@@ -54,7 +54,13 @@ export class Transaction {
   })
   updated_at: Date;
 
-  @OneToOne(() => Homework, { eager: true })
-  @JoinColumn()
-  homework: Homework;
+  @ManyToOne(() => Homework, (homework) => homework.transactions, {
+    eager: false,
+  })
+  homework!: Homework;
+
+  @ManyToOne(() => Bank, (bank) => bank.transactions, {
+    eager: false,
+  })
+  bank!: Bank;
 }

@@ -12,7 +12,7 @@ define(User, () => {
   user.email = 'admin@subastareas.com';
   user.verify = true;
   user.profileImageUrl =
-    'https://negocioexitoso.online/subastareas/wp-content/uploads/sites/6/2022/06/logo-for-dark-256x32.png';
+    'https://www.terra.com/u/fotografias/m/2022/8/8/f800x450-1813_53259_5050.jpg';
 
   return user;
 });

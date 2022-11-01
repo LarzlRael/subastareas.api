@@ -36,7 +36,7 @@ export class TransactionService {
       amount: -homework.offered_amount,
       dollarValue: 6.86,
       wallet: getUserWallet,
-      /* homework: homework, */
+      homework: homework,
     });
     const newTransaction = await this.transactionRepository.save(transaction);
     await this.bankService.uploadHomeworkTransaction(newTransaction);
@@ -52,16 +52,16 @@ export class TransactionService {
         homework: { id: homework.id },
       },
     });
-    if (getTransaction) {
+    if (!getTransaction) {
       throw new InternalServerErrorException();
     }
     if (amount == 0) {
       return;
     }
-    if (!pay) {
+    if (pay) {
       const createNewTransaction = this.transactionRepository.create({
         ...getTransaction,
-        amount: -amount,
+        amount: amount,
       });
       const transaction = await this.transactionRepository.save(
         createNewTransaction,
@@ -70,7 +70,7 @@ export class TransactionService {
     } else {
       const createNewTransaction = this.transactionRepository.create({
         ...getTransaction,
-        amount: amount,
+        amount: -amount,
       });
       const transaction = await this.transactionRepository.save(
         createNewTransaction,
