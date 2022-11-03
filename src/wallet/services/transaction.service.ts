@@ -43,10 +43,13 @@ export class TransactionService {
   }
 
   async updateHomeworkTransaction(
-    pay: boolean,
+    restorePoints: boolean,
     amount: number,
     homework: Homework,
   ) {
+    const getUserWallet = await this.walletService.getWalletByUserId(
+      homework.user.id,
+    );
     const getTransaction = await this.transactionRepository.findOne({
       where: {
         homework: { id: homework.id },
@@ -58,9 +61,11 @@ export class TransactionService {
     if (amount == 0) {
       return;
     }
-    if (pay) {
+    delete getTransaction.id;
+    if (restorePoints) {
       const createNewTransaction = this.transactionRepository.create({
         ...getTransaction,
+        wallet: getUserWallet,
         amount: amount,
       });
       const transaction = await this.transactionRepository.save(
@@ -70,6 +75,7 @@ export class TransactionService {
     } else {
       const createNewTransaction = this.transactionRepository.create({
         ...getTransaction,
+        wallet: getUserWallet,
         amount: -amount,
       });
       const transaction = await this.transactionRepository.save(

@@ -140,7 +140,7 @@ export class HomeworkService {
         'You can not update this homework',
       );
     }
-    const { pay, diff } = await this.getDiff(
+    const { restorePoints: pay, diff } = await this.getDiff(
       homework.offered_amount,
       homeWorkDto.offered_amount.toString(),
     );
@@ -299,11 +299,11 @@ export class HomeworkService {
   getDiff(
     currentAmount: number,
     newAmount: string,
-  ): { diff: number; pay: boolean } {
+  ): { diff: number; restorePoints: boolean } {
     const parsedNewAmount = parseInt(newAmount);
     return {
       diff: Math.abs(currentAmount - parsedNewAmount),
-      pay: currentAmount > parsedNewAmount,
+      restorePoints: currentAmount > parsedNewAmount,
     };
   }
 
