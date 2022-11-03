@@ -176,6 +176,37 @@ export class NotificationService {
     await this.sendNotification(sendData);
     /*database Transaction with multiples entities */
   }
+  async rejectHomeworkNotification(
+    user: User,
+    offer: Offer,
+    rejectReason: string,
+  ) {
+    const sendData: IPushNotification = {
+      registration_ids: await this.devicesService.getUserDevices(user),
+      data: {
+        type_notification: NotificationTypeEnum.HOMEWORK_RESOLVE,
+        content: `Tu tarea ha sido rechazada`,
+      },
+      notification: {
+        title: `Tarea rechazada`,
+        body: rejectReason,
+        /* icon:
+          'https://www.gstatic.com/devrel-devsite/prod/v4ff7513a940c844d7a200d0833ef676f25fef10662a3b57ca262bcf76cbd98e2/firebase/images/touchicon-180.png', */
+      },
+    };
+
+    const createNotification = this.notificationRepository.create({
+      type: TypeNotificationEnum.HOMEWORK_REJECT,
+      content: rejectReason,
+      userOrigin: user,
+      userDestiny: offer.user,
+      idOffer: offer.id,
+      idHomework: 0,
+    });
+    await this.notificationRepository.save(createNotification);
+    await this.sendNotification(sendData);
+    /*database Transaction with multiples entities */
+  }
 
   async sendNewOfferNotification(
     user: User,

@@ -7,6 +7,7 @@ import {
   UploadedFile,
   UseGuards,
   Put,
+  Body,
 } from '@nestjs/common';
 
 import { OfferService } from '../../offer/offer.service';
@@ -50,9 +51,13 @@ export class TradeController {
   acceptTrade(@Param('idOffer') idTradeOffer: number) {
     return this.tradeService.acceptTrade(idTradeOffer);
   }
-  @Get('/declinetrade/:idOffer')
-  declineTrade(@Param('idOffer') idOffer: number) {
-    return this.tradeService.declineTrade(idOffer);
+  @Get('/declineTrade/:idOffer/:reason')
+  declineTrade(
+    @Param('idOffer') idOffer: number,
+    @Param('reason') reason: string,
+    @GetUser() user: User,
+  ) {
+    return this.tradeService.declineTrade(user, idOffer, reason);
   }
 
   @Get('offerAcceptedAndUrlResolved/:idOffer')

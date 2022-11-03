@@ -66,7 +66,24 @@ export class TradeService {
     );
   }
 
-  async declineTrade(idOffer: number) {}
+  async declineTrade(user: User, idOffer: number, commentTaskRejected: string) {
+    const getTrade = await this.tradeRepository.findOne({
+      where: {
+        offer: {
+          id: idOffer,
+        },
+      },
+    });
+    const offer = await this.offerService.getOneOffer(idOffer, true);
+    getTrade.commentTaskRejected = commentTaskRejected;
+    getTrade.status = TradeStatusEnum.REJECTED;
+    await this.tradeRepository.save(getTrade);
+    await this.notificationService.rejectHomeworkNotification(
+      user,
+      offer,
+      commentTaskRejected,
+    );
+  }
   async acceptTrade(idOffer: number) {
     const offer = await this.offerService.getOneOffer(idOffer, true);
     if (!offer) {

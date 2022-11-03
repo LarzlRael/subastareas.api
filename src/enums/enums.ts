@@ -53,6 +53,7 @@ export enum TypeNotificationEnum {
   NEW_OFFER = 'new_offer',
   OFFER_ACCEPTED = 'offer_accepted',
   HOMEWORK_FINISHED = 'homework_finished',
+  HOMEWORK_REJECT = 'homework_reject',
 }
 export enum NotificationTypeEnum {
   NEW_OFFER = 'new_offer',

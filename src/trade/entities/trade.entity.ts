@@ -23,6 +23,9 @@ export class Trade {
   @Column({ nullable: true })
   solvedFileType: string;
 
+  @Column({ nullable: true })
+  commentTaskRejected: string;
+
   @Column({
     type: 'enum',
     enum: TradeStatusEnum,
