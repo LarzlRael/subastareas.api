@@ -57,7 +57,7 @@ export class TradeController {
     @Param('reason') reason: string,
     @GetUser() user: User,
   ) {
-    return this.tradeService.declineTrade(user, idOffer, reason);
+    return this.tradeService.rejectTrade(user, idOffer, reason);
   }
 
   @Get('offerAcceptedAndUrlResolved/:idOffer')

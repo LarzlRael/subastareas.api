@@ -66,7 +66,7 @@ export class TradeService {
     );
   }
 
-  async declineTrade(user: User, idOffer: number, commentTaskRejected: string) {
+  async rejectTrade(user: User, idOffer: number, commentTaskRejected: string) {
     const getTrade = await this.tradeRepository.findOne({
       where: {
         offer: {
@@ -75,6 +75,11 @@ export class TradeService {
       },
     });
     const offer = await this.offerService.getOneOffer(idOffer, true);
+    const getHomework = await this.homeworkService.getOneHomeworkUser(
+      offer.homework.id,
+    );
+    getHomework.status = HomeWorkStatusEnum.REJECTED_OFFER_HOMEWORK;
+    await this.homeworkService.saveHomework(getHomework);
     getTrade.commentTaskRejected = commentTaskRejected;
     getTrade.status = TradeStatusEnum.REJECTED;
     await this.tradeRepository.save(getTrade);
@@ -192,10 +197,19 @@ export class TradeService {
   }
 
   async userTradePending(user: User, status: string) {
+    let verifyStatus = '';
+    if (status === 'pending_to_accept') {
+      verifyStatus =
+        TradeStatusEnum.PENDINGTOACCEPT + ',' + TradeStatusEnum.REJECTED;
+      verifyStatus.split(',');
+    } else {
+      verifyStatus = status;
+    }
     const offers = await this.tradeRepository.query(
       `SELECT t.solvedHomeworkUrl,
       t.id as tradeId, h.id as homeworkId,
       t.status,t.solvedFileType,
+      t.commentTaskRejected,
       h.title,h.resolutionTime,h.description,
       h.category,
       h.fileUrl, h.fileType,o.id as offerId,
@@ -204,9 +218,9 @@ export class TradeService {
       inner join offer o on t.offerId  = o.id
       inner join homework h on h.id = o.homeworkId
       inner join user u on u.id = o.userId
-      where h.userId = ? and t.status = ?
+      where h.userId = ? and t.status in(?)
       `,
-      [user.id, status],
+      [user.id, verifyStatus.split(',')],
     );
     return offers;
   }

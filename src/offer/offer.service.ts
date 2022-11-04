@@ -202,7 +202,7 @@ export class OfferService {
   }
   async getUsersHomeworksPending(user: User) {
     const offers = await this.offerRepository.query(
-      'select h.id as homeworkId , o.id as offerId  FROM offer o inner join homework h on h.id = o.homeworkId where o.userId = ? and h.status in ("pending_to_resolve","pending_to_accept")',
+      'select h.id as homeworkId , o.id as offerId  FROM offer o inner join homework h on h.id = o.homeworkId where o.userId = ? and h.status in ("pending_to_resolve","pending_to_accept","rejected_offer_homework")',
       [user.id],
     );
     /* [ { homeworkId: 11, offerId: 7 }, { homeworkId: 17, offerId: 8 } ] */

@@ -10,6 +10,7 @@ export enum HomeWorkStatusEnum {
   PENDING_TO_ACCEPT = 'pending_to_accept',
   PENDING_TO_RESOLVE = 'pending_to_resolve',
   ACCEPTED = 'accepted_to_offer',
+  REJECTED_OFFER_HOMEWORK = 'rejected_offer_homework',
   REJECTED = 'rejected',
   TRADED = 'traded',
 }
