@@ -94,7 +94,10 @@ export class NotificationService {
       idOffer: 0,
     });
     await this.notificationRepository.save(createNotification);
-    await this.sendNotification(sendData);
+    await this.sendNotification(
+      sendData,
+      homework.user.userProfile.receiveNotifications,
+    );
   }
 
   async sendOfferAcceptedNotification(user: User, offer: Offer) {
@@ -121,7 +124,10 @@ export class NotificationService {
       idHomework: 0,
     });
     await this.notificationRepository.save(createNotification);
-    await this.sendNotification(sendData);
+    await this.sendNotification(
+      sendData,
+      offer.user.userProfile.receiveNotifications,
+    );
   }
   async sendHomeworkResolveNotification(user: User, homework: Homework) {
     const sendData: IPushNotification = {
@@ -147,7 +153,10 @@ export class NotificationService {
       idOffer: 0,
     });
     await this.notificationRepository.save(createNotification);
-    await this.sendNotification(sendData);
+    await this.sendNotification(
+      sendData,
+      homework.user.userProfile.receiveNotifications,
+    );
   }
   async sendTradeCompleteSuccessNotification(user: User, offer: Offer) {
     const sendData: IPushNotification = {
@@ -173,7 +182,10 @@ export class NotificationService {
       idHomework: 0,
     });
     await this.notificationRepository.save(createNotification);
-    await this.sendNotification(sendData);
+    await this.sendNotification(
+      sendData,
+      offer.user.userProfile.receiveNotifications,
+    );
     /*database Transaction with multiples entities */
   }
   async rejectHomeworkNotification(
@@ -204,7 +216,10 @@ export class NotificationService {
       idHomework: 0,
     });
     await this.notificationRepository.save(createNotification);
-    await this.sendNotification(sendData);
+    await this.sendNotification(
+      sendData,
+      offer.user.userProfile.receiveNotifications,
+    );
     /*database Transaction with multiples entities */
   }
 
@@ -241,21 +256,28 @@ export class NotificationService {
       offerAmount: offerAmount,
     });
     await this.notificationRepository.save(createNotification);
-    await this.sendNotification(sendData);
+    await this.sendNotification(
+      sendData,
+      homework.user.userProfile.receiveNotifications,
+    );
   }
 
-  async sendNotification(sendData: IPushNotification) {
-    try {
-      await axios({
-        method: 'POST',
-        url: 'https://fcm.googleapis.com/fcm/send',
-        data: sendData,
-        headers: {
-          Authorization: `key=${process.env.FIREBASE_TOKEN}`,
-        },
-      });
-    } catch (error) {
-      console.log(error);
+  async sendNotification(sendData: IPushNotification, isAllowNotification) {
+    if (isAllowNotification) {
+      try {
+        await axios({
+          method: 'POST',
+          url: 'https://fcm.googleapis.com/fcm/send',
+          data: sendData,
+          headers: {
+            Authorization: `key=${process.env.FIREBASE_TOKEN}`,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      return;
     }
   }
 

@@ -16,7 +16,7 @@ export class UserProfile {
   id: number;
 
   @OneToOne(() => User, (user) => user.userProfile)
-  userProfile: User;
+  user: User;
 
   @Column({
     default: true,

@@ -21,7 +21,7 @@ export class UserCreateSeed implements Seeder {
       .createQueryBuilder()
       .insert()
       .into(UserProfile)
-      .values([{ userProfile: user }])
+      .values([{ user: user }])
       .execute();
     const supervisor = await connection
       .createQueryBuilder()

@@ -11,8 +11,8 @@ import { UserProfileDTO } from '../dto/UserProfile.dot';
 export class UserProfileController {
   constructor(private userProfileService: UserProfileService) {}
 
-  @Post('/changeTheme/')
-  getUsers(@Body('newTheme') userProfileDto: UserProfileDTO) {
+  @Post('changePreferences')
+  getUsers(@Body() userProfileDto: UserProfileDTO) {
     return this.userProfileService.changePreferences(userProfileDto);
   }
 }
