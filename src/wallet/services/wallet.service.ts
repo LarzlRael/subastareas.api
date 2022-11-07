@@ -24,4 +24,24 @@ export class WalletService {
   async saveWallet(wallet: Wallet) {
     return await this.walletRepository.save(wallet);
   }
+
+  async getUserWithdrawableBalance(user: User) {
+    const userBalanceWithDrawable = await this.walletRepository.query(
+      'select sum(amount) as balanceWithDrawable from transaction where  walletId = ? and transactionType ="ingreso"',
+      [user.wallet.id],
+    );
+
+    return userBalanceWithDrawable[0].balanceWithDrawable == null
+      ? 0
+      : parseInt(userBalanceWithDrawable[0].balanceWithDrawable);
+  }
+  async getUserBalance(user: User) {
+    const userBalance = await this.walletRepository.query(
+      'select sum(amount) as balance from transaction where walletId = ?',
+      [user.wallet.id],
+    );
+    return userBalance[0].balance == null
+      ? 0
+      : parseInt(userBalance[0].balance);
+  }
 }

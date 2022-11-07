@@ -15,19 +15,16 @@ export class Withdraw {
   id: number;
 
   @Column()
-  dollarValue: number;
-
-  @Column()
   status: string;
 
   @Column()
   paymentMethod: string;
 
   @Column()
-  accountNumber: string;
+  accountNumber?: string;
 
   @Column()
-  telephone: string;
+  telephone?: string;
 
   @OneToOne(() => Transaction, { eager: true })
   /* @JoinColumn({ name: 'id_professor' }) */

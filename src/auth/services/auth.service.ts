@@ -302,10 +302,8 @@ export class AuthService {
       delete user.device;
     }
     if (user.wallet) {
-      user.wallet.balanceTotal = await this.transactionService.getUserBalance(
-        user,
-      );
-      user.wallet.balanceWithDrawable = await this.transactionService.getUserWithdrawableBalance(
+      user.wallet.balanceTotal = await this.walletService.getUserBalance(user);
+      user.wallet.balanceWithDrawable = await this.walletService.getUserWithdrawableBalance(
         user,
       );
       delete user.wallet.created_at;

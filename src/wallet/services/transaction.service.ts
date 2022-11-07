@@ -122,12 +122,14 @@ export class TransactionService {
     await this.bankService.uploadHomeworkTransaction(newTransaction);
   }
 
-  async withdrawMoneyTransactionRequest(
-    walletId: number,
-    withDrawAmount: number,
-  ) {
-    const getWalletUser = await this.walletService.getWalletByUserId(walletId);
-    if (getWalletUser.balanceWithDrawable < withDrawAmount) {
+  async withdrawMoneyTransactionRequest(user: User, withDrawAmount: number) {
+    const getWalletUser = await this.walletService.getWalletByUserId(
+      user.wallet.id,
+    );
+    const userWithDrawableBalance = await this.walletService.getUserWithdrawableBalance(
+      user,
+    );
+    if (userWithDrawableBalance < withDrawAmount) {
       throw new InternalServerErrorException(
         'No hay suficiente saldo en tu cuenta',
       );
@@ -180,8 +182,23 @@ export class TransactionService {
       exchangeCoinsOriginUser,
     );
   }
+  async withdrawRequestTransaction(user: User) {
+    const getWalletUser = await this.walletService.getWalletByUserId(user.id);
+    const withdrawMoneyTransaction = this.transactionRepository.create({
+      currencyType: 'BOB',
+      transactionType: TransactionTypeEnum.SOLICITUD_RETIRO,
+      amount: -getWalletUser.balanceWithDrawable,
+      dollarValue: 6.86,
+      wallet: getWalletUser,
+    });
+    const transaction = await this.transactionRepository.save(
+      withdrawMoneyTransaction,
+    );
+    this.bankService.withdrawMoneyTransaction(transaction);
+    return 'your balance';
+  }
 
-  async getUserBalance(user: User) {
+  /* async getUserBalance(user: User) {
     const userBalance = await this.transactionRepository.query(
       'select sum(amount) as balance from transaction where walletId = ?',
       [user.wallet.id],
@@ -189,7 +206,7 @@ export class TransactionService {
     return userBalance[0].balance == null
       ? 0
       : parseInt(userBalance[0].balance);
-  }
+  } */
   async getTransactionsHistory(user: User) {
     const userHistory = await this.transactionRepository.find({
       where: {
@@ -204,7 +221,7 @@ export class TransactionService {
     return userHistory;
   }
 
-  async getUserWithdrawableBalance(user: User) {
+  /* async getUserWithdrawableBalance(user: User) {
     const userBalanceWithDrawable = await this.transactionRepository.query(
       'select sum(amount) as balanceWithDrawable from transaction where  walletId = ? and transactionType ="ingreso"',
       [user.wallet.id],
@@ -213,5 +230,5 @@ export class TransactionService {
     return userBalanceWithDrawable[0].balanceWithDrawable == null
       ? 0
       : parseInt(userBalanceWithDrawable[0].balanceWithDrawable);
-  }
+  } */
 }

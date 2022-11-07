@@ -13,10 +13,7 @@ import { GetUser } from '../../auth/decorators/get-user..decorator';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Get('/getUserBalance')
-  async getUserBalance(@GetUser() user: User) {
-    return this.transactionService.getUserBalance(user);
-  }
+
   @Get('/getUserTransactionsHistory')
   async getUserTransaction(@GetUser() user: User) {
     return this.transactionService.getTransactionsHistory(user);
@@ -26,10 +23,10 @@ export class TransactionController {
     @GetUser() user: User,
     @Param('amount') amount: number,
   ) {
-    return this.transactionService.withdrawMoneyTransactionRequest(user.id, amount);
+    return this.transactionService.withdrawMoneyTransactionRequest(
+      user,
+      amount,
+    );
   }
-  @Get('/getWithdrawableBalance/')
-  async obtainWithdrawableBalance(@GetUser() user: User) {
-    return this.transactionService.getUserWithdrawableBalance(user);
-  }
+  
 }
