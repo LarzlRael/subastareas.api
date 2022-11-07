@@ -1,3 +1,4 @@
 import { TransactionService } from './transaction.service';
 import { WalletService } from './wallet.service';
-export { TransactionService, WalletService };
+import { WithDrawService } from './withdraw.service';
+export { TransactionService, WalletService, WithDrawService };

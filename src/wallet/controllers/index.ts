@@ -1,3 +1,5 @@
 import { TransactionController } from './transaction.controller';
 import { WalletController } from './wallet.controller';
-export { TransactionController, WalletController };
+import { WithDrawController } from './withdraw.controller';
+
+export { TransactionController, WalletController, WithDrawController };
