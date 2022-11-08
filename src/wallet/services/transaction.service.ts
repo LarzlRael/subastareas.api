@@ -13,6 +13,8 @@ import { Planes } from '../../trade/entities/planes.entity';
 import { TransactionTypeEnum } from '../../enums/enums';
 import { Shopping } from '../../trade/entities/shopping.entity';
 import { Offer } from '../../offer/entities/offer.entity';
+import { WithDrawService } from './withdraw.service';
+import { WithDrawDto } from '../dto/withdraw.dto';
 
 @Injectable()
 export class TransactionService {
@@ -22,6 +24,7 @@ export class TransactionService {
 
     private bankService: BankService /* private planesServices: PlanesServices, */,
     private walletService: WalletService,
+    private withDrawService: WithDrawService,
   ) {}
 
   async uploadHomeworkTransaction(homework: Homework) {
@@ -122,14 +125,14 @@ export class TransactionService {
     await this.bankService.uploadHomeworkTransaction(newTransaction);
   }
 
-  async withdrawMoneyTransactionRequest(user: User, withDrawAmount: number) {
+  async withdrawMoneyTransactionRequest(user: User, withDrawDto: WithDrawDto) {
     const getWalletUser = await this.walletService.getWalletByUserId(
       user.wallet.id,
     );
     const userWithDrawableBalance = await this.walletService.getUserWithdrawableBalance(
       user,
     );
-    if (userWithDrawableBalance < withDrawAmount) {
+    if (userWithDrawableBalance < withDrawDto.amount) {
       throw new InternalServerErrorException(
         'No hay suficiente saldo en tu cuenta',
       );
@@ -138,12 +141,19 @@ export class TransactionService {
     const withdrawMoneyTransaction = this.transactionRepository.create({
       currencyType: 'BOB',
       transactionType: TransactionTypeEnum.SOLICITUD_RETIRO,
-      amount: -withDrawAmount,
+      amount: -withDrawDto.amount,
       dollarValue: 6.86,
       wallet: getWalletUser,
     });
     const transaction = await this.transactionRepository.save(
       withdrawMoneyTransaction,
+    );
+    await this.withDrawService.withDrawRequest(
+      user,
+      {
+        ...withDrawDto,
+      },
+      transaction,
     );
     this.bankService.withdrawMoneyTransaction(transaction);
     return 'your balance';
@@ -195,7 +205,6 @@ export class TransactionService {
       withdrawMoneyTransaction,
     );
     this.bankService.withdrawMoneyTransaction(transaction);
-    return 'your balance';
   }
 
   /* async getUserBalance(user: User) {
@@ -223,7 +232,7 @@ export class TransactionService {
 
   async getListUserWithdrawRequest() {
     const userBalanceWithDrawable = await this.transactionRepository
-      .query(`select t.id, t.created_at ,t.amount ,t.transactionType , u.username ,u.profileImageUrl, u.email from transaction t
+      .query(`select t.id, t.created_at ,t.amount ,t.transactionType , u.username ,u.profileImageUrl,u.email ,u.phone from transaction t
     inner join user u
     on t.walletId  = u.id_wallet
     where t.transactionType ='solicutud_retiro' `);

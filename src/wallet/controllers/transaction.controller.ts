@@ -1,13 +1,14 @@
 import { TransactionService } from '../services/transaction.service';
 
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { User } from '../../auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/guard/roles.guard';
 import { GetUser } from '../../auth/decorators/get-user..decorator';
-import { Roles } from 'src/auth/decorators/get.rols.decorator';
 import { RoleEnum } from '../../enums/enums';
+import { WithDrawDto } from '../dto/withdraw.dto';
+import { Roles } from '../../auth/decorators/get.rols.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('transaction')
@@ -19,14 +20,14 @@ export class TransactionController {
   async getUserTransaction(@GetUser() user: User) {
     return this.transactionService.getTransactionsHistory(user);
   }
-  @Get('/withdrawMoneyTransaction/:amount')
+  @Post('/withdrawMoneyTransaction')
   async withdrawMoneyTransaction(
     @GetUser() user: User,
-    @Param('amount') amount: number,
+    @Body() withDrawDto: WithDrawDto,
   ) {
     return this.transactionService.withdrawMoneyTransactionRequest(
       user,
-      amount,
+      withDrawDto,
     );
   }
 

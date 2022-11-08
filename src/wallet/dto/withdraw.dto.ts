@@ -1,25 +1,32 @@
-import { IsEmpty, IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsEmpty,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsOptional,
+  Length,
+} from 'class-validator';
 
 export class WithDrawDto {
-  @IsNotEmpty()
-  @IsString()
-  @Length(24, 24)
-  readonly idTransaction: string;
-  @IsNotEmpty()
-  @IsString()
-  readonly amount: string;
+  /* @IsNotEmpty() */
+  @IsOptional()
+  readonly idTransaction: number;
 
-  @IsEmpty()
+  @IsNumber()
+  @IsNotEmpty()
+  readonly amount: number;
+
   @IsString()
+  @IsOptional()
   accountNumber: string;
 
-  @IsEmpty()
-  @IsString()
+  @IsOptional()
   paymentMethod: string;
 
   @IsString()
+  @IsOptional()
   status: string;
-  @IsEmpty()
+
   @IsString()
-  telephone: string;
+  phone: string;
 }

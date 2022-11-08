@@ -14,17 +14,20 @@ export class Withdraw {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    default: 'pendiente_a_pagar',
+  })
   status: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   paymentMethod: string;
 
-  @Column()
-  accountNumber?: string;
-
-  @Column()
-  telephone?: string;
+  @Column({
+    nullable: true,
+  })
+  accountNumber: string;
 
   @OneToOne(() => Transaction, { eager: true })
   /* @JoinColumn({ name: 'id_professor' }) */
