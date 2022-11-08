@@ -6,13 +6,14 @@ import { User } from '../../auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/guard/roles.guard';
 import { GetUser } from '../../auth/decorators/get-user..decorator';
+import { Roles } from 'src/auth/decorators/get.rols.decorator';
+import { RoleEnum } from '../../enums/enums';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('transaction')
 /* @UseGuards(AuthGuard('jwt')) */
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
-
 
   @Get('/getUserTransactionsHistory')
   async getUserTransaction(@GetUser() user: User) {
@@ -28,5 +29,10 @@ export class TransactionController {
       amount,
     );
   }
-  
+
+  @Roles(RoleEnum.ADMIN)
+  @Get('/getListUserWithdrawRequest')
+  async getListUserWithdrawRequest() {
+    return this.transactionService.getListUserWithdrawRequest();
+  }
 }

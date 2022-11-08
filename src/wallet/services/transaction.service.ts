@@ -221,6 +221,15 @@ export class TransactionService {
     return userHistory;
   }
 
+  async getListUserWithdrawRequest() {
+    const userBalanceWithDrawable = await this.transactionRepository
+      .query(`select t.id, t.created_at ,t.amount ,t.transactionType , u.username ,u.profileImageUrl, u.email from transaction t
+    inner join user u
+    on t.walletId  = u.id_wallet
+    where t.transactionType ='solicutud_retiro' `);
+
+    return userBalanceWithDrawable;
+  }
   /* async getUserWithdrawableBalance(user: User) {
     const userBalanceWithDrawable = await this.transactionRepository.query(
       'select sum(amount) as balanceWithDrawable from transaction where  walletId = ? and transactionType ="ingreso"',
