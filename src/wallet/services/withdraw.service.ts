@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { Transaction } from '../entities/transaction.entity';
 import { WithDrawDto } from '../dto/withdraw.dto';
 import { User } from '../../auth/entities/user.entity';
-import { AuthService } from 'src/auth/services';
 
 @Injectable()
 export class WithDrawService {

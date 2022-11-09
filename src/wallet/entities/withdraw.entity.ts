@@ -30,7 +30,7 @@ export class Withdraw {
   accountNumber: string;
 
   @OneToOne(() => Transaction, { eager: true })
-  /* @JoinColumn({ name: 'id_professor' }) */
+  @JoinColumn({ name: 'id_transaction' })
   transaction: Transaction;
 
   @CreateDateColumn({

@@ -1,4 +1,4 @@
-import { IsEmail, IsNumber } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ProfileEditDto {
   profileImageUrl?: string;
@@ -10,6 +10,7 @@ export class ProfileEditDto {
   @IsEmail()
   email?: string;
 
-  @IsNumber()
-  phone?: number;
+  @IsString()
+  @IsOptional()
+  phone?: string;
 }

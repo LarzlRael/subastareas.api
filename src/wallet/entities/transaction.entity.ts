@@ -3,6 +3,7 @@ import { TransactionTypeEnum } from '../../enums/enums';
 import { Wallet } from './wallet.entity';
 import { Homework } from '../../homework/entities/Homework.entity';
 import { Bank } from '../../bank/entities/bank.entity';
+import { Withdraw } from './withdraw.entity';
 import {
   Column,
   Entity,
@@ -34,9 +35,14 @@ export class Transaction {
   amount: number;
 
   @Column({
+    default: 0,
+  })
+  withdrawalRequestAmount: number;
+
+  /* @Column({
     default: 1,
   })
-  status: boolean;
+  status: boolean; */
 
   @ManyToOne(() => Wallet, (user) => user.transaction, { eager: false })
   wallet: Wallet;
@@ -63,4 +69,7 @@ export class Transaction {
     eager: false,
   })
   bank!: Bank;
+
+  @OneToOne(() => Withdraw, (withdraw) => withdraw.transaction)
+  Withdraw!: Withdraw;
 }

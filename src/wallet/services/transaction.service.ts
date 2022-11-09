@@ -126,9 +126,7 @@ export class TransactionService {
   }
 
   async withdrawMoneyTransactionRequest(user: User, withDrawDto: WithDrawDto) {
-    const getWalletUser = await this.walletService.getWalletByUserId(
-      user.wallet.id,
-    );
+    const getWalletUser = await this.walletService.getWalletByUserId(user.id);
     const userWithDrawableBalance = await this.walletService.getUserWithdrawableBalance(
       user,
     );
@@ -141,8 +139,9 @@ export class TransactionService {
     const withdrawMoneyTransaction = this.transactionRepository.create({
       currencyType: 'BOB',
       transactionType: TransactionTypeEnum.SOLICITUD_RETIRO,
-      amount: -withDrawDto.amount,
+      amount: 0,
       dollarValue: 6.86,
+      withdrawalRequestAmount: withDrawDto.amount,
       wallet: getWalletUser,
     });
     const transaction = await this.transactionRepository.save(
@@ -231,11 +230,22 @@ export class TransactionService {
   }
 
   async getListUserWithdrawRequest() {
-    const userBalanceWithDrawable = await this.transactionRepository
+    /*  const userBalanceWithDrawable = await this.transactionRepository
       .query(`select t.id, t.created_at ,t.amount ,t.transactionType , u.username ,u.profileImageUrl,u.email ,u.phone from transaction t
     inner join user u
     on t.walletId  = u.id_wallet
-    where t.transactionType ='solicutud_retiro' `);
+    where t.transactionType ='${TransactionTypeEnum.SOLICITUD_RETIRO}' `); */
+    const userBalanceWithDrawable = await this.transactionRepository.query(`
+      select t.id as 'id_transaction', wi.id as 'id_withdraw',
+      t.withdrawalRequestAmount ,t.transactionType, 
+      u.username ,u.profileImageUrl,
+      u.email, u.phone,
+      wi.created_at
+      from transaction t
+      inner join user u on t.walletId  = u.id_wallet
+      inner join withdraw  wi on wi.id_transaction = t.id
+      where t.transactionType = '${TransactionTypeEnum.SOLICITUD_RETIRO}'
+    `);
 
     return userBalanceWithDrawable;
   }
