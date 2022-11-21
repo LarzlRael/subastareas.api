@@ -1,3 +1,4 @@
+import { WithdrawEnum } from './../../enums/enums';
 import {
   Column,
   Entity,
@@ -7,6 +8,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
+
 import { Transaction } from '.';
 
 @Entity()
@@ -15,9 +17,11 @@ export class Withdraw {
   id: number;
 
   @Column({
-    default: 'pendiente_a_pagar',
+    type: 'enum',
+    enum: WithdrawEnum,
+    default: WithdrawEnum.PENDIENTE_A_PAGAR,
   })
-  status: string;
+  status: WithdrawEnum;
 
   @Column({
     nullable: true,

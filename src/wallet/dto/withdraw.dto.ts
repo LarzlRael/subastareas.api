@@ -1,3 +1,4 @@
+import { WithdrawEnum } from '../../enums/enums';
 import {
   IsEmpty,
   IsNotEmpty,
@@ -5,6 +6,7 @@ import {
   IsString,
   IsOptional,
   Length,
+  IsEnum,
 } from 'class-validator';
 
 export class WithDrawDto {
@@ -23,9 +25,9 @@ export class WithDrawDto {
   @IsOptional()
   paymentMethod: string;
 
-  @IsString()
+  @IsEnum(WithdrawEnum)
   @IsOptional()
-  status: string;
+  status: WithdrawEnum;
 
   @IsString()
   phone: string;

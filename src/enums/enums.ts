@@ -79,3 +79,8 @@ export enum TransactionTypeEnum {
   SOLICITUD_RETIRO = 'solicitud_retiro',
   SOLICITUD_RETIRO_COMPLETADO = 'solicitud_retiro_completado',
 }
+
+export enum WithdrawEnum {
+  PENDIENTE_A_PAGAR = 'pendiente_a_pagar',
+  PAGADO = 'pagado',
+}

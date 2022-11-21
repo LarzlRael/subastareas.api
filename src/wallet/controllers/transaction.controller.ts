@@ -39,17 +39,7 @@ export class TransactionController {
   }
   @Roles(RoleEnum.ADMIN)
   @Post('/confirmWithDraw/')
-  async confirmWithDraw(
-    /* @Param('idUser') idUser: number,
-    @Param('idTransaction') idTransaction: number,
-    @Param('idWithdraw') idWithdraw: number, */
-    @Body() withdrawConfirmDto: WithdrawConfirmDto,
-  ) {
-    return this.transactionService.withdrawMoneyConfirm(
-      /* idUser,
-      idTransaction,
-      idWithdraw, */
-      withdrawConfirmDto,
-    );
+  async confirmWithDraw(@Body() withdrawConfirmDto: WithdrawConfirmDto) {
+    return this.transactionService.withdrawMoneyConfirm(withdrawConfirmDto);
   }
 }

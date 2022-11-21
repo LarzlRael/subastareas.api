@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Transaction } from '../entities/transaction.entity';
 import { WithDrawDto } from '../dto/withdraw.dto';
 import { User } from '../../auth/entities/user.entity';
+import { WithdrawEnum } from '../../enums/enums';
 
 @Injectable()
 export class WithDrawService {
@@ -38,7 +39,7 @@ export class WithDrawService {
     await this.withdrawRepository.save({
       ...getWithdraw,
       transaction,
-      status: 'completed',
+      status: WithdrawEnum.PAGADO,
     });
   }
 }
