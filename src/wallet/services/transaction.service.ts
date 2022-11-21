@@ -15,6 +15,7 @@ import { Shopping } from '../../trade/entities/shopping.entity';
 import { Offer } from '../../offer/entities/offer.entity';
 import { WithDrawService } from './withdraw.service';
 import { WithDrawDto } from '../dto/withdraw.dto';
+import { WithdrawConfirmDto } from '../dto/withdrawConfirm.dto';
 
 @Injectable()
 export class TransactionService {
@@ -158,6 +159,33 @@ export class TransactionService {
     return 'your balance';
   }
 
+  async withdrawMoneyConfirm({
+    idTransaction,
+    idUser,
+    idWithdraw,
+  }: WithdrawConfirmDto) {
+    const getTransaction = await this.transactionRepository.findOne({
+      where: {
+        id: idTransaction,
+      },
+    });
+    const getWalletUser = await this.walletService.getWalletByUserId(idUser);
+
+    const withdrawMoneyTransaction = this.transactionRepository.create({
+      currencyType: 'BOB',
+      transactionType: TransactionTypeEnum.SOLICITUD_RETIRO_COMPLETADO,
+      amount: getTransaction.withdrawalRequestAmount,
+      dollarValue: 6.86,
+      withdrawalRequestAmount: getTransaction.withdrawalRequestAmount,
+      wallet: getWalletUser,
+    });
+    const transaction = await this.transactionRepository.save(
+      withdrawMoneyTransaction,
+    );
+    await this.withDrawService.completeWithDraw(transaction, idWithdraw);
+    this.bankService.withdrawMoneyTransaction(transaction);
+  }
+
   async exchangeCoinsTransactionByHomeworkResolved(
     userOrigin: Wallet,
     userDestiny: Wallet,
@@ -239,6 +267,7 @@ export class TransactionService {
       select t.id as 'id_transaction', wi.id as 'id_withdraw',
       t.withdrawalRequestAmount ,t.transactionType, 
       u.username ,u.profileImageUrl,
+      u.id as 'id_user',
       u.email, u.phone,
       wi.created_at
       from transaction t

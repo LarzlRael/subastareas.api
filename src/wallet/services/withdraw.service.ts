@@ -31,4 +31,14 @@ export class WithDrawService {
 
     await this.withdrawRepository.save(newTransaction);
   }
+  async completeWithDraw(transaction: Transaction, idWithdraw: number) {
+    const getWithdraw = await this.withdrawRepository.findOne({
+      where: { id: idWithdraw },
+    });
+    await this.withdrawRepository.save({
+      ...getWithdraw,
+      transaction,
+      status: 'completed',
+    });
+  }
 }
