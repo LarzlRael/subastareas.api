@@ -18,6 +18,7 @@ import {
   In,
   Repository,
   MoreThan,
+  Like,
 } from 'typeorm';
 import { uploadFile } from '../utils/utils';
 import { FindOptionsWhere } from 'typeorm';
@@ -79,6 +80,14 @@ export class HomeworkService {
       status: HomeWorkStatusEnum.ACCEPTED,
       resolutionTime: MoreThan(new Date()),
       visible: true,
+    });
+  }
+  async getSearchedHomeworks(query: string) {
+    return this.getHomeworksByCondition({
+      status: HomeWorkStatusEnum.ACCEPTED,
+      resolutionTime: MoreThan(new Date()),
+      visible: true,
+      title: Like(`%${query}%`),
     });
   }
 

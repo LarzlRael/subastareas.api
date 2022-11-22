@@ -28,7 +28,7 @@ export class WalletService {
 
   async getUserWithdrawableBalance(user: User) {
     const userBalanceWithDrawable = await this.walletRepository.query(
-      `select sum(amount) as balanceWithDrawable from transaction where  walletId = ? and transactionType in (${TransactionTypeEnum.INGRESO},${TransactionTypeEnum.SOLICITUD_RETIRO_COMPLETADO})`,
+      `select sum(amount) as balanceWithDrawable from transaction where  walletId = ? and transactionType in ('${TransactionTypeEnum.INGRESO}')`,
       [user.wallet.id],
     );
 

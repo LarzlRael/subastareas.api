@@ -30,6 +30,12 @@ export class HomeworkController {
   getApprovedHomeWorks(): Promise<Homework[]> {
     return this.homeworkService.getApprovedHomeWorks();
   }
+  @Get('/findHomework/:querySearch')
+  getFindApprovedHomeWorks(
+    @Param('querySearch') querySearch: string,
+  ): Promise<Homework[]> {
+    return this.homeworkService.getSearchedHomeworks(querySearch);
+  }
   @Get('/getSubjectsList')
   getSubjectsAndLevels() {
     return this.homeworkService.getSubjectsAndLevels();
